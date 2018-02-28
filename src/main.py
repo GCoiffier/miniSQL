@@ -1,13 +1,18 @@
-# Data Base & Data Minig 2018
-# ENS de Lyon
+################################################################################
+#                        Data Base & Data Mining
+#                              ENS de Lyon
+#                              Spring 2018
 #
-# Project : MiniSQL
+#                           Project : MiniSQL
 #
-# Guillaume Coiffier
+#                           Guillaume Coiffier
+################################################################################
 
+from parser import Parser
 
 def main():
-    return
-
+    rel = Parser.read_data("test.csv")
+    print(rel)
+    
 if __name__=="__main__":
     main()
