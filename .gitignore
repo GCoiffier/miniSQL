@@ -1,0 +1,3 @@
+src/parser/__pycache__/*
+src/parser/miniSQL*.py
+src/parser/miniSQL*.tokens

@@ -8,11 +8,11 @@
 #                           Guillaume Coiffier
 ################################################################################
 
-from parser import Parser
+from parser import *
 
 def main():
     rel = Parser.read_data("test.csv")
     print(rel)
-    
+
 if __name__=="__main__":
     main()

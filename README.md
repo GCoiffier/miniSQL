@@ -4,5 +4,13 @@
 
 ## Requirements
 - python 3.5 or earlier
+- ANTLR4 :
+    `wget http://www.antlr.org/download/antlr-4.7-complete.jar`
+    `pip3 install antlr4-python3-runtime --user`
 
-## Bip
+## Installing
+    in the makefile, set the variable ANTLR4 to the installation folder of ANTLR
+    `ANTLR4 = path/to/antlr/antlr-4.7-complete.jar`
+
+## How to run
+    `make`
