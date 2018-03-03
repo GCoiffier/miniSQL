@@ -2,7 +2,6 @@ import os
 from os.path import join as pjoin
 import csv
 
-from request import Request
 from database import Relation
 
 def read_data(filename):
@@ -17,5 +16,5 @@ def read_data(filename):
 def write_data(db):
     pass
 
-def read_request(req):
-    return Request()
+def run_request(reqString):
+    print(reqString)

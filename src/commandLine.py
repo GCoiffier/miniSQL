@@ -35,10 +35,12 @@ def run_command(inputString):
     """
     miniSQL commands :
 
-    .open db / .read db
-    .exit / .quit
+    .exit | .quit | .end
+    .open path/to/table.csv  |  .read path/to/table.csv  | .load path/to/table.csv
+    .close <table name> | .unload <table name>
     .tables
-    .run <requestName>
+    .run path/to/request.sql
+    <SQL request>
     """
     try:
         command = inputString.split()
@@ -66,13 +68,15 @@ def run_command(inputString):
             datas.print_tables()
 
         elif mainKeyWord==".run":
-            reqName = command[1:].split("/")[-1]
+            reqPath = command[1]
+            reqName = reqPath.split("/")[-1]
             assert_extension(reqName,"sql")
-            # TODO : run SQL request from file
-            print("running request "+ dbName)
+            with open(reqPath) as req:
+                reqString = " ".join(req.readlines())
+                parser.run_request(reqString)
 
-        else: # run SQL request from shell
-            print(inputString)
+        else:
+            parser.run_request(reqString)
 
     except InvalidCommand:
         print(inputString + " : Invalid Command")
