@@ -8,11 +8,19 @@
 #                           Guillaume Coiffier
 ################################################################################
 
-from parser import *
+from commandLine import run_command, EndOfExecution
+import sys
 
 def main():
-    rel = Parser.read_data("test.csv")
-    print(rel)
+    try:
+        while True:
+            sys.stdout.write('>')
+            inputString = input()
+            run_command(inputString)
+    except EndOfExecution:
+        print("Program terminating !")
+        return
+
 
 if __name__=="__main__":
     main()

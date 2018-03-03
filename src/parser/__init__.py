@@ -2,7 +2,7 @@ import antlr4
 import sys
 from subprocess import call
 
-from .parser import Parser
+from .parser import *
 
 try:
     from .miniSQLLexer import miniSQLLexer

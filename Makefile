@@ -6,14 +6,12 @@ ANTLR4 = ~/lib/antlr-4.7-complete.jar
 
 all: run
 
-$(PACKAGE)Listener.py $(PACKAGE)Lexer.py $(PACKAGE)Lexer.tokens $(PACKAGE)Parser.py $(PACKAGE).tokens : $(GRAMMAR)
-	java -jar $(ANTLR4) $< -Dlanguage=Python3
+$(PACKAGE)Visitor.py $(PACKAGE)Lexer.py $(PACKAGE)Lexer.tokens $(PACKAGE)Parser.py $(PACKAGE).tokens : $(GRAMMAR)
+	java -jar $(ANTLR4) $< -Dlanguage=Python3 -visitor -no-listener
 
-antlr: $(PACKAGE)Listener.py $(PACKAGE)Lexer.py
+antlr: $(PACKAGE)Visitor.py $(PACKAGE)Lexer.py
 
-run: $(MAINFILE) antlr
+run: $(MAINFILE)
 	python3 $<
 
 clean:
-	rm src/parser/miniSQL*.py
-	rm src/parser/miniSQL*.tokens
