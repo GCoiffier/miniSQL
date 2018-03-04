@@ -8,7 +8,6 @@ class Relation:
         entries -> the list of entries of the table.
                     One entry if a dictionnary field |-> value
         """
-
         self.name = name.split(".")[0]
         self.data = entries
         assert(len(entries)>0)
@@ -25,6 +24,7 @@ class Relation:
                 output+=entry[field]+" | "
             output+="\n"
         return output
+
 
 class DataBase:
     def __init__(self):
