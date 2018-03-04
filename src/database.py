@@ -58,8 +58,8 @@ class DataBase:
         self.tables=dict()
 
     def print_tables(self):
-        for t in self.tables.items():
-            print(t[1])
+        for t in self.tables.values():
+            print(t)
 
 
 datas = DataBase() # global variable containing every data
