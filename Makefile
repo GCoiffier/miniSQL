@@ -1,4 +1,5 @@
 MAINFILE = src/main.py
+TESTFILE = src/test.py
 PACKAGE = miniSQL_
 GRAMMAR = src/parser/miniSQL.g4
 
@@ -12,6 +13,9 @@ $(PACKAGE)Visitor.py $(PACKAGE)Lexer.py $(PACKAGE)Lexer.tokens $(PACKAGE)Parser.
 antlr: $(PACKAGE)Visitor.py $(PACKAGE)Lexer.py
 
 run: $(MAINFILE)
+	python3 $<
+
+test: $(TESTFILE)
 	python3 $<
 
 clean:
