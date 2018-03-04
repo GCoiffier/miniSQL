@@ -15,5 +15,5 @@ run: $(MAINFILE)
 	python3 $<
 
 clean:
-	rm src/parser/miniSQL*.py
-	rm src/parser/miniSQL*.tokens
+	rm -f src/parser/miniSQL*.py
+	rm -f src/parser/miniSQL*.tokens
