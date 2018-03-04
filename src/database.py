@@ -3,6 +3,12 @@ import os
 class Relation:
 
     def __init__(self, name, entries):
+        """
+        name -> thename of the table. Filename should be <name>.csv
+        entries -> the list of entries of the table.
+                    One entry if a dictionnary field |-> value
+        """
+
         self.name = name.split(".")[0]
         self.data = entries
         assert(len(entries)>0)
@@ -25,15 +31,28 @@ class DataBase:
         self.tables = dict()
 
     def add_table(self,rel):
+        """
+        Loads a new table 'rel' into the database
+        """
         self.tables[rel.name] = rel
 
     def remove_table(self,relName):
+        """
+        Removes table of name 'relName' from database
+        """
         del self.tables[relName]
 
     def save(self):
+        """
+        Save all tables into their csv files
+        """
+        #TODO
         pass
 
     def discard(self):
+        """
+        Delete all tables (not files)
+        """
         self.tables=dict()
 
     def print_tables(self):

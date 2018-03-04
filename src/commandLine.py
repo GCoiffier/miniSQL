@@ -44,6 +44,9 @@ def run_command(inputString):
     """
     try:
         command = inputString.split()
+        if len(command)==0: return
+
+        # From now, every command has length >0
         mainKeyWord = command[0]
 
         if mainKeyWord[0]=="." and not (assert_command(mainKeyWord)):
@@ -51,6 +54,14 @@ def run_command(inputString):
 
         if mainKeyWord in [".end", ".quit", ".exit"]:
             raise EndOfExecution()
+
+        elif mainKeyWord==".tables":
+            datas.print_tables()
+
+        if len(command)==1:
+            raise InvalidCommand()
+
+        # From now, every command has length >1
 
         elif mainKeyWord in [".open", ".read", ".load"]:
             dbName=command[1].split("/")[-1]
@@ -64,9 +75,6 @@ def run_command(inputString):
             print_debug("unloading table " + tableName)
             datas.remove_table(tableName)
 
-        elif mainKeyWord==".tables":
-            datas.print_tables()
-
         elif mainKeyWord==".run":
             reqPath = command[1]
             reqName = reqPath.split("/")[-1]
@@ -74,6 +82,7 @@ def run_command(inputString):
             with open(reqPath) as req:
                 reqString = " ".join(req.readlines())
                 parser.run_request(reqString)
+
 
         else:
             parser.run_request(reqString)

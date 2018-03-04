@@ -3,7 +3,7 @@
 ## ENS de Lyon 2018
 
 ## Requirements
-- python 3.5 or earlier
+- python 3
 - ANTLR4 :
     `wget http://www.antlr.org/download/antlr-4.7-complete.jar`
     `pip3 install antlr4-python3-runtime --user`
