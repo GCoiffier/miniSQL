@@ -3,6 +3,10 @@ def select(rel,attributes):
     for key in attributes :
         i = 0
         while rel.keys[i] != key :
+            print (rel.keys[i])
+            print ("\n")
+            print (key)
+            print ("\n")
             i += 1
         indices.append(i)
     entries = []
