@@ -54,12 +54,14 @@ def run_command(inputString):
 
         if mainKeyWord in [".end", ".quit", ".exit"]:
             raise EndOfExecution()
+            return
 
         elif mainKeyWord==".tables":
             datas.print_tables()
+            return
 
         if len(command)==1:
-            raise InvalidCommand()
+            raise InvalidCommand("command '" + mainKeyWord + "' expected at least one argument")
 
         # From now, every command has length >1
 
@@ -68,12 +70,14 @@ def run_command(inputString):
             assert_extension(dbName,"csv")
             newTable = parser.read_data(dbName)
             datas.add_table(newTable)
+            return
 
         elif mainKeyWord in [".unload", ".close"]:
             tableName=command[1]
             print(tableName)
             print_debug("unloading table " + tableName)
             datas.remove_table(tableName)
+            return
 
         elif mainKeyWord==".run":
             reqPath = command[1]
@@ -82,12 +86,13 @@ def run_command(inputString):
             with open(reqPath) as req:
                 reqString = " ".join(req.readlines())
                 parser.run_request(reqString)
-
+            return
 
         else:
             parser.run_request(reqString)
+            return
 
-    except InvalidCommand:
-        print(inputString + " : Invalid Command")
+    except InvalidCommand as e :
+        print(inputString + " : Invalid Command, "+ e.args[0])
 
     return

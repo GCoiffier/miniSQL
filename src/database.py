@@ -2,16 +2,18 @@ import os
 
 class Relation:
 
-    def __init__(self, name, entries):
+    def __init__(self, name, keys, entries):
         """
         name -> thename of the table. Filename should be <name>.csv
+
+        keys -> list containing all attributes of the relation
+
         entries -> the list of entries of the table.
-                    One entry if a dictionnary field |-> value
+                    One entry is a tuple
         """
-        self.name = name.split(".")[0]
+        self.name = name.split(".")[0] #getting rid of eventual .csv
         self.data = entries
-        assert(len(entries)>0)
-        self.keys = entries[0].keys()
+        self.keys = keys
 
     def __repr__(self):
         # what to do when print(relation) is called
@@ -21,7 +23,7 @@ class Relation:
         output+="\n"
         for entry in self.data:
             for field in entry:
-                output+=entry[field]+" | "
+                output+= field + " | "
             output+="\n"
         return output
 

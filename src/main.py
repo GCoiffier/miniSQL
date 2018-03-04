@@ -6,6 +6,7 @@
 #                           Project : MiniSQL
 #
 #                           Guillaume Coiffier
+#                            Nicolas Champseix
 ################################################################################
 
 from commandLine import run_command, EndOfExecution
