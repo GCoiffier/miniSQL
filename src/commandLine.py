@@ -66,10 +66,11 @@ def run_command(inputString):
         # From now, every command has length >1
 
         elif mainKeyWord in [".open", ".read", ".load"]:
-            dbName=command[1].split("/")[-1]
+            dbName=command[1]
             assert_extension(dbName,"csv")
             newTable = parser.read_data(dbName)
-            datas.add_table(newTable)
+            if newTable is not None :
+                datas.add_table(newTable)
             return
 
         elif mainKeyWord in [".unload", ".close"]:
@@ -81,10 +82,9 @@ def run_command(inputString):
 
         elif mainKeyWord==".run":
             reqPath = command[1]
-            reqName = reqPath.split("/")[-1]
-            assert_extension(reqName,"sql")
-            with open(reqPath) as req:
-                reqString = " ".join(req.readlines())
+            assert_extension(reqPath,"sql")
+            reqString = parser.read_request(reqPath)
+            if reqString is not None :
                 parser.run_request(reqString)
             return
 
