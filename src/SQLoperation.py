@@ -1,5 +1,6 @@
 from database import Relation
 
+## ________________ Projection _______________
 def project(rel,attributes):
     indices = []
     for key in attributes :
@@ -18,6 +19,8 @@ def project(rel,attributes):
     new = Relation("SELECT_request",attributes,entries)
     return new
 
+
+## ______________ Selection __________________
 def verify_cond(entry,cond):
     #TODO
     return True
@@ -35,7 +38,8 @@ def select(rel,condList):
             filtered.append(x)
     return Relation("selectRequest",rel.keys,filtered)
 
-def join(relA,relB,cond=None):
+## ______________________ Join __________________________
+def join(relA, relB, cond=None):
     """
     Cartesian product
     """
@@ -47,7 +51,7 @@ def join(relA,relB,cond=None):
     new = Relation("JOIN",relA.keys + relB.keys,entries)
     return new
 
-
+## _____________________ Union ___________________________
 def union(relA,relB):
     entries = [line for line in relA.data] + [line for line in relB.data]
     new = Releation("UNION",relA.keys,entries)

@@ -15,6 +15,9 @@ class Relation:
         self.data = entries
         self.keys = keys
 
+    def __getitem__(self, key):
+        return self.data[key]
+
     def __repr__(self):
         # what to do when print(relation) is called
         output = "Table : " + self.name +"\n\n"
