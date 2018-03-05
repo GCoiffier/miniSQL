@@ -1,4 +1,4 @@
-def select(rel,attributes):
+def project(rel,attributes):
     indices = []
     for key in attributes :
         i = 0
@@ -16,7 +16,28 @@ def select(rel,attributes):
     new = Relation("name",attributes,entries)
     return new
 
+def verify_cond(entry,cond):
+    #TODO
+    return True
+
+def verify_cond_list(entry,condList):
+    for cond in condList:
+        if not verify_cond(entry,cond):
+            return False
+    return True
+
+def select(rel,condList):
+    filtered = []
+    for x in rel.datas:
+        if verify_cond_list(x,condList):
+            filtered.append(x)
+    return Relation("selectRequest",rel.keys,filtered)
+
 def join(relA,relB,cond=None):
+    """
+    Cartesian product
+    """
+    #TODO
     pass
 
 def union(relA,relB):
