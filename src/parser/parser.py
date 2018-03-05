@@ -123,7 +123,7 @@ class miniSQLParser ( Parser ):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def SELECT(self):
+        def project(self):
             return self.getToken(miniSQLParser.SELECT, 0)
 
         def atts(self):
