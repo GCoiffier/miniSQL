@@ -1,10 +1,6 @@
-<<<<<<< HEAD
 from database import Relation
 
-def select(rel,attributes):
-=======
 def project(rel,attributes):
->>>>>>> 19afdf0586cfd0d1f61ca0d4c3e862d07a762568
     indices = []
     for key in attributes :
         i = 0
@@ -40,7 +36,9 @@ def select(rel,condList):
     return Relation("selectRequest",rel.keys,filtered)
 
 def join(relA,relB,cond=None):
-<<<<<<< HEAD
+    """
+    Cartesian product
+    """
     entries = []
     for lineA in relA.data :
         for lineB in relB.data :
@@ -48,14 +46,7 @@ def join(relA,relB,cond=None):
             entries.append(new_line)
     new = Relation("JOIN",relA.keys + relB.keys,entries)
     return new
-        
-=======
-    """
-    Cartesian product
-    """
-    #TODO
-    pass
->>>>>>> 19afdf0586cfd0d1f61ca0d4c3e862d07a762568
+
 
 def union(relA,relB):
     entries = [line for line in relA.data] + [line for line in relB.data]
