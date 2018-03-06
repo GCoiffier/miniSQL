@@ -1,8 +1,14 @@
-import os
 from os.path import join as pjoin
+
+import antlr4
 import csv
 
+from .miniSQLParser import miniSQLParser
+from .miniSQLLexer import miniSQLLexer
+from .visitor import miniSQLVisitor
+
 from database import Relation
+from debug import print_debug
 
 def read_data(filename):
     """
@@ -37,13 +43,13 @@ def read_request(path):
 
 def run_request(reqString):
     # lex and parse
-    lexer = MuLexer(antlr4.CharStream(reqString))
+    lexer = miniSQLLexer(antlr4.InputStream(reqString))
     stream = antlr4.CommonTokenStream(lexer)
-    parser = MuParser(stream)
-    tree = parser.prog()
+    parser = miniSQLParser(stream)
+    tree = parser.main() # rule 'main' is the entry point of the grammar
 
+    # visit and execute request
     visitor = miniSQLVisitor()
-    try:
-        visitor.visit(tree)
-    except:
-        print("error in run_request")
+    resultRelation = visitor.visit(tree)
+    print_debug("Visiting exited without raising an error")
+    print(resultRelation)

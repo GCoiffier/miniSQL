@@ -1,60 +1,74 @@
 grammar miniSQL;
 
 // DBDM miniSQL project
+// Grammar for SQL request
+
+main
+    : sql COLON;
 
 sql
-    : SELECT atts FROM rels WHERE cond
-    | LPAR sql RPAR MINUS LPAR sql RPAR
-    | LPAR sql RPAR UNION LPAR sql RPAR;
+    : SELECT atts FROM rels (WHERE cond)?   #sqlNormal
+    | LPAR sql RPAR MINUS LPAR sql RPAR     #sqlMinus
+    | LPAR sql RPAR UNION LPAR sql RPAR    #sqlUnion
+    ;
 
 atts
-    : attd ',' atts
-    | attd;
+    : STAR           #AttributeDeclAll
+    | attd ',' atts  #AttributeDeclList
+    | attd           #AttributeDeclSimple
+    ;
 
 attd
-    : att
-    | att AS ID;
+    : att         #AttributeSimple
+    | att AS ID   #AttributeAs
+    ;
 
-att : ID '.' ID;
-
+att : ID          #AttributeID
+    | ID '.' ID   #AttributeRefID
+    ;
 rels
-    : rel ',' rels
-    | rel;
+    : rel ',' rels  #RelationDeclList
+    | rel           #RelationDeclSimple
+    ;
 
 rel
-    : filename ID
-    | LPAR sql RPAR ID;
-
-filename : ID;
+    : ID             #RelationID
+    | LPAR sql RPAR  #Subquery
+    ;
 
 cond
-    : and_cond OR cond
-    | and_cond;
+    : and_cond OR cond  #CondOrList
+    | and_cond          #CondOrSimple
+    ;
 
 and_cond
-    : at_cond AND and_cond
-    | at_cond;
+    : at_cond AND and_cond  #CondAndList
+    | at_cond               #CondAndSimple
+    ;
 
 at_cond
     : att COMP_OP att
     | att IN LPAR sql RPAR
-    | att NOT IN LPAR sql RPAR;
+    | att NOT IN LPAR sql RPAR
+    ;
 
 LPAR : '(';
 RPAR : ')';
+COLON : ';';
+STAR : '*';
 
-SELECT : 'SELECT';
-FROM : 'FROM';
-WHERE : 'WHERE';
-AS : 'AS';
-MINUS : 'MINUS';
-UNION : 'UNION';
-JOIN : 'JOIN';
-GROUPBY : 'GROUP BY';
-AND : 'AND';
-OR : 'OR';
-NOT : 'NOT';
-IN : 'IN';
+SELECT : 'SELECT' | 'select' ;
+FROM : 'FROM'|'from' ;
+WHERE : 'WHERE' | 'where';
+AS : 'AS' | 'as' ;
+MINUS : 'MINUS' | 'minus' ;
+UNION : 'UNION' | 'union';
+JOIN : 'JOIN' | 'join';
+GROUPBY : 'GROUP BY' | 'group by';
+AND : 'AND' | 'and';
+OR : 'OR' | 'or';
+NOT : 'NOT' | 'not';
+IN : 'IN' | 'in';
 EQ : '=';
 NEQ : '!=';
 LT : '<';

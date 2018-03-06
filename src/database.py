@@ -20,7 +20,7 @@ class Relation:
 
     def __repr__(self):
         # what to do when print(relation) is called
-        output = "Table : " + self.name +"\n\n"
+        output = ""
         for k in self.keys:
             output += str(k) + " | "
         output+="\n"
@@ -34,6 +34,9 @@ class Relation:
 class DataBase:
     def __init__(self):
         self.tables = dict()
+
+    def __getitem__(self, key):
+        return self.tables[key]
 
     def add_table(self,rel):
         """
@@ -65,4 +68,4 @@ class DataBase:
             print(t)
 
 
-datas = DataBase() # global variable containing every data
+DATAS = DataBase() # global variable containing every data

@@ -1,11 +1,6 @@
 import parser
-from database import datas
-
-## ___________ Debug output utility _______________
-DEBUG=True
-def print_debug(what):
-    global DEBUG
-    if DEBUG: print(what)
+from debug import print_debug
+from database import DATAS
 
 
 ## ____________ Exception classes _________________
@@ -50,14 +45,14 @@ def run_command(inputString):
         mainKeyWord = command[0]
 
         if mainKeyWord[0]=="." and not (assert_command(mainKeyWord)):
-            raise InvalidCommand()
+            raise InvalidCommand("command '" + mainKeyWord + "' is invalid")
 
         if mainKeyWord in [".end", ".quit", ".exit"]:
             raise EndOfExecution()
             return
 
         elif mainKeyWord==".tables":
-            datas.print_tables()
+            DATAS.print_tables()
             return
 
         if len(command)==1:
@@ -70,14 +65,14 @@ def run_command(inputString):
             assert_extension(dbName,"csv")
             newTable = parser.read_data(dbName)
             if newTable is not None :
-                datas.add_table(newTable)
+                DATAS.add_table(newTable)
             return
 
         elif mainKeyWord in [".unload", ".close"]:
             tableName=command[1]
             print(tableName)
             print_debug("unloading table " + tableName)
-            datas.remove_table(tableName)
+            DATAS.remove_table(tableName)
             return
 
         elif mainKeyWord==".run":
@@ -89,7 +84,7 @@ def run_command(inputString):
             return
 
         else:
-            parser.run_request(reqString)
+            parser.run_request(inputString)
             return
 
     except InvalidCommand as e :

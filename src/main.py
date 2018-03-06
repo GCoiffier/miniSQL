@@ -1,12 +1,12 @@
 ################################################################################
-#                        Data Base & Data Mining
-#                              ENS de Lyon
-#                              Spring 2018
-#
-#                           Project : MiniSQL
-#
-#                           Guillaume Coiffier
-#                            Nicolas Champseix
+#                        Data Base & Data Mining                               #
+#                              ENS de Lyon                                     #
+#                              Spring 2018                                     #
+#                                                                              #
+#                           Project : MiniSQL                                  #
+#                                                                              #
+#                           Guillaume Coiffier                                 #
+#                            Nicolas Champseix                                 #
 ################################################################################
 
 from commandLine import run_command, EndOfExecution
@@ -20,6 +20,9 @@ def main():
             run_command(inputString)
     except EndOfExecution:
         print("Program terminating !")
+        return
+    except EOFError:
+        print("")
         return
 
 

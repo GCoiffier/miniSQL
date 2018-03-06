@@ -1,106 +1,88 @@
 # Generated from src/parser/miniSQL.g4 by ANTLR 4.7
-from database import *
-from SQLoperation import *
-from debug import print_debug
 from antlr4 import *
-from .miniSQLParser import miniSQLParser
+if __name__ is not None and "." in __name__:
+    from .miniSQLParser import miniSQLParser
+else:
+    from miniSQLParser import miniSQLParser
 
 # This class defines a complete generic visitor for a parse tree produced by miniSQLParser.
 
 class miniSQLVisitor(ParseTreeVisitor):
 
-    def __init__(self):
-        ParseTreeVisitor.__init__(self)
-        self.relationNames=[]
-
     # Visit a parse tree produced by miniSQLParser#main.
     def visitMain(self, ctx:miniSQLParser.MainContext):
-        return self.visit(ctx.sql())
+        return self.visitChildren(ctx)
 
-    # ________________________ sql rules _______________________________________
+
     # Visit a parse tree produced by miniSQLParser#sqlNormal.
     def visitSqlNormal(self, ctx:miniSQLParser.SqlNormalContext):
-
-        tables = self.visit(ctx.rels())
-        for relName in tables:
-            self.relationNames.append(relName)
-        print_debug(self.relationNames)
-        nbTables = len(self.relationNames)
-
-        resultRelation = DATAS[self.relationNames[0]]
-
-        if (nbTables>1): # perform a join
-            for i in range(1,nbTables):
-                resultRelation = join(resultRelation, DATAS[self.relationNames[i]])
-
-        attributes = self.visit(ctx.atts())
-        print_debug(attributes)
-        resultRelation = project(resultRelation,attributes)
-        return resultRelation
+        return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by miniSQLParser#sqlMinus.
     def visitSqlMinus(self, ctx:miniSQLParser.SqlMinusContext):
-        print("MINUS not implemented yet")
         return self.visitChildren(ctx)
 
 
     # Visit a parse tree produced by miniSQLParser#sqlUnion.
     def visitSqlUnion(self, ctx:miniSQLParser.SqlUnionContext):
-        print("Union not implemented yet")
         return self.visitChildren(ctx)
 
 
-    # _________________________ atts rules _____________________________________
+    # Visit a parse tree produced by miniSQLParser#AttributeDeclAll.
     def visitAttributeDeclAll(self, ctx:miniSQLParser.AttributeDeclAllContext):
-        # SELECT *
-        attributes = []
-        for relationName in self.relationNames:
-            attributes += DATAS[relationName].keys
-        return attributes
+        return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by miniSQLParser#AttributeDeclList.
     def visitAttributeDeclList(self, ctx:miniSQLParser.AttributeDeclListContext):
-        queueOfList = self.visit(ctx.atts())
-        firstElem = self.visit(ctx.attd())
-        return [firstElem]+queueOfList
+        return self.visitChildren(ctx)
 
+
+    # Visit a parse tree produced by miniSQLParser#AttributeDeclSimple.
     def visitAttributeDeclSimple(self, ctx:miniSQLParser.AttributeDeclSimpleContext):
-        return [self.visitChildren(ctx)]
+        return self.visitChildren(ctx)
 
-    # ___________________ attd rules ___________________________________________
+
+    # Visit a parse tree produced by miniSQLParser#AttributeSimple.
     def visitAttributeSimple(self, ctx:miniSQLParser.AttributeSimpleContext):
-        return self.visit(ctx.att())
+        return self.visitChildren(ctx)
 
+
+    # Visit a parse tree produced by miniSQLParser#AttributeAs.
     def visitAttributeAs(self, ctx:miniSQLParser.AttributeAsContext):
-        # TODO : the AS does nothing for now
-        return self.visit(ctx.att())
+        return self.visitChildren(ctx)
 
-    # __________________ att rule ______________________________________________
+
+    # Visit a parse tree produced by miniSQLParser#AttributeID.
     def visitAttributeID(self, ctx:miniSQLParser.AttributeIDContext):
-        return ctx.getText()
+        return self.visitChildren(ctx)
 
+
+    # Visit a parse tree produced by miniSQLParser#AttributeRefID.
     def visitAttributeRefID(self, ctx:miniSQLParser.AttributeRefIDContext):
-        # TODO : the table.elem does nothing for now
-        return str(self.visit(ctx.ID(1)))
+        return self.visitChildren(ctx)
 
-    # __________________ rels rules ____________________________________________
+
+    # Visit a parse tree produced by miniSQLParser#RelationDeclList.
     def visitRelationDeclList(self, ctx:miniSQLParser.RelationDeclListContext):
-        queueOfList = self.visit(ctx.rels())
-        firstElem = self.visit(ctx.rel())
-        return [firstElem]+queueOfList
+        return self.visitChildren(ctx)
 
+
+    # Visit a parse tree produced by miniSQLParser#RelationDeclSimple.
     def visitRelationDeclSimple(self, ctx:miniSQLParser.RelationDeclSimpleContext):
-        return [self.visit(ctx.rel())]
+        return self.visitChildren(ctx)
 
-    # __________________ rel rules _____________________________________________
+
+    # Visit a parse tree produced by miniSQLParser#RelationID.
     def visitRelationID(self, ctx:miniSQLParser.RelationIDContext):
-        return ctx.getText()
+        return self.visitChildren(ctx)
+
 
     # Visit a parse tree produced by miniSQLParser#Subquery.
     def visitSubquery(self, ctx:miniSQLParser.SubqueryContext):
-        # TODO
-        pass
+        return self.visitChildren(ctx)
+
 
     # Visit a parse tree produced by miniSQLParser#CondOrList.
     def visitCondOrList(self, ctx:miniSQLParser.CondOrListContext):

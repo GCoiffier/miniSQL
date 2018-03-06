@@ -19,5 +19,3 @@ test: $(TESTFILE)
 	python3 $<
 
 clean:
-	rm -f src/parser/miniSQL*.py
-	rm -f src/parser/miniSQL*.tokens
