@@ -14,15 +14,17 @@ class Relation:
         """
         self.name = name.split(".")[0] #getting rid of eventual .csv
         self.data = entries
-        self.keys = keys
+        self.keys = dict()
+        for i,key in enumerate(keys):
+            self.keys[key]=i
 
-    def __getitem__(self, key):
-        return self.data[key]
+    def __getitem__(self, index):
+        return self.data[index]
 
     def __repr__(self):
         # what to do when print(relation) is called
         output = ""
-        for k in self.keys:
+        for k in self.keys.keys():
             output += str(k) + " | "
         output+="\n"
         for entry in self.data:
