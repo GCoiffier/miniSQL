@@ -25,9 +25,23 @@ class Relation:
     def __repr__(self):
         # what to do when print(relation) is called
         output = ""
-        for k in self.keys.keys():
+
+        keys = self.keys.keys()
+
+        #for k in keys:
+        #    output += str(k) + " : " + str(self.keys[k]) + " | "
+        #output+="\n"
+
+        #keys = sorted(keys, key=lambda k: self.keys[k])
+
+        #for k in keys:
+        #    output += str(k) + " : " + str(self.keys[k]) + " | "
+        #output+="\n"
+
+        for k in keys:
             output += str(k) + " | "
         output+="\n"
+
         for entry in self.data:
             for field in entry:
                 output+= field + " | "
