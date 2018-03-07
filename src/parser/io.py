@@ -22,7 +22,10 @@ def read_data(filename):
             keys = reader.fieldnames
             entries = []
             for row in reader:
-                entries.append(list(row.values()))
+                newEntry=[]
+                for key in keys:
+                    newEntry.append(row[key])
+                entries.append(tuple(newEntry))
             return Relation(filename, keys, entries)
     except FileNotFoundError as e:
         print("Error in read_data : " + path + ", this file does not exist")

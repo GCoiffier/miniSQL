@@ -12,33 +12,28 @@ class Relation:
         entries -> the list of entries of the table.
                     One entry is a tuple
         """
-        self.name = name.split(".")[0] #getting rid of eventual .csv
+        self.name = name.split(".")[0] # getting rid of eventual .csv
         self.data = entries
         self.keys = dict()
         for i,key in enumerate(keys):
             self.keys[key]=i
         print_debug(self.keys)
+        print_debug(self.get_keys())
 
     def __getitem__(self, index):
         return self.data[index]
 
+    def get_keys(self):
+        l = list(self.keys.keys())
+        l = sorted(l, key= lambda x : int(self.keys[x]))
+        return l
+
     def __repr__(self):
-        # what to do when print(relation) is called
+        """ what to do when print(relation) is called
+        """
         output = ""
 
-        keys = self.keys.keys()
-
-        #for k in keys:
-        #    output += str(k) + " : " + str(self.keys[k]) + " | "
-        #output+="\n"
-
-        #keys = sorted(keys, key=lambda k: self.keys[k])
-
-        #for k in keys:
-        #    output += str(k) + " : " + str(self.keys[k]) + " | "
-        #output+="\n"
-
-        for k in keys:
+        for k in self.get_keys():
             output += str(k) + " | "
         output+="\n"
 

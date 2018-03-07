@@ -11,7 +11,7 @@ class miniSQLVisitor(ParseTreeVisitor):
 
     def __init__(self):
         ParseTreeVisitor.__init__(self)
-        self.relationNames=[]
+        self.relationNames = []
 
     # Visit a parse tree produced by miniSQLParser#main.
     def visitMain(self, ctx:miniSQLParser.MainContext):
@@ -29,6 +29,9 @@ class miniSQLVisitor(ParseTreeVisitor):
 
         resultRelation = DATAS[self.relationNames[0]]
 
+        print_debug("--- in visitor : --")
+        print_debug(resultRelation)
+
         if (nbTables>1): # perform a join
             for i in range(1,nbTables):
                 resultRelation = join(resultRelation, DATAS[self.relationNames[i]])
@@ -39,7 +42,8 @@ class miniSQLVisitor(ParseTreeVisitor):
         if ctx.WHERE() is not None:
             print("There is a WHERE")
 
-        resultRelation = project(resultRelation,attributes)
+        resultRelation = project(resultRelation, attributes)
+
         return resultRelation
 
 
@@ -60,7 +64,7 @@ class miniSQLVisitor(ParseTreeVisitor):
         # SELECT *
         attributes = []
         for relationName in self.relationNames:
-            attributes += DATAS[relationName].keys
+            attributes += DATAS[relationName].get_keys()
         return attributes
 
 
