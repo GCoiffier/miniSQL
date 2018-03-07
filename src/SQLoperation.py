@@ -9,10 +9,7 @@ def project(rel,attributes):
         while rel.keys[i] != key :
             i += 1
         indices.append(i)
-    entries = []
-    for line in rel.data :
-        new_line = tuple(line[i] for i in indices)
-        entries.append(new_line)
+    entries = [ tuple(line[i] for i in indices) for line in rel.data ]
     new = Relation("projectRequest",attributes,entries)
     return new
 
