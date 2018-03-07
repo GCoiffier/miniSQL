@@ -17,6 +17,7 @@ class Relation:
         self.keys = dict()
         for i,key in enumerate(keys):
             self.keys[key]=i
+        print_debug(self.keys)
 
     def __getitem__(self, index):
         return self.data[index]
