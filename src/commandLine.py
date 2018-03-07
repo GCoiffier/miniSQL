@@ -1,14 +1,6 @@
 import parser
-from debug import print_debug
-from database import DATAS
-
-
-## ____________ Exception classes _________________
-class EndOfExecution(Exception):
-    pass
-
-class InvalidCommand(Exception):
-    pass
+from exceptions import *
+from database import *
 
 
 ## ___________ Command parser ______________________

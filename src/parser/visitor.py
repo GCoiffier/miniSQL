@@ -1,7 +1,7 @@
 # Generated from src/parser/miniSQL.g4 by ANTLR 4.7
 from database import *
 from SQLoperation import *
-from debug import print_debug
+from exceptions import *
 from antlr4 import *
 from .miniSQLParser import miniSQLParser
 
@@ -24,8 +24,8 @@ class miniSQLVisitor(ParseTreeVisitor):
         tables = self.visit(ctx.rels())
         for relName in tables:
             self.relationNames.append(relName)
-        print_debug(self.relationNames)
         nbTables = len(self.relationNames)
+        print_debug(self.relationNames)
 
         resultRelation = DATAS[self.relationNames[0]]
 
@@ -35,6 +35,10 @@ class miniSQLVisitor(ParseTreeVisitor):
 
         attributes = self.visit(ctx.atts())
         print_debug(attributes)
+
+        if ctx.WHERE() is not None:
+            print("There is a WHERE")
+
         resultRelation = project(resultRelation,attributes)
         return resultRelation
 

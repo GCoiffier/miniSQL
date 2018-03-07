@@ -7,8 +7,8 @@ from .miniSQLParser import miniSQLParser
 from .miniSQLLexer import miniSQLLexer
 from .visitor import miniSQLVisitor
 
-from database import Relation
-from debug import print_debug
+from database import *
+from exceptions import *
 
 def read_data(filename):
     """
@@ -49,7 +49,11 @@ def run_request(reqString):
     tree = parser.main() # rule 'main' is the entry point of the grammar
 
     # visit and execute request
-    visitor = miniSQLVisitor()
-    resultRelation = visitor.visit(tree)
-    print_debug("Visiting exited without raising an error")
-    print(resultRelation)
+    try:
+        visitor = miniSQLVisitor()
+        resultRelation = visitor.visit(tree)
+
+        print_debug("Visiting exited without raising an error")
+        print(resultRelation)
+    except Exception as e :
+        print ("[ERROR] " + e.args[0])

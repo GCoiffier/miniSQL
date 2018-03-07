@@ -1,5 +1,5 @@
-from database import Relation
-from debug import print_debug
+from database import *
+from exceptions import *
 
 ## ________________ Projection _______________
 def project(rel,attributes):
