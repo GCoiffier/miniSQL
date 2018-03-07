@@ -4,12 +4,12 @@ from exceptions import *
 ## ________________ Projection _______________
 def project(rel,attributes):
     indices = []
-    output = "-- In projection :\n-- "
+    #output = "-- In projection :\n-- "
     for key in attributes :
-        output += str(key) + " : " + str(rel.keys[key]) + " | "
+        #output += str(key) + " : " + str(rel.keys[key]) + " | "
         indices.append(rel.keys[key])
-    print (output)
-    print(rel)
+    #print (output)
+    #print(rel)
     entries = [ tuple(line[i] for i in indices) for line in rel.data ]
     new = Relation("projectRequest",attributes,entries)
     return new
