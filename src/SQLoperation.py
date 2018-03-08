@@ -50,3 +50,18 @@ def union(relA,relB):
     entries = [line for line in relA.data] + [line for line in relB.data]
     new = Relation("unionRequest",relA.keys,entries)
     return new
+
+## ________________________ Minus _____________________________
+def minus(relA,relB):
+    entries = [line for line in relA.data if not (line in relB.data)]
+    new = Relation("minusRequest",relA.keys,entries)
+    return new
+
+
+
+
+
+
+
+
+
