@@ -54,13 +54,8 @@ class miniSQLVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by miniSQLParser#AttributeID.
-    def visitAttributeID(self, ctx:miniSQLParser.AttributeIDContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by miniSQLParser#AttributeRefID.
-    def visitAttributeRefID(self, ctx:miniSQLParser.AttributeRefIDContext):
+    # Visit a parse tree produced by miniSQLParser#att.
+    def visitAtt(self, ctx:miniSQLParser.AttContext):
         return self.visitChildren(ctx)
 
 
@@ -104,8 +99,18 @@ class miniSQLVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by miniSQLParser#at_cond.
-    def visitAt_cond(self, ctx:miniSQLParser.At_condContext):
+    # Visit a parse tree produced by miniSQLParser#CompSimple.
+    def visitCompSimple(self, ctx:miniSQLParser.CompSimpleContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by miniSQLParser#CompIn.
+    def visitCompIn(self, ctx:miniSQLParser.CompInContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by miniSQLParser#CompNotIN.
+    def visitCompNotIN(self, ctx:miniSQLParser.CompNotINContext):
         return self.visitChildren(ctx)
 
 

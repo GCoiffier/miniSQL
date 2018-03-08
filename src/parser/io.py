@@ -1,5 +1,4 @@
 from os.path import join as pjoin
-
 import antlr4
 import csv
 
@@ -55,7 +54,6 @@ def run_request(reqString):
     try:
         visitor = miniSQLVisitor()
         resultRelation = visitor.visit(tree)
-
         print_debug("Visiting exited without raising an error")
         print(resultRelation)
     except Exception as e :

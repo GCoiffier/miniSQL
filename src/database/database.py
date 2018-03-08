@@ -1,6 +1,7 @@
 import os
 from exceptions import *
 from .relation import Relation
+import parser
 
 class DataBase:
     def __init__(self):
@@ -25,11 +26,17 @@ class DataBase:
         """
         del self.tables[relName]
 
+    def load(self,tableName):
+        """
+        Loads tables present in a request
+        """
+        rel = parser.read_data(tableName)
+        self.add_table(rel)
+
     def save(self):
         """
         Save all tables into their csv files
         """
-        #TODO
         pass
 
     def discard(self):

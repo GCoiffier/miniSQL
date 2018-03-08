@@ -17,10 +17,11 @@ class Condition:
 
 class FilterCondition(Condition):
 
-    def __init__(self, attr, value, operator):
+    def __init__(self, attr1, operator, attr2):
         Condition.__init__(self,operator)
-        self.attr=attr
-        self.compValue=value
+        self.attr1=attr1
+        self.attr2=attr2
+        self.attr2=value
 
     def eval(self, keys, entry):
         index = -1
@@ -29,17 +30,17 @@ class FilterCondition(Condition):
                 break
             i+=1
         if self.operator == Op.EQ:
-            return self.compValue==entry[key]
+            return self.attr2==entry[key]
         elif self.operator == Oq.NEQ:
-            return self.compValue!=entry[key]
+            return self.attr2!=entry[key]
         elif self.operator == Oq.LT:
-            return int(self.compValue)>=int(entry[key])
+            return int(self.attr2)>=int(entry[key])
         elif self.operator == Oq.LE:
-            return int(self.compValue)>int(entry[key])
+            return int(self.attr2)>int(entry[key])
         elif self.operator == Oq.GT:
-            return int(self.compValue)<int(entry[key])
+            return int(self.attr2)<int(entry[key])
         elif self.operator == Oq.GE:
-            return int(self.compValue)<=int(entry[key])
+            return int(self.attr2)<=int(entry[key])
 
 class JoinCondition(Condition):
 

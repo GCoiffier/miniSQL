@@ -1,5 +1,8 @@
 import os
 from exceptions import *
+from collections import namedtuple
+
+Attribute = namedtuple('Attribute', ['table', 'attr'])
 
 class Relation:
 
@@ -12,7 +15,7 @@ class Relation:
         entries -> the list of entries of the table.
                     One entry is a tuple
         """
-        self.name = name.split(".")[0] # getting rid of eventual .csv
+        self.name = name
         self.data = entries
         self.keys = dict()
         for i,key in enumerate(keys):

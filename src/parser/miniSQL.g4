@@ -4,7 +4,7 @@ grammar miniSQL;
 // Grammar for SQL request
 
 main
-    : sql COLON;
+    : sql (COLON)?;
 
 sql
     : SELECT atts FROM rels (WHERE cond)?   #sqlNormal
@@ -23,16 +23,15 @@ attd
     | att AS ID   #AttributeAs
     ;
 
-att : ID          #AttributeID
-    | ID '.' ID   #AttributeRefID
-    ;
+att : ID '.' ID ;
+
 rels
     : rel ',' rels  #RelationDeclList
     | rel           #RelationDeclSimple
     ;
 
 rel
-    : ID             #RelationID
+    : QUOTE FILENAME QUOTE ID  #RelationID
     | LPAR sql RPAR  #Subquery
     ;
 
@@ -47,15 +46,16 @@ and_cond
     ;
 
 at_cond
-    : att COMP_OP att
-    | att IN LPAR sql RPAR
-    | att NOT IN LPAR sql RPAR
+    : att COMP_OP att #CompSimple
+    | att IN LPAR sql RPAR #CompIn
+    | att NOT IN LPAR sql RPAR #CompNotIN
     ;
 
 LPAR : '(';
 RPAR : ')';
 COLON : ';';
 STAR : '*';
+QUOTE : '"';
 
 SELECT : 'SELECT' | 'select' ;
 FROM : 'FROM'|'from' ;
@@ -77,6 +77,7 @@ GT : '>';
 GE : '>=';
 COMP_OP : EQ | NEQ | LT | LE | GT | GE ;
 
+FILENAME : [A-Za-z][a-zA-Z_0-9]*'.csv';
 ID : [A-Za-z] [a-zA-Z_0-9]* ;
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
 NEWLINE: [\n]+;
