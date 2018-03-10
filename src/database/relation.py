@@ -1,8 +1,17 @@
 import os
 from exceptions import *
-from collections import namedtuple
 
-Attribute = namedtuple('Attribute', ['table', 'attr'])
+class Attribute:
+    def __init__(self,table,attr):
+        self.table = table
+        self.attr = attr
+        self.fullName = table+"."+attr
+
+    def __repr__(self):
+        return "Attribute("+self.table+","+self.attr+")"
+
+    def __str__(self):
+        return self.attr
 
 class Relation:
 
@@ -20,15 +29,13 @@ class Relation:
         self.keys = dict()
         for i,key in enumerate(keys):
             self.keys[key]=i
-        print_debug(self.keys)
-        print_debug(self.get_keys())
 
     def __getitem__(self, index):
         return self.data[index]
 
     def get_keys(self):
         l = list(self.keys.keys())
-        l = sorted(l, key= lambda x : int(self.keys[x]))
+        l = sorted(l, key= lambda x : int(self.keys[x])
         return l
 
     def __repr__(self):

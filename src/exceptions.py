@@ -1,9 +1,11 @@
 ## ___________ Debug output utility _______________
 DEBUG=True
 
-def print_debug(what):
+def print_debug(*args):
     global DEBUG
-    if DEBUG: print(what)
+    if DEBUG:
+        for what in args:
+            print(what)
 
 ## ____________ Exception classes _________________
 class EndOfExecution(Exception):
@@ -13,4 +15,7 @@ class InvalidCommand(Exception):
     pass
 
 class UnknownTable(Exception):
+    pass
+
+class VisitorError(Exception):
     pass

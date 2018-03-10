@@ -4,7 +4,7 @@ grammar miniSQL;
 // Grammar for SQL request
 
 main
-    : sql (COLON)?;
+    : sql (COLON)? ;
 
 sql
     : SELECT atts FROM rels (WHERE cond)?   #sqlNormal

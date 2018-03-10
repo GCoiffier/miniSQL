@@ -4,7 +4,7 @@ import csv
 
 from .miniSQLParser import miniSQLParser
 from .miniSQLLexer import miniSQLLexer
-from .visitor import miniSQLVisitor
+from .visitor import Visitor
 
 from database import *
 from exceptions import *
@@ -36,7 +36,7 @@ def write_data(rel):
 def read_request(path):
     try:
         reqString=""
-        path=pjoin("request",reqPath)
+        path=pjoin("request",path)
         with open(path) as req:
             reqString = " ".join(req.readlines())
         return reqString
@@ -44,17 +44,14 @@ def read_request(path):
         print("Error in read_request : " + path + ", this file does not exist")
 
 def run_request(reqString):
-    # lex and parse
     lexer = miniSQLLexer(antlr4.InputStream(reqString))
     stream = antlr4.CommonTokenStream(lexer)
     parser = miniSQLParser(stream)
     tree = parser.main() # rule 'main' is the entry point of the grammar
-
-    # visit and execute request
-    try:
-        visitor = miniSQLVisitor()
-        resultRelation = visitor.visit(tree)
-        print_debug("Visiting exited without raising an error")
-        print(resultRelation)
-    except Exception as e :
-        print ("[ERROR] " + e.args[0])
+    #try:
+    visitor = Visitor()
+    resultRelation = visitor.visit(tree) # run visitor
+    print_debug("Visiting exited without raising an error")
+    print(resultRelation)
+    #except Exception as e :
+    #    print ("[ERROR] " + e.args[0])
