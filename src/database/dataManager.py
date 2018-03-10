@@ -1,6 +1,7 @@
 import os
 from exceptions import *
 from .relation import Relation
+from .attribute import Attribute
 import parser
 
 class DataManager:
@@ -35,7 +36,7 @@ class DataManager:
 
     def rename_table(self,tableName,newTableName):
         rel = self.tables[tableName]
-        newRel = Relation(newTableName, rel._keys, rel.data)
+        newRel = Relation(newTableName, rel.get_keys(), rel.data)
         newRel.rename(newTableName)
         self.add_table(newRel)
 

@@ -36,18 +36,14 @@ class Visitor(ParseTreeVisitor):
         # perform a rename on all tables
         for (alias,name) in self.relationNames.items():
             self.dataManager.rename_table(name,alias)
-            print(self.dataManager[alias].get_keys())
-            print(self.dataManager[alias])
 
         # perform a join on the tables
         resultRelation = reduce(lambda x,y : join(self.dataManager[x], self.dataManager[y]),
                                 list(self.relationNames.keys()))
 
-        print_debug("Relation after join :")
-        print_debug(resultRelation)
-
         attributes = self.visit(ctx.atts())
         print_debug("Attributes :" +str(self.attributeNames))
+        print_debug(attributes)
 
         if ctx.WHERE() is not None:
             print("There is a WHERE")

@@ -1,17 +1,6 @@
 import os
 from exceptions import *
-
-class Attribute:
-    def __init__(self,table,attr):
-        self.table = table
-        self.attr = attr
-        self.fullName = table+"."+attr
-
-    def __repr__(self):
-        return "Attribute("+self.table+","+self.attr+")"
-
-    def __str__(self):
-        return self.attr
+from .attribute import Attribute
 
 class Relation:
 
@@ -29,6 +18,9 @@ class Relation:
             self._keys[key]=i
 
     def rename(self,newName):
+        """
+        Rename table and all attributes into "table.attr" form
+        """
         self.name = newName
         newKeys = dict()
         for key in self._keys:
@@ -40,6 +32,9 @@ class Relation:
         return self.data[index]
 
     def get_keys(self):
+        """
+        Return the list of keys in correct order
+        """
         l = list(self._keys.keys())
         l = sorted(l, key= lambda x : int(self._keys[x]))
         return l

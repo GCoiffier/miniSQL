@@ -1,2 +1,3 @@
 from .dataManager import DataManager
-from .relation import Relation, Attribute
+from .relation import Relation
+from .attribute import Attribute
