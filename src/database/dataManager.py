@@ -3,7 +3,7 @@ from exceptions import *
 from .relation import Relation
 import parser
 
-class DataBase:
+class DataManager:
     def __init__(self):
         self.tables = dict()
 
@@ -33,21 +33,15 @@ class DataBase:
         rel = parser.read_data(tableName)
         self.add_table(rel)
 
-    def save(self):
-        """
-        Save all tables into their csv files
-        """
-        pass
-
-    def discard(self):
-        """
-        Delete all tables (not files)
-        """
-        self.tables=dict()
+    def rename_table(self,tableName,newTableName):
+        rel = self.tables[tableName]
+        newRel = Relation(newTableName, rel._keys, rel.data)
+        newRel.rename(newTableName)
+        self.add_table(newRel)
 
     def print_tables(self):
         for t in self.tables.values():
             print(t)
 
-
-DATAS = DataBase() # global variable containing every data
+    def discard(self):
+        self.tables = dict()

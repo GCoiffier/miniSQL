@@ -4,38 +4,47 @@ from SQLoperation import *
 from exceptions import *
 from condition import *
 from antlr4 import *
-from database.relation import Attribute
 from .miniSQLParser import miniSQLParser
+
+from functools import reduce
 
 class Visitor(ParseTreeVisitor):
 
     def __init__(self):
         ParseTreeVisitor.__init__(self)
-        self.relationNames = dict()
+
+        self.relationNames = dict() # alias -> real name
+        self.relationAliases = dict() # real name -> alias
         self.attributeNames = dict()
         self.allAttr = False
 
-    # Visit a parse tree produced by miniSQLParser#main.
+        self.dataManager = DataManager() # will handle relation loading
+
     def visitMain(self, ctx:miniSQLParser.MainContext):
         print_debug("visitMain")
-        return self.visit(ctx.sql())
+        resultRelation = self.visit(ctx.sql())
+        self.dataManager.discard()
+        return resultRelation
 
     # ________________________ sql rules _______________________________________
     def visitSqlNormal(self, ctx:miniSQLParser.SqlNormalContext):
         print_debug("visitSqlNormal")
 
-        # Load the tables
-        self.visit(ctx.rels())
-
-        nbTables = len(self.relationNames)
+        self.visit(ctx.rels()) # Load the tables. Builds self.relationNames
         print_debug("Relations :" + str(self.relationNames))
 
-        k = list(self.relationNames.keys())
-        resultRelation = DATAS[self.relationNames[k[0]]]
+        # perform a rename on all tables
+        for (alias,name) in self.relationNames.items():
+            self.dataManager.rename_table(name,alias)
+            print(self.dataManager[alias].get_keys())
+            print(self.dataManager[alias])
 
-        if (nbTables>1): # perform a join on the tables
-            for i in range(1,nbTables):
-                resultRelation = join(resultRelation, DATAS[self.relationNames[k[i]]])
+        # perform a join on the tables
+        resultRelation = reduce(lambda x,y : join(self.dataManager[x], self.dataManager[y]),
+                                list(self.relationNames.keys()))
+
+        print_debug("Relation after join :")
+        print_debug(resultRelation)
 
         attributes = self.visit(ctx.atts())
         print_debug("Attributes :" +str(self.attributeNames))
@@ -116,7 +125,7 @@ class Visitor(ParseTreeVisitor):
     def visitRelationID(self, ctx:miniSQLParser.RelationIDContext):
         print_debug("visitRelationID")
         filename = ctx.FILENAME().getText()
-        DATAS.load(filename)
+        self.dataManager.load(filename)
         tableName = ctx.ID().getText()
         self.relationNames[tableName]=filename
         return tableName
@@ -167,7 +176,6 @@ class Visitor(ParseTreeVisitor):
             op = Op.GT
         attr1,attr2 = self.visit(ctx.att(0)), self.visit(ctx.att(1))
         return FilterCondition()
-
 
     def visitCompIn(self, ctx:miniSQLParser.CompInContext):
         print_debug("visitCompIn")

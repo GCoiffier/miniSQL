@@ -1,2 +1,2 @@
-from .database import DATAS
-from .relation import Relation
+from .dataManager import DataManager
+from .relation import Relation, Attribute
