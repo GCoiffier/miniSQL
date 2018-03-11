@@ -22,6 +22,12 @@ class Relation:
             for i,key in enumerate(keys):
                 self._keys[Attribute("",key)]=i
 
+    def belongs(self,entry):
+        for e in self.data:
+            if entry==e:
+                return True
+        return False
+
     def rename(self,newName):
         """
         Rename table and all attributes into "table.attr" form

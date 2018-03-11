@@ -34,3 +34,11 @@ class Condition:
 
     def __repr__(self):
         return str((self.attr1, self.operator, self.attr2))
+
+class BelongingCondition:
+    def __init__(self,entry,rel):
+        self.entry = entry
+        self.rel = rel
+
+    def eval(self):
+        return self.rel.belongs(entry)
