@@ -38,7 +38,10 @@ class Visitor(ParseTreeVisitor):
             self.dataManager.rename_table(name,alias)
 
         # perform a join on the tables
-        resultRelation = reduce(lambda x,y : join(self.dataManager[x], self.dataManager[y]),
+        if len(self.relationNames)==1:
+            resultRelation = self.dataManager[list(self.relationNames.keys())[0]]
+        else:
+            resultRelation = reduce(lambda x,y : join(self.dataManager[x], self.dataManager[y]),
                                 list(self.relationNames.keys()))
 
         attributes = self.visit(ctx.atts())
