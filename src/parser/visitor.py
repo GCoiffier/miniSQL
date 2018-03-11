@@ -15,7 +15,7 @@ class Visitor(ParseTreeVisitor):
 
         self.relationNames = dict() # alias -> real name
         self.relationAliases = dict() # real name -> alias
-        self.attributeNames = dict()
+        self.attributeNames = dict() # alias -> Attribute(table,name)
         self.allAttr = False
 
         self.dataManager = DataManager() # will handle relation loading
@@ -42,13 +42,14 @@ class Visitor(ParseTreeVisitor):
                                 list(self.relationNames.keys()))
 
         attributes = self.visit(ctx.atts())
-        print_debug("Attributes :" +str(self.attributeNames))
-        print_debug(attributes)
+        print_debug("Attributes :" + str(attributes))
 
-        if ctx.WHERE() is not None:
-            print("There is a WHERE")
+        if ctx.cond() is not None:
+            condList = self.visit(ctx.cond()) # a list of list : CDF form
+            print_debug("Conditions : " + str(condList))
+            resultRelation = select(resultRelation, condList)
 
-        if not self.allAttr:
+        if not self.allAttr: # No * request -> perform a projection
             resultRelation = project(resultRelation, attributes)
 
         return resultRelation
@@ -57,15 +58,16 @@ class Visitor(ParseTreeVisitor):
     # Visit a parse tree produced by miniSQLParser#sqlMinus.
     def visitSqlMinus(self, ctx:miniSQLParser.SqlMinusContext):
         print_debug("visitSqlMinus")
-        print("MINUS not implemented yet")
-        return self.visitChildren(ctx)
-
+        rel1 = self.visit(ctx.sql(0))
+        rel2 = self.visit(ctx.sql(1))
+        return minus(rel1,rel2)
 
     # Visit a parse tree produced by miniSQLParser#sqlUnion.
     def visitSqlUnion(self, ctx:miniSQLParser.SqlUnionContext):
         print_debug("visitSqlUnion")
-        print("Union not implemented yet")
-        return self.visitChildren(ctx)
+        rel1 = self.visit(ctx.sql(0))
+        rel2 = self.visit(ctx.sql(1))
+        return union(rel1,rel2)
 
 
     # _________________________ atts rules _____________________________________
@@ -126,38 +128,36 @@ class Visitor(ParseTreeVisitor):
         self.relationNames[tableName]=filename
         return tableName
 
-    # Visit a parse tree produced by miniSQLParser#Subquery.
     def visitSubquery(self, ctx:miniSQLParser.SubqueryContext):
         print_debug("visitSubquery")
-        # TODO
-        pass
+        return self.visit(ctx.sql())
 
-    # Visit a parse tree produced by miniSQLParser#CondOrList.
+    # _____________________ cond rules _________________________________________
     def visitCondOrList(self, ctx:miniSQLParser.CondOrListContext):
         print_debug("visitCondOrList")
-        return self.visitChildren(ctx)
+        queueOfList = self.visit(ctx.cond())
+        firstElem = self.visit(ctx.and_cond())
+        return [firstElem]+queueOfList
 
-
-    # Visit a parse tree produced by miniSQLParser#CondOrSimple.
     def visitCondOrSimple(self, ctx:miniSQLParser.CondOrSimpleContext):
         print_debug("visitCondOrSimple")
-        return self.visitChildren(ctx)
+        return [self.visit(ctx.and_cond())]
 
-
-    # Visit a parse tree produced by miniSQLParser#CondAndList.
+    # ____________________ and_cond rules ______________________________________
     def visitCondAndList(self, ctx:miniSQLParser.CondAndListContext):
         print_debug("visitCondAndList")
-        return self.visitChildren(ctx)
+        queueOfList = self.visit(ctx.cond())
+        firstElem = self.visit(ctx.and_cond())
+        return [firstElem]+queueOfList
 
-
-    # Visit a parse tree produced by miniSQLParser#CondAndSimple.
     def visitCondAndSimple(self, ctx:miniSQLParser.CondAndSimpleContext):
         print_debug("visitCondAndSimple")
-        return self.visitChildren(ctx)
+        return [self.visit(ctx.at_cond())]
 
+    # ____________________ at_cond rules _______________________________________
     def visitCompSimple(self, ctx:miniSQLParser.CompSimpleContext):
         print_debug("visitCompSimple")
-        op = ctx.COMP_OP().getText()
+        op = ctx.op().getText()
         if op == "=":
             op = Op.EQ
         elif op == "!=":
@@ -171,15 +171,14 @@ class Visitor(ParseTreeVisitor):
         elif op == ">":
             op = Op.GT
         attr1,attr2 = self.visit(ctx.att(0)), self.visit(ctx.att(1))
-        return FilterCondition()
+        return Condition(attr1,op,attr2)
 
     def visitCompIn(self, ctx:miniSQLParser.CompInContext):
         print_debug("visitCompIn")
-        return self.visitChildren(ctx)
+        print("Not implemented Yet !")
+        return Condition(Op.EQ)
 
-    def visitCompNotIN(self, ctx:miniSQLParser.CompNotINContext):
-        print_debug("visitCompNotIN")
-        return self.visitChildren(ctx)
-
-
-del miniSQLParser
+    def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
+        print_debug("visitCompNotIn")
+        print("Not implemented Yet !")
+        return Condition(Op.EQ)

@@ -46,10 +46,12 @@ and_cond
     ;
 
 at_cond
-    : att COMP_OP att #CompSimple
+    : att op att #CompSimple
     | att IN LPAR sql RPAR #CompIn
-    | att NOT IN LPAR sql RPAR #CompNotIN
+    | att NOT IN LPAR sql RPAR #CompNotIn
     ;
+
+op : EQ | NEQ | LT | LE | GT | GE ;
 
 LPAR : '(';
 RPAR : ')';
@@ -69,15 +71,15 @@ AND : 'AND' | 'and';
 OR : 'OR' | 'or';
 NOT : 'NOT' | 'not';
 IN : 'IN' | 'in';
+
 EQ : '=';
 NEQ : '!=';
 LT : '<';
 LE : '<=';
 GT : '>';
 GE : '>=';
-COMP_OP : EQ | NEQ | LT | LE | GT | GE ;
 
-FILENAME : [A-Za-z][a-zA-Z_0-9]*'.csv';
-ID : [A-Za-z] [a-zA-Z_0-9]* ;
+FILENAME : [A-Za-z][a-zA-Z0-9_]*'.csv';
+ID : [A-Za-z][a-zA-Z0-9_]* ;
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
 NEWLINE: [\n]+;

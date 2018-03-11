@@ -14,19 +14,23 @@ def project(rel,attributes):
 
 
 ## ______________ Selection __________________
-def verify_cond(entry, cond, keys):
-    return FilterCondition(cond).eval(keys,entry)
+def verify_conditions(entry, condList, keys):
+    """
+    condList is a list of list -> CDF form
+    """
+    for clause in condList: # OR
+        clauseValue = True
+        for cond in clause: # AND
+            if not cond.eval(keys,entry):
+                clauseValue=False
+        if clauseValue:
+            return True
+    return False
 
-def verify_cond_list(entry, condList, keys):
-    for cond in condList:
-        if not verify_cond(entry,cond,keys):
-            return False
-    return True
-
-def select(rel,condList):
+def select(rel, condList):
     filtered = []
     for x in rel.data:
-        if verify_cond_list(x, condList, rel.get_keys()):
+        if verify_conditions(x, condList, rel._keys):
             filtered.append(x)
     return Relation("selectRequest", rel.get_keys(), filtered)
 

@@ -109,8 +109,13 @@ class miniSQLVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by miniSQLParser#CompNotIN.
-    def visitCompNotIN(self, ctx:miniSQLParser.CompNotINContext):
+    # Visit a parse tree produced by miniSQLParser#CompNotIn.
+    def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by miniSQLParser#op.
+    def visitOp(self, ctx:miniSQLParser.OpContext):
         return self.visitChildren(ctx)
 
 

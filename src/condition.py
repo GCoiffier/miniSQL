@@ -11,53 +11,26 @@ class Op(Enum):
 
 class Condition:
 
-    def __init__(self,operator):
-        assert(isinstance(operator,Op))
-        self.operator = operator
-
-class FilterCondition(Condition):
-
     def __init__(self, attr1, operator, attr2):
-        Condition.__init__(self,operator)
         self.attr1=attr1
         self.attr2=attr2
-        self.attr2=value
+        self.operator = operator
 
     def eval(self, keys, entry):
-        index = -1
-        for key in keys :
-            if key==self.attr:
-                break
-            i+=1
+        entry1 = entry[keys[self.attr1]]
+        entry2 = entry[keys[self.attr2]]
         if self.operator == Op.EQ:
-            return self.attr2==entry[key]
+            return entry1==entry2
         elif self.operator == Oq.NEQ:
-            return self.attr2!=entry[key]
+            return entry1!=entry2
         elif self.operator == Oq.LT:
-            return int(self.attr2)>=int(entry[key])
+            return int(entry1)>=int(entry2)
         elif self.operator == Oq.LE:
-            return int(self.attr2)>int(entry[key])
+            return int(entry1)>int(entry2)
         elif self.operator == Oq.GT:
-            return int(self.attr2)<int(entry[key])
+            return int(entry1)<int(entry2)
         elif self.operator == Oq.GE:
-            return int(self.attr2)<=int(entry[key])
+            return int(entry1)<=int(entry2)
 
-class JoinCondition(Condition):
-
-    def __init__(self, attr, operator):
-        Condition.__init__(self,operator)
-        self.attr = attr
-
-    def eval(self, entryA, entryB):
-        if self.operator==Op.EQ:
-            return True
-        elif self.operator==Op.NEQ:
-            return False
-        elif self.operator == Oq.LT:
-            return True
-        elif self.operator == Oq.LE:
-            return True
-        elif self.operator == Oq.GT:
-            return True
-        elif self.operator == Oq.GE:
-            return True
+    def __repr__(self):
+        return str((self.attr1, self.operator, self.attr2))

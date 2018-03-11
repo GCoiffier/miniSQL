@@ -14,8 +14,13 @@ class Relation:
         self.name = name
         self.data = entries
         self._keys = dict()
-        for i,key in enumerate(keys):
-            self._keys[key]=i
+        typecheck = isinstance(keys[0],Attribute)
+        if typecheck:
+            for i,key in enumerate(keys):
+                self._keys[key]=i
+        else :
+            for i,key in enumerate(keys):
+                self._keys[Attribute("",key)]=i
 
     def rename(self,newName):
         """
@@ -24,7 +29,7 @@ class Relation:
         self.name = newName
         newKeys = dict()
         for key in self._keys:
-            newKeyName = Attribute(newName,key)
+            newKeyName = Attribute(newName,key.attr)
             newKeys[newKeyName]= self._keys[key]
         self._keys = newKeys
 

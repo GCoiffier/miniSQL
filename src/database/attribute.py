@@ -1,5 +1,5 @@
 class Attribute:
-    def __init__(self,table,attr):
+    def __init__(self, table, attr):
         self.table = table
         self.attr = attr
         self.fullName = table+"."+attr
