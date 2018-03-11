@@ -39,7 +39,7 @@ class Visitor(ParseTreeVisitor):
 
         # perform a join on the tables
         if len(self.relationNames)==1:
-            resultRelation = self.dataManager[list(self.relationNames.keys())[0]]
+            resultRelation = self.dataManager[next(iter(self.relationNames.keys()))]
         else:
             resultRelation = reduce(lambda x,y : join(self.dataManager[x], self.dataManager[y]),
                                 list(self.relationNames.keys()))
