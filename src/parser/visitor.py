@@ -30,15 +30,16 @@ class Visitor(ParseTreeVisitor):
     def visitSqlNormal(self, ctx:miniSQLParser.SqlNormalContext):
         print_debug("visitSqlNormal")
 
-        self.visit(ctx.rels()) # Load the tables. Builds self.relationNames
+        relations = self.visit(ctx.rels()) # Load the tables. Builds self.relationNames
+        for (fileName,tableName) in relations :
+            self.dataManager.load(fileName)
+            self.relationNames[tableName]=fileName
+            if fileName!=tableName :
+                self.dataManager.rename_table(fileName,tableName)
         print_debug("Relations :" + str(self.relationNames))
 
-        # perform a rename on all tables
-        for (alias,name) in self.relationNames.items():
-            self.dataManager.rename_table(name,alias)
-
         # perform a join on the tables
-        if len(self.relationNames)==1:
+        if len(relations)==1:
             resultRelation = self.dataManager[next(iter(self.relationNames.keys()))]
         else:
             resultRelation = reduce(lambda x,y : join(self.dataManager[x], self.dataManager[y]),
@@ -49,6 +50,40 @@ class Visitor(ParseTreeVisitor):
 
         if ctx.cond() is not None:
             condList = self.visit(ctx.cond()) # a list of list : CDF form
+            print_debug("Conditions : " + str(condList))
+            resultRelation = select(resultRelation, condList)
+
+        if not self.allAttr: # No * request -> perform a projection
+            resultRelation = project(resultRelation, attributes)
+
+        return resultRelation
+
+
+    def visitSqlIn(self, ctx, table, attr):
+        print_debug("visitSqlIn")
+
+        relations = self.visit(ctx.rels()) # Load the tables. Builds self.relationNames
+        for (fileName,tableName) in relations :
+            self.dataManager.load(fileName)
+            self.relationNames[tableName]=fileName
+            if fileName!=tableName :
+                self.dataManager.rename_table(fileName,tableName)
+        print_debug("Relations :" + str(self.relationNames))
+
+        # perform a join on the tables
+        if len(relations)==1:
+            resultRelation = join(self.dataManager[next(iter(self.relationNames.keys()))], table)
+        else:
+            resultRelation = reduce(lambda x,y : join(self.dataManager[x], self.dataManager[y]),
+                                relations+[table.name]) #remplacer relations par la liste des premiers éléments des tuples de relations
+
+        attribute = self.visit(ctx.atts())
+        print_debug("Attribute :" + str(attribute))
+
+        if ctx.cond() is not None:
+            condList = self.visit(ctx.cond()) # a list of list : CDF form
+            for and_const in condList :
+                and_const.append(cond(table.attr,op.EQ,attribute))
             print_debug("Conditions : " + str(condList))
             resultRelation = select(resultRelation, condList)
 
@@ -125,11 +160,9 @@ class Visitor(ParseTreeVisitor):
     # __________________ rel rules _____________________________________________
     def visitRelationID(self, ctx:miniSQLParser.RelationIDContext):
         print_debug("visitRelationID")
-        filename = ctx.FILENAME().getText()
-        self.dataManager.load(filename)
+        fileName = ctx.FILENAME().getText()
         tableName = ctx.ID().getText()
-        self.relationNames[tableName]=filename
-        return tableName
+        return (fileName,tableName)
 
     def visitSubquery(self, ctx:miniSQLParser.SubqueryContext):
         print_debug("visitSubquery")
@@ -149,8 +182,8 @@ class Visitor(ParseTreeVisitor):
     # ____________________ and_cond rules ______________________________________
     def visitCondAndList(self, ctx:miniSQLParser.CondAndListContext):
         print_debug("visitCondAndList")
-        queueOfList = self.visit(ctx.cond())
-        firstElem = self.visit(ctx.and_cond())
+        queueOfList = self.visit(ctx.and_cond())
+        firstElem = self.visit(ctx.att_cond())
         return [firstElem]+queueOfList
 
     def visitCondAndSimple(self, ctx:miniSQLParser.CondAndSimpleContext):
@@ -179,8 +212,9 @@ class Visitor(ParseTreeVisitor):
     def visitCompIn(self, ctx:miniSQLParser.CompInContext):
         print_debug("visitCompIn")
         attr = self.visit(ctx.att())
-        rel = self.visit(ctx.sql())
-        return BelongingCondition(attr,rel)
+        table = self.dataManager[attr.table]
+        rel = self.visitSqlIn(ctx.sql(), table, attr)
+        return Condition(attr,rel)
 
     def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
         print_debug("visitCompNotIn")

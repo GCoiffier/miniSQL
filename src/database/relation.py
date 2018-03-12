@@ -52,7 +52,7 @@ class Relation:
 
     def __repr__(self):
         output = ""
-
+        """
         for k in self.get_keys():
             output += str(k) + " | "
         output+="\n"
@@ -61,4 +61,5 @@ class Relation:
             for field in entry:
                 output+= field + " | "
             output+="\n"
+        """
         return output

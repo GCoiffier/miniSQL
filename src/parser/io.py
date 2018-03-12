@@ -52,6 +52,6 @@ def run_request(reqString):
     visitor = Visitor()
     resultRelation = visitor.visit(tree) # run visitor
     print_debug("Visiting exited without raising an error")
-    print(resultRelation)
+    #print(resultRelation)
     #except Exception as e :
     #    print ("[ERROR] " + e.args[0])
