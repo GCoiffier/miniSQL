@@ -217,7 +217,9 @@ class Visitor(ParseTreeVisitor):
         attr = self.visit(ctx.att())
         table = self.dataManager[attr.table]
         rel = self.visitSqlIn(ctx.sql(), table, attr)
-        return #TODO : WHAT TO RETURN ?
+        if len(rel.data)==0 :
+            return Condition(attr,Op.NEQ,attr)
+        return Condition(attr,Op.EQ,attr)
 
     def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
         print_debug("visitCompNotIn")
