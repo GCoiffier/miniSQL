@@ -1,4 +1,5 @@
 from enum import Enum
+from database import Attribute
 
 class Op(Enum):
     """ Condition operator """
@@ -47,16 +48,17 @@ class BooleanCondition(Condition):
 
 class InCondition(Condition):
 
-    def __init__(self,attr,rel):
-        self.attr= Attribute(rel.name, attr.attr)
-        self.rel=rel
+    def __init__(self, attr, rel):
+        self.rel = rel
+        realName = self.rel.get_keys()[0]
+        self.attr = Attribute(realName.table, attr.attr)
 
-    def eval(self,keys,entry):
+    def eval(self, keys, entry):
         entryAttr = entry[keys[self.attr]]
-        for line in entry.data:
+        for line in self.rel.data:
             if line[0]==entryAttr:
                 return True
         return False
 
     def __repr__(self):
-        return "InCondition("+str(self.attr)+")"
+        return "InCondition("+str(self.attr)+","+ self.rel.name+")"

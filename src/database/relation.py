@@ -6,21 +6,19 @@ class Relation:
 
     def __init__(self, name, keys, entries):
         """
-        name -> the name of the table. Filename should be <name>.csv
         keys -> list containing all attributes of the relation
         entries -> the list of entries of the table.
                     One entry is a tuple
         """
-        self.name = name
+        self.name=name
         self.data = entries
         self._keys = dict()
-        typecheck = isinstance(keys[0],Attribute)
-        if typecheck:
+        if isinstance(keys[0],Attribute):
             for i,key in enumerate(keys):
                 self._keys[key]=i
         else :
             for i,key in enumerate(keys):
-                self._keys[Attribute("",key)]=i
+                self._keys[Attribute(self.name,key)]=i
 
     def is_empty(self):
         return len(self.data)==0
@@ -49,7 +47,6 @@ class Relation:
 
     def __repr__(self):
         output = ""
-        """
         for k in self.get_keys():
             output += str(k) + " | "
         output+="\n"
@@ -58,5 +55,4 @@ class Relation:
             for field in entry:
                 output+= field + " | "
             output+="\n"
-        """
         return output

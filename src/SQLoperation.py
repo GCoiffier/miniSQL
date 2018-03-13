@@ -2,7 +2,7 @@ from database import *
 from exceptions import *
 
 ## ________________ Projection _______________
-def project(rel,attributes):
+def project(rel, attributes):
     indices = []
     for a in attributes :
         indices.append(rel._keys[a])

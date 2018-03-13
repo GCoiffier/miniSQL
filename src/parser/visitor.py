@@ -38,7 +38,7 @@ class Visitor(ParseTreeVisitor):
 
         # perform a join on the tables
         if len(relations)==1:
-            resultRelation = self.dataManager[self.relationNames[relations[0]]]
+            resultRelation = self.dataManager[relations[0]]
         else:
             resultRelation = reduce(lambda x,y : join(x, y), self.dataManager.get_tables(relations))
 
@@ -88,9 +88,7 @@ class Visitor(ParseTreeVisitor):
             print_debug("Conditions : " + str(condList))
             resultRelation = select(resultRelation, condList)
 
-        if not self.allAttr: # No * request -> perform a projection
-            resultRelation = project(resultRelation, attributes)
-
+        resultRelation = project(resultRelation, attributes)
         return resultRelation
 
 
@@ -215,9 +213,7 @@ class Visitor(ParseTreeVisitor):
         attr = self.visit(ctx.att())
         table = self.dataManager[attr.table]
         rel = self.visitSqlIn(ctx.sql(), table, attr)
-        print(rel.name)
-        print(rel._keys)
-        rel = project(rel, [Attribute(rel.name, attr.attr)] )
+        rel.rename(attr.table)
         return InCondition(attr,rel)
 
     def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
