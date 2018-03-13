@@ -215,9 +215,10 @@ class Visitor(ParseTreeVisitor):
         attr = self.visit(ctx.att())
         table = self.dataManager[attr.table]
         rel = self.visitSqlIn(ctx.sql(), table, attr)
-        if rel.is_empty() :
-            return BooleanCondition(False)
-        return BooleanCondition(True)
+        print(rel.name)
+        print(rel._keys)
+        rel = project(rel, [Attribute(rel.name, attr.attr)] )
+        return InCondition(attr,rel)
 
     def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
         print_debug("visitCompNotIn")

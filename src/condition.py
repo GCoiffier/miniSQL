@@ -36,7 +36,6 @@ class Condition:
         return str((self.attr1, self.operator, self.attr2))
 
 class BooleanCondition(Condition):
-
     def __init__(self,b):
         self.bool = b
 
@@ -45,3 +44,19 @@ class BooleanCondition(Condition):
 
     def __repr__(self):
         return "BooleanCondition("+str(self.bool)+")"
+
+class InCondition(Condition):
+
+    def __init__(self,attr,rel):
+        self.attr= Attribute(rel.name, attr.attr)
+        self.rel=rel
+
+    def eval(self,keys,entry):
+        entryAttr = entry[keys[self.attr]]
+        for line in entry.data:
+            if line[0]==entryAttr:
+                return True
+        return False
+
+    def __repr__(self):
+        return "InCondition("+str(self.attr)+")"

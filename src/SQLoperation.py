@@ -4,8 +4,6 @@ from exceptions import *
 ## ________________ Projection _______________
 def project(rel,attributes):
     indices = []
-    #print(rel._keys)
-    #print(attributes)
     for a in attributes :
         indices.append(rel._keys[a])
     entries = [ tuple(line[i] for i in indices) for line in rel.data ]
