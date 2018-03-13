@@ -17,7 +17,6 @@ class Visitor(ParseTreeVisitor):
         self.relationAliases = dict() # real name -> alias
         self.attributeNames = dict() # alias -> Attribute(table,name)
         self.allAttr = False
-
         self.dataManager = DataManager() # will handle relation loading
 
     def visitMain(self, ctx:miniSQLParser.MainContext):
@@ -30,20 +29,20 @@ class Visitor(ParseTreeVisitor):
     def visitSqlNormal(self, ctx:miniSQLParser.SqlNormalContext):
         print_debug("visitSqlNormal")
 
-        relations = self.visit(ctx.rels()) # Load the tables. Builds self.relationNames
-        for (fileName,tableName) in relations :
+        relations = self.visit(ctx.rels()) # Load the tables & builds self.relationNames
+        for i,(fileName,tableName) in enumerate(relations) :
             self.dataManager.load(fileName)
             self.relationNames[tableName]=fileName
             if fileName!=tableName :
                 self.dataManager.rename_table(fileName,tableName)
+            relations[i]=tableName # get rid of fileName
         print_debug("Relations :" + str(self.relationNames))
 
         # perform a join on the tables
         if len(relations)==1:
-            resultRelation = self.dataManager[next(iter(self.relationNames.keys()))]
+            resultRelation = self.dataManager[self.relationNames[relations[0]]]
         else:
-            resultRelation = reduce(lambda x,y : join(self.dataManager[x], self.dataManager[y]),
-                                list(self.relationNames.keys()))
+            resultRelation = reduce(lambda x,y : join(x, y), self.dataManager.get_tables(relations))
 
         attributes = self.visit(ctx.atts())
         print_debug("Attributes :" + str(attributes))
@@ -63,28 +62,31 @@ class Visitor(ParseTreeVisitor):
         print_debug("visitSqlIn")
 
         relations = self.visit(ctx.rels()) # Load the tables. Builds self.relationNames
-        for (fileName,tableName) in relations :
+        for i,(fileName,tableName) in enumerate(relations) :
             self.dataManager.load(fileName)
             self.relationNames[tableName]=fileName
             if fileName!=tableName :
                 self.dataManager.rename_table(fileName,tableName)
+            relations[i] = tableName #get rid of fileName
         print_debug("Relations :" + str(self.relationNames))
 
         # perform a join on the tables
         if len(relations)==1:
-            resultRelation = join(self.dataManager[next(iter(self.relationNames.keys()))], table)
+            tempTable = self.dataManager[self.relationNames[relations[0]]]
+            resultRelation = join(tempTable, table)
         else:
-            resultRelation = reduce(lambda x,y : join(self.dataManager[x], self.dataManager[y]), # Le premier element doit etre une table, pas un nom de table
-                                [t[1] for t in relations]+[table.name])
+            relations.append(table.name)
+            resultRelation = reduce(lambda x,y : join(x,y), self.dataManager.get_tables(relations))
 
-        attribute = self.visit(ctx.atts())
+        attributes = self.visit(ctx.atts())
+        assert(len(attributes)==1) # There should be only one here
+        a = attributes[0]
         print_debug("Attribute :" + str(attribute))
 
         if ctx.cond() is not None:
             condList = self.visit(ctx.cond()) # a list of list : CDF form
             for and_const in condList :
-                print("-----------------------------   ",and_const)
-                and_const.append((attr,Op.EQ,attribute))
+                and_const.append(Condition(attr, Op.EQ, a))
             print_debug("Conditions : " + str(condList))
             resultRelation = select(resultRelation, condList)
 
@@ -215,7 +217,7 @@ class Visitor(ParseTreeVisitor):
         attr = self.visit(ctx.att())
         table = self.dataManager[attr.table]
         rel = self.visitSqlIn(ctx.sql(), table, attr)
-        return Condition(attr,rel)
+        return #TODO : WHAT TO RETURN ?
 
     def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
         print_debug("visitCompNotIn")

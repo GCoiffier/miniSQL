@@ -9,7 +9,6 @@ class DataManager:
         self.tables = dict()
 
     def __getitem__(self, key):
-        #print("KEY ========= ",key)
         try:
             x = self.tables[key]
             return x
@@ -40,6 +39,9 @@ class DataManager:
         newRel = Relation(newTableName, rel.get_keys(), rel.data)
         newRel.rename(newTableName)
         self.add_table(newRel)
+
+    def get_tables(self,tableNames):
+        return [self.tables[x] for x in tableNames]
 
     def print_tables(self):
         for t in self.tables.values():
