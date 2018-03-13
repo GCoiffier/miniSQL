@@ -218,5 +218,5 @@ class Visitor(ParseTreeVisitor):
 
     def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
         print_debug("visitCompNotIn")
-        print("Not implemented Yet !")
+        attr = self.visit(ctx.att())
         return Condition(Op.EQ)

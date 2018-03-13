@@ -62,3 +62,21 @@ class InCondition(Condition):
 
     def __repr__(self):
         return "InCondition("+str(self.attr)+","+ self.rel.name+")"
+
+
+class NotInCondition(Condition):
+
+    def __init__(self, attr, rel):
+        self.rel = rel
+        realName = self.rel.get_keys()[0]
+        self.attr = Attribute(realName.table, attr.attr)
+
+    def eval(self, keys, entry):
+        entryAttr = entry[keys[self.attr]]
+        for line in self.rel.data:
+            if line[0]==entryAttr:
+                return False
+        return True
+
+    def __repr__(self):
+        return "NotInCondition("+str(self.attr)+","+ self.rel.name+")"
