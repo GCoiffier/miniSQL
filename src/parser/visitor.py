@@ -74,8 +74,8 @@ class Visitor(ParseTreeVisitor):
         if len(relations)==1:
             resultRelation = join(self.dataManager[next(iter(self.relationNames.keys()))], table)
         else:
-            resultRelation = reduce(lambda x,y : join(self.dataManager[x], self.dataManager[y]),
-                                relations+[table.name]) #remplacer relations par la liste des premiers éléments des tuples de relations
+            resultRelation = reduce(lambda x,y : join(self.dataManager[x], self.dataManager[y]), # Le premier element doit etre une table, pas un nom de table
+                                [t[1] for t in relations]+[table.name])
 
         attribute = self.visit(ctx.atts())
         print_debug("Attribute :" + str(attribute))
@@ -83,7 +83,8 @@ class Visitor(ParseTreeVisitor):
         if ctx.cond() is not None:
             condList = self.visit(ctx.cond()) # a list of list : CDF form
             for and_const in condList :
-                and_const.append(cond(table.attr,op.EQ,attribute))
+                print("-----------------------------   ",and_const)
+                and_const.append((attr,Op.EQ,attribute))
             print_debug("Conditions : " + str(condList))
             resultRelation = select(resultRelation, condList)
 
@@ -183,7 +184,7 @@ class Visitor(ParseTreeVisitor):
     def visitCondAndList(self, ctx:miniSQLParser.CondAndListContext):
         print_debug("visitCondAndList")
         queueOfList = self.visit(ctx.and_cond())
-        firstElem = self.visit(ctx.att_cond())
+        firstElem = self.visit(ctx.at_cond())
         return [firstElem]+queueOfList
 
     def visitCondAndSimple(self, ctx:miniSQLParser.CondAndSimpleContext):
