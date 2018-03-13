@@ -34,3 +34,14 @@ class Condition:
 
     def __repr__(self):
         return str((self.attr1, self.operator, self.attr2))
+
+class BooleanCondition(Condition):
+
+    def __init__(self,b):
+        self.bool = b
+
+    def eval(self,*args):
+        return self.bool
+
+    def __repr__(self):
+        return "BooleanCondition("+str(self.bool)+")"

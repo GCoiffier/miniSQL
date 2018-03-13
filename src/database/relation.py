@@ -22,11 +22,8 @@ class Relation:
             for i,key in enumerate(keys):
                 self._keys[Attribute("",key)]=i
 
-    def belongs(self,entry):
-        for e in self.data:
-            if entry==e:
-                return True
-        return False
+    def is_empty(self):
+        return len(self.data)==0
 
     def rename(self,newName):
         """

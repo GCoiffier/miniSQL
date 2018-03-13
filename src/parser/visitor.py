@@ -1,11 +1,9 @@
-# Generated from src/parser/miniSQL.g4 by ANTLR 4.7
 from database import *
 from SQLoperation import *
 from exceptions import *
 from condition import *
 from antlr4 import *
 from .miniSQLParser import miniSQLParser
-
 from functools import reduce
 
 class Visitor(ParseTreeVisitor):
@@ -217,9 +215,9 @@ class Visitor(ParseTreeVisitor):
         attr = self.visit(ctx.att())
         table = self.dataManager[attr.table]
         rel = self.visitSqlIn(ctx.sql(), table, attr)
-        if len(rel.data)==0 :
-            return Condition(attr,Op.NEQ,attr)
-        return Condition(attr,Op.EQ,attr)
+        if rel.is_empty() :
+            return BooleanCondition(False)
+        return BooleanCondition(True)
 
     def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
         print_debug("visitCompNotIn")
