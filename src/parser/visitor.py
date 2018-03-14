@@ -18,8 +18,6 @@ class Visitor(ParseTreeVisitor):
 
         self.dataManager = DataManager() # will handle relation loading
 
-        self.subQueryID=0
-
     def visitMain(self, ctx:miniSQLParser.MainContext):
         print_debug("visitMain")
         resultRelation = self.visit(ctx.sql())
@@ -51,7 +49,7 @@ class Visitor(ParseTreeVisitor):
         if ctx.cond() is not None:
             condList,_ = self.visit(ctx.cond()) # A list of list : CDF form
                                                 # Second return value is the list of the relations ->
-                                                # Usefull only in visitSqlIn
+                                                # Usefull only in visitSqlSub
             print_debug("Conditions : " + str(condList))
             resultRelation = select(resultRelation, condList)
 
@@ -61,8 +59,8 @@ class Visitor(ParseTreeVisitor):
         return resultRelation
 
 
-    def visitSqlIn(self, ctx, table, attr):
-        print_debug("visitSqlIn")
+    def visitSqlSub(self, ctx, table, attr):
+        print_debug("visitSqlSub")
 
         # Load the tables. Builds self.relationNames
         relations = self.visit(ctx.rels())
@@ -86,6 +84,7 @@ class Visitor(ParseTreeVisitor):
                 and_const.append(Condition(attr, Op.EQ, a))
             print_debug("Conditions : " + str(condList))
             relations += relList
+            relations = list(set(relations)) # no doubling
         print_debug("Relations :" + str(self.relationNames))
 
         # perform a join on the tables
@@ -175,14 +174,20 @@ class Visitor(ParseTreeVisitor):
         return (fileName,tableName)
 
     def visitSubquery(self, ctx:miniSQLParser.SubqueryContext):
+        # When a table in the FROM is a subquery
         print_debug("visitSubquery")
-        raise NotImplementedError
+        tableName = ctx.ID().getText()
+
+        mem = self.allAttr
+        self.allAttr = False
         rel = self.visit(ctx.sql())
-        name = "subQuery"+str(self.subQueryID)
-        self.subQueryID+=1
-        self.relationNames[name]=name
-        # Load rel into self.dataManager
-        return (name,name)
+        self.allAttr = mem
+
+        self.relationNames[tableName]=tableName
+        rel.rename(tableName)
+        self.dataManager.add_table(rel)
+        
+        return (tableName,tableName)
 
     # _____________________ cond rules _________________________________________
     def visitCondOrList(self, ctx:miniSQLParser.CondOrListContext):
@@ -231,7 +236,7 @@ class Visitor(ParseTreeVisitor):
         print_debug("visitCompIn")
         attr = self.visit(ctx.att())
         table = self.dataManager[attr.table]
-        rel = self.visitSqlIn(ctx.sql(), table, attr)
+        rel = self.visitSqlSub(ctx.sql(), table, attr)
         rel.rename(attr.table)
         return InCondition(attr,rel), set(rel.name)
 
@@ -239,6 +244,6 @@ class Visitor(ParseTreeVisitor):
         print_debug("visitCompNotIn")
         attr = self.visit(ctx.att())
         table = self.dataManager[attr.table]
-        rel = self.visitSqlIn(ctx.sql(), table, attr)
+        rel = self.visitSqlSub(ctx.sql(), table, attr)
         rel.rename(attr.table)
         return NotInCondition(attr,rel), set(rel.name)
