@@ -1,5 +1,5 @@
 ## ___________ Debug output utility _______________
-DEBUG=True
+DEBUG=False
 
 def print_debug(*args):
     global DEBUG

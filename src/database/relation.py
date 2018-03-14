@@ -46,11 +46,12 @@ class Relation:
         return l
 
     def __repr__(self):
-        output = ""
+        output = "\n"
+        """
         for k in self.get_keys():
             output += str(k) + " | "
         output+="\n"
-
+        """
         for entry in self.data:
             for field in entry:
                 output+= field + " | "

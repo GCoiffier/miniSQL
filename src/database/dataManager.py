@@ -31,8 +31,9 @@ class DataManager:
         """
         Loads tables present in a request
         """
-        rel = parser.read_data(tableName)
-        self.add_table(rel)
+        if tableName not in self.tables.keys():
+            rel = parser.read_data(tableName)
+            self.add_table(rel)
 
     def rename_table(self,tableName,newTableName):
         rel = self.tables[tableName]

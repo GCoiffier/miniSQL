@@ -5,7 +5,10 @@ from exceptions import *
 def project(rel, attributes):
     indices = []
     for a in attributes :
-        indices.append(rel._keys[a])
+        try:
+            indices.append(rel._keys[a])
+        except KeyError:
+            raise Exception("key "+str(a) + " is not an attribute of relation "+ str(rel.get_keys()) )
     entries = [ tuple(line[i] for i in indices) for line in rel.data ]
     new = Relation("projectRequest", attributes, entries)
     return new
