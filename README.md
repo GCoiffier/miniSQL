@@ -26,7 +26,7 @@ example:
 
 ## Progress
 - Full miniSQL syntax support
-    /!\ We have a really bad issue about performance with sub-request (request q2.sql takes about 30sec...)
+    /!\ We have a really bad issue about performance with sub-request (request q3.sql takes about 5 seconds and q2.sql takes about 1 minute...)
         The problem is the handling of those subqueries using join : since we have to recompute the subquery for every value of the main query, the complexity is a product of the sizes of the tables, that grows rapidely.
 
 ## Technical choices
