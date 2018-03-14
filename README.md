@@ -45,13 +45,9 @@ For the lexer/parser of SQL queries, we used python's binding to ANTLR.
 Given a .g4 file in which the grammar is described, ANTLR automatically generates a lexer, a parser and an empty visitor.
 We then just had to implement the visitor.
 
-#### IN and NOT IN handling
-
-
-
 ## What remains to be done
-- the whole 'A Better Algebra Engine' part of the project
-- optimisation of join
-- use of iterators on tables instead of loading everything in memory
-- possibility to output result of a query in a csv file
-- maybe some other fancy things
+- The whole 'A Better Algebra Engine' part of the project
+- Optimisation of join
+- Use of iterators on tables instead of loading everything in memory
+- Possibility to output result of a query in a csv file
+- Maybe some other fancy things
