@@ -17,5 +17,8 @@ class InvalidCommand(Exception):
 class UnknownTable(Exception):
     pass
 
+class UnknownAttribute(Exception):
+    pass
+
 class VisitorError(Exception):
     pass
