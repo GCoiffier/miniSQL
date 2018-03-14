@@ -35,7 +35,7 @@ class Visitor(ParseTreeVisitor):
             if fileName!=tableName :
                 self.dataManager.rename_table(fileName,tableName)
             relations[i]=tableName # get rid of fileName
-        print_debug("Relations :" + str(self.relationNames))
+        print_debug(" Relations :" + str(self.relationNames))
 
         # perform a join on the tables
         if len(relations)==1:
@@ -44,17 +44,21 @@ class Visitor(ParseTreeVisitor):
             resultRelation = reduce(lambda x,y : join(x, y), self.dataManager.get_tables(relations))
 
         attributes = self.visit(ctx.atts())
-        print_debug("Attributes :" + str(attributes))
+        print_debug(" Attributes :", attributes)
 
         if ctx.cond() is not None:
             condList,_ = self.visit(ctx.cond()) # A list of list : CDF form
                                                 # Second return value is the list of the relations ->
                                                 # Usefull only in visitSqlSub
-            print_debug("Conditions : " + str(condList))
+            print_debug(" Conditions : " + str(condList))
+            print_debug(" Perform select in main query")
             resultRelation = select(resultRelation, condList)
+            print_debug(" End select")
 
         if not self.allAttr: # No * request -> perform a projection
+            print_debug(" Perform project in main query")
             resultRelation = project(resultRelation, attributes)
+            print_debug(" End project")
 
         return resultRelation
 
@@ -84,21 +88,28 @@ class Visitor(ParseTreeVisitor):
                 and_const.append(Condition(attr, Op.EQ, a))
             print_debug("Conditions : " + str(condList))
             relations += relList
-            relations = list(set(relations)) # no doubling
-        print_debug("Relations :" + str(self.relationNames))
+            relations = list(set(relations)) # no duplicate
+        print_debug("Relations :" + str(relations))
 
         # perform a join on the tables
+        print_debug(" Perform join in subquery")
         if len(relations)==1:
             tempTable = self.dataManager[self.relationNames[relations[0]]]
             resultRelation = join(tempTable, table)
         else:
             relations.append(table.name)
             resultRelation = reduce(lambda x,y : join(x,y), self.dataManager.get_tables(relations))
+        print_debug(" End join in subquery")
 
         if ctx.cond() is not None: # we had conditions -> condList has been built
+            print_debug(" Perform select in subquery")
             resultRelation = select(resultRelation, condList)
+            print_debug(" End select in subquery")
 
+        print_debug(" Perform Project in subquery")
         resultRelation = project(resultRelation, attributes)
+        print_debug(" End Project")
+        print_debug("end visitSqlSub")
         return resultRelation
 
 
@@ -137,7 +148,7 @@ class Visitor(ParseTreeVisitor):
     # ___________________ attd rules ___________________________________________
     def visitAttributeSimple(self, ctx:miniSQLParser.AttributeSimpleContext):
         print_debug("visitAttributeSimple")
-        attr =  self.visit(ctx.att())
+        attr = self.visit(ctx.att())
         self.attributeNames[attr.fullName] = attr
         return attr
 
@@ -186,7 +197,7 @@ class Visitor(ParseTreeVisitor):
         self.relationNames[tableName]=tableName
         rel.rename(tableName)
         self.dataManager.add_table(rel)
-        
+
         return (tableName,tableName)
 
     # _____________________ cond rules _________________________________________
