@@ -1,8 +1,11 @@
-import os
+from os.path import join as pjoin
+
 from exceptions import *
 from .attribute import Attribute
 
-class Relation:
+import csv
+
+class Table:
 
     def __init__(self, name, keys, entries):
         """
@@ -54,3 +57,25 @@ class Relation:
                 output+= field + " | "
             output+="\n"
         return output
+
+    @staticmethod
+    def from_file(filename):
+        """
+        Builds a Relation object from a csv file.
+        /!\ Assumes 'filename' has extension .csv
+        """
+        try:
+            path = pjoin("data",filename)
+            with open(path, newline='') as csvfile:
+                reader = csv.DictReader(csvfile)
+                keys = reader.fieldnames
+                entries = []
+                for row in reader:
+                    newEntry=[]
+                    for key in keys:
+                        newEntry.append(row[key])
+                    entries.append(tuple(newEntry))
+                return Table(filename, keys, entries)
+        except FileNotFoundError as e:
+            print("Error in Relation.read_data : " + path + ", this file does not exist")
+            return None
