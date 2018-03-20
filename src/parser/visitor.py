@@ -191,7 +191,7 @@ class Visitor(ParseTreeVisitor):
     def visitCondAndSimple(self, ctx:miniSQLParser.CondAndSimpleContext):
         print_debug("visitCondAndSimple")
         cond,rel = self.visit(ctx.at_cond())
-        return ([cond],rel)
+        return (cond,rel)
 
     # ____________________ at_cond rules _______________________________________
     def visitCompSimple(self, ctx:miniSQLParser.CompSimpleContext):
