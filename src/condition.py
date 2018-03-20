@@ -11,17 +11,15 @@ class Op(Enum):
     GE  = 6  # >=
 
 class Or:
-    def __init__(self, *args):
-        assert len(args)>0
-        self.args = args
+    def __init__(self, clauseList):
+        self.args = clauseList
 
     def __repr__(self):
         return "Or("+str(self.args)+")"
 
 class And:
-    def __init__(self, *args):
-        assert len(args)>0
-        self.args = args
+    def __init__(self, clauseList):
+        self.args = clauseList
 
     def __repr__(self):
         return "And("+str(self.args)+")"
