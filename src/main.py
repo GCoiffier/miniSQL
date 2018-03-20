@@ -15,7 +15,7 @@ from exceptions import *
 from database import *
 
 ## ________________ Command reader _________________________________________
-COMMANDS = {".end", ".exit", ".quit", ".run"}
+COMMANDS = {".end", ".exit", ".quit", ".run", ".read"}
 
 def assert_command(keyWord):
     """ Checks if we are given a supported command"""
@@ -34,7 +34,7 @@ def run_command(inputString):
 
     .exit | .quit | .end
 
-    .run path/to/request.sql
+    .run |.read path/to/request.sql
 
     <SQL request>
     """
@@ -56,7 +56,7 @@ def run_command(inputString):
             raise InvalidCommand("command '" + mainKeyWord + "' expected at least one argument")
         # From now, every command has length >1
 
-        if mainKeyWord==".run":
+        if mainKeyWord in [".run", ".read"]:
             reqPath = command[1]
             assert_extension(reqPath,"sql")
             reqString = parser.read_request(reqPath)

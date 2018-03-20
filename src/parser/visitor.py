@@ -30,8 +30,7 @@ class Visitor(ParseTreeVisitor):
 
         relations = self.visit(ctx.rels()) # Load the tables & builds self.relationNames
         if ctx.cond() is not None:
-            condList,relList = self.visit(ctx.cond())   # A list of list : CDF form
-                                                        # Second return value is the list of the relations into IN subqueries
+            condTree,relList = self.visit(ctx.cond())
             relations += relList
 
         for i,(fileName,tableName) in enumerate(relations) :
@@ -39,7 +38,7 @@ class Visitor(ParseTreeVisitor):
             self.relationNames[tableName]=fileName
             if fileName!=tableName :
                 self.dataManager.rename_table(fileName,tableName)
-            relations[i]=tableName # get rid of fileName
+            relations[i]=tableName # get rid of fileName : not useful from now
         print_debug(" Relations :" + str(self.relationNames))
 
         # perform a join on the tables
@@ -52,11 +51,11 @@ class Visitor(ParseTreeVisitor):
         print_debug(" Attributes :", attributes)
 
         if ctx.cond() is not None:
-            condList,relList = self.visit(ctx.cond())   # A list of list : CDF form
+            condTree,relList = self.visit(ctx.cond())   # A list of list : CDF form
                                                         # Second return value is the list of the relations into IN subqueries
-            print_debug(" Conditions : " + str(condList))
+            print_debug(" Conditions : " + str(condTree))
             print_debug(" Perform select in main query")
-            resultRelation = select(resultRelation, Or(condList))
+            resultRelation = select(resultRelation, Or(condTree))
             print_debug(" End select")
 
         if not self.allAttr: # No * request -> perform a projection
@@ -72,8 +71,8 @@ class Visitor(ParseTreeVisitor):
         assert(len(attributes)==1) # There should be only one here
         subAttr = attributes[0]
         relations = self.visit(ctx.rels())
-        condList, rels = self.visit(ctx.cond()) # condList a list of list : CDF form
-        return subAttr,relations+rels,condList
+        condTree, rels = self.visit(ctx.cond()) # condTree a list of list : CDF form
+        return subAttr,relations+rels,condTree
 
 
     # Visit a parse tree produced by miniSQLParser#sqlMinus.

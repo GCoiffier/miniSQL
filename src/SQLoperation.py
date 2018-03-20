@@ -21,9 +21,8 @@ def project(rel, attributes):
 ## ______________ Selection __________________
 def verify_conditions(entry, cond, keys):
     """
-    condList is a list of list -> CDF form
+    condTree is a list of list -> CDF form
     """
-    print(cond)
     if isinstance(cond,Or):
         for clause in cond.args:
             if verify_conditions(entry,clause,keys):
@@ -39,8 +38,8 @@ def verify_conditions(entry, cond, keys):
     else :
         return cond.eval(keys,entry)
 
-def select(rel, condList):
-    selection = lambda x : verify_conditions(x,condList, rel._keys)
+def select(rel, condTree):
+    selection = lambda x : verify_conditions(x,condTree, rel._keys)
     filtered = filter(selection , rel.data)
     return Table("selectRequest", rel.get_keys(), filtered)
 
