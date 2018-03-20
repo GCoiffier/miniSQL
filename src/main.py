@@ -10,12 +10,16 @@
 ################################################################################
 
 import sys
+import os
+import atexit
+import readline
+
 import parser
 from exceptions import *
 from database import *
 
 ## ________________ Command reader _________________________________________
-COMMANDS = {".end", ".exit", ".quit", ".run", ".read"}
+COMMANDS = [".end", ".exit", ".quit", ".run", ".read"]
 
 def assert_command(keyWord):
     """ Checks if we are given a supported command"""
@@ -69,12 +73,23 @@ def run_command(inputString):
     except InvalidCommand as e :
         print(inputString + " : Invalid Command, "+ e.args[0])
 
+## _______________ Auto completion and history in command line _________________
+
+requestFiles = [req for _,_,req in os.walk("request")][0]
+TO_COMPLETE = COMMANDS + requestFiles
+
+def completer(text, state):
+    options = [i for i in TO_COMPLETE if i.startswith(text)]
+    if state < len(options):
+        return options[state]
+    else:
+        return None
+
 ## _______________________ MAIN ________________________________________________
 def main():
     try:
         while True:
-            sys.stdout.write('>')
-            inputString = input()
+            inputString = input("> ")
             run_command(inputString)
     except EndOfExecution:
         print("Program terminating !")
@@ -85,4 +100,14 @@ def main():
 
 
 if __name__=="__main__":
+    histfile = os.path.join(os.path.expanduser(os.getcwd()), ".command_history")
+    try:
+        readline.read_history_file(histfile)
+        readline.set_history_length(100)
+    except FileNotFoundError:
+        pass
+
+    readline.parse_and_bind("tab: complete")
+    readline.set_completer(completer)
     main()
+    atexit.register(readline.write_history_file, histfile)
