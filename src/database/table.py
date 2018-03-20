@@ -1,4 +1,5 @@
 from os.path import join as pjoin
+from itertools import tee
 
 from exceptions import *
 from .attribute import Attribute
@@ -51,16 +52,18 @@ class Table:
         return l
 
     def __repr__(self):
-        output = "\n"
-        """
-        for k in self.get_keys():
-            output += str(k) + " | "
-        output+="\n"
-        """
-        for entry in self.data:
-            for field in entry:
-                output+= field + " | "
-            output+="\n"
+        output="\n"
+        if (not isinstance(self.data,list)):
+            temp,self.data = tee(self.data)
+            for entry in temp:
+                for field in entry:
+                    output+= field + " | "
+                output+="\n"
+        else:
+            for entry in self.data:
+                for field in entry:
+                    output+= field + " | "
+                output+="\n"
         return output
 
     @staticmethod
