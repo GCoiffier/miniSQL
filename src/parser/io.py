@@ -1,6 +1,5 @@
 from os.path import join as pjoin
 import antlr4
-import csv
 
 from .miniSQLParser import miniSQLParser
 from .miniSQLLexer import miniSQLLexer
@@ -8,30 +7,6 @@ from .visitor import Visitor
 
 from database import *
 from exceptions import *
-
-def read_data(filename):
-    """
-    Builds a Relation object from a csv file.
-    /!\ Assumes 'filename' has extension .csv
-    """
-    try:
-        path = pjoin("data",filename)
-        with open(path, newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
-            keys = reader.fieldnames
-            entries = []
-            for row in reader:
-                newEntry=[]
-                for key in keys:
-                    newEntry.append(row[key])
-                entries.append(tuple(newEntry))
-            return Relation(filename, keys, entries)
-    except FileNotFoundError as e:
-        print("Error in read_data : " + path + ", this file does not exist")
-        return None
-
-def write_data(rel):
-    pass
 
 def read_request(path):
     try:

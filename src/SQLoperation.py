@@ -11,7 +11,7 @@ def project(rel, attributes):
             raise UnknownAttribute("key "+str(a) + " is not an attribute of relation "+ str(rel.get_keys()) )
     projection = lambda x : tuple(x[i] for i in indices)
     entries = set(map(projection, rel.data))
-    new = Relation("projectRequest", attributes, entries)
+    new = Table("projectRequest", attributes, entries)
     return new
 
 
@@ -31,7 +31,7 @@ def verify_conditions(entry, condList, keys):
 
 def select(rel, condList):
     filtered = filter(lambda x : verify_conditions(x,condList, rel._keys) , rel.data)
-    return Relation("selectRequest", rel.get_keys(), filtered)
+    return Table("selectRequest", rel.get_keys(), filtered)
 
 ## ______________________ Join __________________________
 def join(relA, relB, cond=None):
@@ -45,17 +45,17 @@ def join(relA, relB, cond=None):
             entries.add(new_line)
     keysA = relA.get_keys()
     keysB = relB.get_keys()
-    new = Relation("joinRequest", keysA+keysB, entries)
+    new = Table("joinRequest", keysA+keysB, entries)
     return new
 
 ## _____________________ Union ___________________________
 def union(relA,relB):
     entries = relA.data.union(relB.data)
-    new = Relation("unionRequest", relA.keys, entries)
+    new = Table("unionRequest", relA.keys, entries)
     return new
 
 ## ________________________ Minus _____________________________
 def minus(relA,relB):
     entries = relA.data - relB.data
-    new = Relation("minusRequest", relA.keys, entries)
+    new = Table("minusRequest", relA.keys, entries)
     return new

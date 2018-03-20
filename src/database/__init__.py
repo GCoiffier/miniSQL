@@ -1,3 +1,3 @@
 from .dataManager import DataManager
-from .relation import Relation
+from .table import Table
 from .attribute import Attribute

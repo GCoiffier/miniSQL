@@ -1,8 +1,7 @@
 import os
 from exceptions import *
-from .relation import Relation
+from .table import Table
 from .attribute import Attribute
-import parser
 
 class DataManager:
     def __init__(self):
@@ -32,12 +31,12 @@ class DataManager:
         Loads tables present in a request
         """
         if tableName not in self.tables.keys():
-            rel = parser.read_data(tableName)
-            self.add_table(rel)
+            table = Table.from_file(tableName)
+            self.add_table(table)
 
     def rename_table(self,tableName,newTableName):
         rel = self.tables[tableName]
-        newRel = Relation(newTableName, rel.get_keys(), rel.data)
+        newRel = Table(newTableName, rel.get_keys(), rel.data)
         newRel.rename(newTableName)
         self.add_table(newRel)
 
