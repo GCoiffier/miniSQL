@@ -56,7 +56,7 @@ class Visitor(ParseTreeVisitor):
                                                         # Second return value is the list of the relations into IN subqueries
             print_debug(" Conditions : " + str(condList))
             print_debug(" Perform select in main query")
-            resultRelation = select(resultRelation, condList)
+            resultRelation = select(resultRelation, Or(condList))
             print_debug(" End select")
 
         if not self.allAttr: # No * request -> perform a projection
