@@ -62,7 +62,6 @@ class Visitor(ParseTreeVisitor):
 
         return resultRelation
 
-
     def visitSqlSub(self, ctx, table, attr):
         print_debug("visitSqlSub")
 

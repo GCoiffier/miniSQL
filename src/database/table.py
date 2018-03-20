@@ -2,6 +2,7 @@ from os.path import join as pjoin
 
 from exceptions import *
 from .attribute import Attribute
+from .cursor import Cursor
 
 import csv
 
@@ -22,6 +23,10 @@ class Table:
         else :
             for i,key in enumerate(keys):
                 self._keys[Attribute(self.name,key)]=i
+
+    def kill_duplicates(self):
+        if (isinstance(self.data,list)):
+            self.data = list(set(self.data))
 
     def is_empty(self):
         return len(self.data)==0
@@ -66,16 +71,12 @@ class Table:
         """
         try:
             path = pjoin("data",filename)
+            cursor = Cursor(path)
             with open(path, newline='') as csvfile:
                 reader = csv.DictReader(csvfile)
                 keys = reader.fieldnames
-                entries = []
-                for row in reader:
-                    newEntry=[]
-                    for key in keys:
-                        newEntry.append(row[key])
-                    entries.append(tuple(newEntry))
-                return Table(filename, keys, entries)
+            print_debug("Loading table "+filename+" from file")
+            return Table(filename, keys, cursor)
         except FileNotFoundError as e:
             print("Error in Relation.read_data : " + path + ", this file does not exist")
             return None
