@@ -19,3 +19,6 @@ test: $(TESTFILE)
 	python3 $<
 
 clean:
+	rm src/parser/__pycache__/*
+	rm src/database/__pycache__/*
+	rm src/__pycache__/*
