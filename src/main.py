@@ -10,12 +10,25 @@
 ################################################################################
 
 import sys
+import os
+import atexit
+import readline
+
 import parser
 from exceptions import *
 from database import *
 
+## ___________ Debug output utility _______________
+DEBUG=False
+
+def print_debug(*args):
+    global DEBUG
+    if DEBUG:
+        for what in args:
+            print(what)
+
 ## ________________ Command reader _________________________________________
-COMMANDS = {".end", ".exit", ".quit", ".run", ".read"}
+COMMANDS = [".end", ".exit", ".quit", ".run", ".read", ".debug"]
 
 def assert_command(keyWord):
     """ Checks if we are given a supported command"""
@@ -56,6 +69,14 @@ def run_command(inputString):
             raise InvalidCommand("command '" + mainKeyWord + "' expected at least one argument")
         # From now, every command has length >1
 
+        if mainKeyWord == ".debug":
+            opt = command[1]
+            if opt in ["on", "1", "true"]:
+                DEBUG=True
+            elif opt==["off", "0", "false"]:
+                DEBUG=False
+            else:
+                raise InvalidCommand("Usage : .debug <on|off>")
         if mainKeyWord in [".run", ".read"]:
             reqPath = command[1]
             assert_extension(reqPath,"sql")
@@ -69,12 +90,23 @@ def run_command(inputString):
     except InvalidCommand as e :
         print(inputString + " : Invalid Command, "+ e.args[0])
 
+## _______________ Auto completion and history in command line _________________
+
+requestFiles = [req for _,_,req in os.walk("request")][0]
+TO_COMPLETE = COMMANDS + requestFiles
+
+def completer(text, state):
+    options = [i for i in TO_COMPLETE if i.startswith(text)]
+    if state < len(options):
+        return options[state]
+    else:
+        return None
+
 ## _______________________ MAIN ________________________________________________
 def main():
     try:
         while True:
-            sys.stdout.write('>')
-            inputString = input()
+            inputString = input("> ")
             run_command(inputString)
     except EndOfExecution:
         print("Program terminating !")
@@ -85,4 +117,14 @@ def main():
 
 
 if __name__=="__main__":
+    histfile = os.path.join(os.path.expanduser(os.getcwd()), ".command_history")
+    try:
+        readline.read_history_file(histfile)
+        readline.set_history_length(100)
+    except FileNotFoundError:
+        pass
+
+    readline.parse_and_bind("tab: complete")
+    readline.set_completer(completer)
     main()
+    atexit.register(readline.write_history_file, histfile)
