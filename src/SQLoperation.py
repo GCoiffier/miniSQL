@@ -3,7 +3,7 @@ from exceptions import *
 from condition import Or, And
 from itertools import product,chain,dropwhile
 
-## ________________ Projection _______________
+## _____________________ Projection ____________________________________________
 def project(rel, attributes):
     indices = []
     for a in attributes :
@@ -16,7 +16,7 @@ def project(rel, attributes):
     new = Table("projectRequest", attributes, entries)
     return new
 
-## ______________ Selection __________________
+## ____________________ Selection ______________________________________________
 def verify_conditions(entry, cond, keys):
     """
     condTree is a list of list -> CDF form
@@ -42,7 +42,7 @@ def select(rel, condTree):
     new = Table("selectRequest", rel.get_keys(), filtered)
     return new
 
-## ______________________ Join __________________________
+## ______________________ Join _________________________________________________
 def join(relA, relB):
     """
     Cartesian product
@@ -55,14 +55,19 @@ def join(relA, relB):
     new = Table("joinRequest", keysA+keysB, flatten(product(relA.data,relB.data)))
     return new
 
-## _____________________ Union ___________________________
+## _______________________ Union _______________________________________________
 def union(relA,relB):
     entries = chain(relA.data,relB.data)
     new = Table("unionRequest", relA.get_keys(), entries)
     return new
 
-## ________________________ Minus _____________________________
+## ___________________________ Minus ___________________________________________
 def minus(relA,relB):
     entries = dropwhile(lambda x : x in relB.data , relA.data)
     new = Table("minusRequest", relA.get_keys(), entries)
     return new
+
+## ________________________ Better Operators ___________________________________
+
+def readSelectProjectRename(rel):
+    pass
