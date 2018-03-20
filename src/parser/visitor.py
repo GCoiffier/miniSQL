@@ -12,7 +12,6 @@ class Visitor(ParseTreeVisitor):
         ParseTreeVisitor.__init__(self)
 
         self.relationNames = dict() # alias -> real name
-        self.relationAliases = dict() # real name -> alias
         self.attributeNames = dict() # alias -> Attribute(table,name)
         self.allAttr = False
 

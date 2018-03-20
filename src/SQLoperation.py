@@ -39,26 +39,24 @@ def verify_conditions(entry, cond, keys):
         return cond.eval(keys,entry)
 
 def select(rel, condTree):
-    selection = lambda x : verify_conditions(x,condTree, rel._keys)
+    selection = lambda x : verify_conditions(x, condTree, rel._keys)
     filtered = filter(selection , rel.data)
-    return Table("selectRequest", rel.get_keys(), filtered)
+    new = Table("selectRequest", rel.get_keys(), filtered)
+    return new
 
 ## ______________________ Join __________________________
 def join(relA, relB):
     """
     Cartesian product
     """
-    if (isinstance(relA.data,Cursor) and isinstance(relB.data,Cursor)):
+    if (not isinstance(relA.data,list) and not isinstance(relB.data,list)):
         def flatten(x):
             for a,b in x:
                 yield a+b
-        curA = relA.data
-        curB = relB.data
         keysA = relA.get_keys()
         keysB = relB.get_keys()
-        new = Table("joinRequest", keysA+keysB, flatten(product(curA,curB)))
+        new = Table("joinRequest", keysA+keysB, flatten(product(relA.data,relB.data)))
         return new
-
     else :
         entries = []
         for lineA in relA.data :
@@ -70,10 +68,9 @@ def join(relA, relB):
         new = Table("joinRequest", keysA+keysB, entries)
         return new
 
-
 ## _____________________ Union ___________________________
 def union(relA,relB):
-    if (isinstance(relA.data,set) and isinstance(relB.data,set)):
+    if (isinstance(relA.data,list) and isinstance(relB.data,list)):
         entries = relA.data + relB.data
     elif (isinstance(relA.data, Cursor) and isinstance(relB.data, Cursor)):
         entries = chain(relA.data,relB.data)
