@@ -18,15 +18,6 @@ import parser
 from exceptions import *
 from database import *
 
-## ___________ Debug output utility _______________
-DEBUG=False
-
-def print_debug(*args):
-    global DEBUG
-    if DEBUG:
-        for what in args:
-            print(what)
-
 ## ________________ Command reader _________________________________________
 COMMANDS = [".end", ".exit", ".quit", ".run", ".read", ".debug"]
 
@@ -51,6 +42,7 @@ def run_command(inputString):
 
     <SQL request>
     """
+    global DEBUG
     try:
         command = inputString.split()
         if len(command)==0:
@@ -72,12 +64,13 @@ def run_command(inputString):
         if mainKeyWord == ".debug":
             opt = command[1]
             if opt in ["on", "1", "true"]:
-                DEBUG=True
-            elif opt==["off", "0", "false"]:
-                DEBUG=False
+                DEBUG = True
+            elif opt in ["off", "0", "false"]:
+                DEBUG = False
             else:
                 raise InvalidCommand("Usage : .debug <on|off>")
-        if mainKeyWord in [".run", ".read"]:
+
+        elif mainKeyWord in [".run", ".read"]:
             reqPath = command[1]
             assert_extension(reqPath,"sql")
             reqString = parser.read_request(reqPath)

@@ -17,17 +17,13 @@ class Table:
         """
         self.name = name
         self.data = entries
-        self._keys = dict()
+        self.keys = dict()
         if isinstance(keys[0],Attribute):
             for i,key in enumerate(keys):
-                self._keys[key]=i
+                self.keys[key]=i
         else :
             for i,key in enumerate(keys):
-                self._keys[Attribute(self.name,key)]=i
-
-    def kill_duplicates(self):
-        if (isinstance(self.data,list)):
-            self.data = list(set(self.data))
+                self.keys[Attribute(self.name,key)]=i
 
     def is_empty(self):
         return len(self.data)==0
@@ -38,32 +34,26 @@ class Table:
         """
         self.name = newName
         newKeys = dict()
-        for key in self._keys:
+        for key in self.keys:
             newKeyName = Attribute(newName,key.attr)
-            newKeys[newKeyName]= self._keys[key]
-        self._keys = newKeys
+            newKeys[newKeyName]= self.keys[key]
+        self.keys = newKeys
 
     def get_keys(self):
         """
         Return the list of keys in correct order
         """
-        l = list(self._keys.keys())
-        l = sorted(l, key= lambda x : int(self._keys[x]))
+        l = list(self.keys.keys())
+        l = sorted(l, key= lambda x : int(self.keys[x]))
         return l
 
     def __repr__(self):
         output="\n"
-        if (not isinstance(self.data,list)):
-            temp,self.data = tee(self.data)
-            for entry in temp:
-                for field in entry:
-                    output+= field + " | "
-                output+="\n"
-        else:
-            for entry in self.data:
-                for field in entry:
-                    output+= field + " | "
-                output+="\n"
+        temp,self.data = tee(self.data)
+        for entry in temp:
+            for field in entry:
+                output+= field + " | "
+            output+="\n"
         return output
 
     @staticmethod

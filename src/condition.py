@@ -36,15 +36,15 @@ class Condition:
         entry2 = entry[keys[self.attr2]]
         if self.operator == Op.EQ:
             return entry1==entry2
-        elif self.operator == Oq.NEQ:
+        elif self.operator == Op.NEQ:
             return entry1!=entry2
-        elif self.operator == Oq.LT:
+        elif self.operator == Op.LT:
             return int(entry1)>=int(entry2)
-        elif self.operator == Oq.LE:
+        elif self.operator == Op.LE:
             return int(entry1)>int(entry2)
-        elif self.operator == Oq.GT:
+        elif self.operator == Op.GT:
             return int(entry1)<int(entry2)
-        elif self.operator == Oq.GE:
+        elif self.operator == Op.GE:
             return int(entry1)<=int(entry2)
 
     def __repr__(self):
