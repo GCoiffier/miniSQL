@@ -5,4 +5,3 @@ WHERE e.ide = m.ide
   AND e.dpt NOT IN (SELECT r.dpt
                     FROM "employes.csv" r
                     WHERE r.ide = p.responsable)
-                    

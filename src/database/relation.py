@@ -10,7 +10,7 @@ class Relation:
         entries -> the list of entries of the table.
                     One entry is a tuple
         """
-        self.name=name
+        self.name = name
         self.data = entries
         self._keys = dict()
         if isinstance(keys[0],Attribute):
@@ -34,9 +34,6 @@ class Relation:
             newKeys[newKeyName]= self._keys[key]
         self._keys = newKeys
 
-    def __getitem__(self, index):
-        return self.data[index]
-
     def get_keys(self):
         """
         Return the list of keys in correct order
@@ -46,11 +43,12 @@ class Relation:
         return l
 
     def __repr__(self):
-        output = ""
+        output = "\n"
+        """
         for k in self.get_keys():
             output += str(k) + " | "
         output+="\n"
-
+        """
         for entry in self.data:
             for field in entry:
                 output+= field + " | "

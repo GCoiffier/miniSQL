@@ -5,8 +5,12 @@ from exceptions import *
 def project(rel, attributes):
     indices = []
     for a in attributes :
-        indices.append(rel._keys[a])
-    entries = [ tuple(line[i] for i in indices) for line in rel.data ]
+        try:
+            indices.append(rel._keys[a])
+        except KeyError:
+            raise UnknownAttribute("key "+str(a) + " is not an attribute of relation "+ str(rel.get_keys()) )
+    projection = lambda x : tuple(x[i] for i in indices)
+    entries = set(map(projection, rel.data))
     new = Relation("projectRequest", attributes, entries)
     return new
 
@@ -26,10 +30,7 @@ def verify_conditions(entry, condList, keys):
     return False
 
 def select(rel, condList):
-    filtered = []
-    for x in rel.data:
-        if verify_conditions(x, condList, rel._keys):
-            filtered.append(x)
+    filtered = filter(lambda x : verify_conditions(x,condList, rel._keys) , rel.data)
     return Relation("selectRequest", rel.get_keys(), filtered)
 
 ## ______________________ Join __________________________
@@ -37,11 +38,11 @@ def join(relA, relB, cond=None):
     """
     Cartesian product
     """
-    entries = []
+    entries = set()
     for lineA in relA.data :
         for lineB in relB.data :
             new_line = tuple([i for i in lineA] + [i for i in lineB])
-            entries.append(new_line)
+            entries.add(new_line)
     keysA = relA.get_keys()
     keysB = relB.get_keys()
     new = Relation("joinRequest", keysA+keysB, entries)
@@ -49,12 +50,12 @@ def join(relA, relB, cond=None):
 
 ## _____________________ Union ___________________________
 def union(relA,relB):
-    entries = [line for line in relA.data] + [line for line in relB.data]
+    entries = relA.data.union(relB.data)
     new = Relation("unionRequest", relA.keys, entries)
     return new
 
 ## ________________________ Minus _____________________________
 def minus(relA,relB):
-    entries = [line for line in relA.data if not (line in relB.data)]
+    entries = relA.data - relB.data
     new = Relation("minusRequest", relA.keys, entries)
     return new
