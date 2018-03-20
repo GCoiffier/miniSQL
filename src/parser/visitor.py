@@ -24,16 +24,7 @@ class Visitor(ParseTreeVisitor):
         return resultRelation
 
     # ________________________ sql rules _______________________________________
-    def visitSqlNormal(self, ctx:miniSQLParser.SqlNormalContext, bypassAttr=None):
-        if bypassAttr is not None:
-            print_debug("visitSubSqlNormal")
-            attributes = self.visit(ctx.atts())
-            assert(len(attributes)==1) # There should be only one here
-            subAttr = attributes[0]
-            relations = self.visit(ctx.rels())
-            condTree, rels = self.visit(ctx.cond()) # condTree a list of list : CDF form
-            return And([condTree,Condition(attr,Op.EQ,subAttr)]), relations+rels
-
+    def visitSqlNormal(self, ctx:miniSQLParser.SqlNormalContext):
         print_debug("visitSqlNormal")
 
         relations = self.visit(ctx.rels()) # Load the tables & builds self.relationNames
@@ -73,37 +64,51 @@ class Visitor(ParseTreeVisitor):
 
         return resultRelation
 
-    def visitSqlSub(self, ctx, attr):
-        print_debug("visitSqlSub")
-        attributes = self.visit(ctx.atts())
-        assert(len(attributes)==1) # There should be only one here
-        subAttr = attributes[0]
-        relations = self.visit(ctx.rels())
-        condTree, rels = self.visit(ctx.cond()) # condTree a list of list : CDF form
-        return subAttr,relations+rels,condTree
-
-
     # Visit a parse tree produced by miniSQLParser#sqlMinus.
-    def visitSqlMinus(self, ctx:miniSQLParser.SqlMinusContext, bypassAttr=None):
-        #if bypassAttr is not None:
-
+    def visitSqlMinus(self, ctx:miniSQLParser.SqlMinusContext):
         print_debug("visitSqlMinus")
         rel1 = self.visit(ctx.sql(0))
         rel2 = self.visit(ctx.sql(1))
         return minus(rel1,rel2)
 
     # Visit a parse tree produced by miniSQLParser#sqlUnion.
-    def visitSqlUnion(self, ctx:miniSQLParser.SqlUnionContext, bypassAttr=None):
-        if bypassAttr is not None:
-            print_debug("visitSubSqlUnion")
-            condTree1, rels1 = self.visit(ctx.sql(0), bypassAttr)
-            condTree2, rels2 = self.visit(ctx.sql(1), bypassAttr)
-            return Or([condTree1,conTree2]), rels1+rels2
-
+    def visitSqlUnion(self, ctx:miniSQLParser.SqlUnionContext):
         print_debug("visitSqlUnion")
         rel1 = self.visit(ctx.sql(0))
         rel2 = self.visit(ctx.sql(1))
         return union(rel1,rel2)
+
+
+    def visitSubSql(self, ctx, attr):
+        print_debug("visitSubSql")
+        clue = ctx.getChild(3).getText()
+        if clue == 'MINUS':
+            return self.visitSubSqlMinus(ctx,attr)
+        elif clue == 'UNION':
+            return self.visitSubSqlUnion(ctx,attr)
+        else:
+            return self.visitSubSqlNormal(ctx,attr)
+
+    def visitSubSqlNormal(self, ctx, attr):
+        print_debug("visitSubSqlNormal")
+        attributes = self.visit(ctx.atts())
+        assert(len(attributes)==1) # There should be only one here
+        subAttr = attributes[0]
+        relations = self.visit(ctx.rels())
+        condTree, rels = self.visit(ctx.cond()) # condTree a list of list : CDF form
+        return [Or(condTree),Condition(attr,Op.EQ,subAttr)], relations+rels
+
+    def visitSubSqlMinus(self, ctx, attr): # TODO : false version
+        print_debug("visitSubSqlUnion")
+        condTree1, rels1 = self.visitSubSql(ctx.sql(0), attr)
+        condTree2, rels2 = self.visitSubSql(ctx.sql(1), attr)
+        return [Or([And(condTree1),And(condTree2)])], rels1+rels2
+
+    def visitSubSqlUnion(self, ctx, attr):
+        print_debug("visitSubSqlUnion")
+        condTree1, rels1 = self.visitSubSql(ctx.sql(0), attr)
+        condTree2, rels2 = self.visitSubSql(ctx.sql(1), attr)
+        return [Or([And(condTree1),And(condTree2)])], rels1+rels2
 
 
     # _________________________ atts rules _____________________________________
@@ -230,9 +235,7 @@ class Visitor(ParseTreeVisitor):
     def visitCompIn(self, ctx:miniSQLParser.CompInContext):
         print_debug("visitCompIn")
         attr = self.visit(ctx.att())
-        #print([ctx.sql().getChild(i).getText() for i in range(5)])
-        cond,rels = self.visit(ctx.sql(),attr)
-        return cond,rels
+        return self.visitSubSql(ctx.sql(), attr)
 
     def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
         print_debug("visitCompNotIn")
