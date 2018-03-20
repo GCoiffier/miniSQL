@@ -18,8 +18,17 @@ import parser
 from exceptions import *
 from database import *
 
+## ___________ Debug output utility _______________
+DEBUG=False
+
+def print_debug(*args):
+    global DEBUG
+    if DEBUG:
+        for what in args:
+            print(what)
+
 ## ________________ Command reader _________________________________________
-COMMANDS = [".end", ".exit", ".quit", ".run", ".read"]
+COMMANDS = [".end", ".exit", ".quit", ".run", ".read", ".debug"]
 
 def assert_command(keyWord):
     """ Checks if we are given a supported command"""
@@ -60,6 +69,14 @@ def run_command(inputString):
             raise InvalidCommand("command '" + mainKeyWord + "' expected at least one argument")
         # From now, every command has length >1
 
+        if mainKeyWord == ".debug":
+            opt = command[1]
+            if opt in ["on", "1", "true"]:
+                DEBUG=True
+            elif opt==["off", "0", "false"]:
+                DEBUG=False
+            else:
+                raise InvalidCommand("Usage : .debug <on|off>")
         if mainKeyWord in [".run", ".read"]:
             reqPath = command[1]
             assert_extension(reqPath,"sql")
