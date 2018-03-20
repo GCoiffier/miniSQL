@@ -41,8 +41,9 @@ cond
     ;
 
 and_cond
-    : at_cond AND and_cond  #CondAndList
-    | at_cond               #CondAndSimple
+    : LPAR cond RPAR AND and_cond   #CondAndOr
+    | at_cond AND and_cond          #CondAndList
+    | at_cond                       #CondAndSimple
     ;
 
 at_cond

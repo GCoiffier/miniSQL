@@ -1,5 +1,6 @@
 from database import *
 from exceptions import *
+from condition import Or, And
 
 ## ________________ Projection _______________
 def project(rel, attributes):
@@ -16,18 +17,25 @@ def project(rel, attributes):
 
 
 ## ______________ Selection __________________
-def verify_conditions(entry, condList, keys):
+def verify_conditions(entry, cond, keys):
     """
     condList is a list of list -> CDF form
     """
-    for clause in condList: # OR
-        clauseValue = True
-        for cond in clause: # AND
-            if not cond.eval(keys,entry):
-                clauseValue=False
-        if clauseValue:
-            return True
-    return False
+    print(cond)
+    if isinstance(cond,Or):
+        for clause in cond.args:
+            if verify_conditions(entry,clause,keys):
+                return True
+        return False
+
+    elif isinstance(cond,And):
+        for clause in cond.args:
+            if not verify_conditions(entry,clause,keys):
+                return False
+        return True
+
+    else :
+        return cond.eval(keys,entry)
 
 def select(rel, condList):
     filtered = filter(lambda x : verify_conditions(x,condList, rel._keys) , rel.data)

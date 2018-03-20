@@ -89,6 +89,11 @@ class miniSQLVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by miniSQLParser#CondAndOr.
+    def visitCondAndOr(self, ctx:miniSQLParser.CondAndOrContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by miniSQLParser#CondAndList.
     def visitCondAndList(self, ctx:miniSQLParser.CondAndListContext):
         return self.visitChildren(ctx)

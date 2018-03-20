@@ -10,6 +10,22 @@ class Op(Enum):
     GT  = 5  # >
     GE  = 6  # >=
 
+class Or:
+    def __init__(self, *args):
+        assert len(args)>0
+        self.args = args
+
+    def __repr__(self):
+        return "Or("+str(self.args)+")"
+
+class And:
+    def __init__(self, *args):
+        assert len(args)>0
+        self.args = args
+
+    def __repr__(self):
+        return "And("+str(self.args)+")"
+
 class Condition:
 
     def __init__(self, attr1, operator, attr2):
