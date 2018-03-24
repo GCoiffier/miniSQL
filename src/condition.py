@@ -53,11 +53,12 @@ class Condition:
 def tseitin(condTree):
     """
     Tseitin transformation, from :
-        https://en.wikipedia.org/wiki/Tseytin_transformation
+        https://perso.liris.cnrs.fr/emmanuel.coquery/dokuwiki/lib/exe/fetch.php?media=enseignement:logique:logique-td3-correction.pdf
     Converts an arbitrary boolean formula into a CNF
     Useful in MINUS and NOT IN requests.
     """
-    return None
+    #TODO or TODELETE
+    return condTree
 
 class NotInCondition(Condition):
 

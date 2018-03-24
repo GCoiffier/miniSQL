@@ -7,7 +7,8 @@ main
     : sql (COLON)? ;
 
 sql
-    : SELECT (DISTINCT)? atts FROM rels (WHERE cond)?   #sqlNormal
+    : SELECT (DISTINCT)? atts FROM rels (WHERE cond)? (ORDERBY att (DESC|ASC)?)?  #sqlNormal
+    | SELECT (DISTINCT)? attgrp FROM rels (WHERE cond)? GROUPBY att #sqlGroupBy
     | LPAR sql RPAR MINUS LPAR sql RPAR     #sqlMinus
     | LPAR sql RPAR UNION LPAR sql RPAR    #sqlUnion
     ;
@@ -24,6 +25,19 @@ attd
     ;
 
 att : ID '.' ID ;
+
+attgrp
+    : att
+    | att ',' attgrpbis
+    | att AS ID
+    | att AS ID ',' attgrpbis
+    | aggr LPAR att RPAR ',' attgrp
+    ;
+
+attgrpbis
+    : aggr LPAR att RPAR
+    | aggr LPAR att RPAR ',' attgrpbis
+    ;
 
 rels
     : rel ',' rels  #RelationDeclList
@@ -53,6 +67,7 @@ at_cond
     ;
 
 op : EQ | NEQ | LT | LE | GT | GE ;
+aggr : MAX | MIN | COUNT | SUM ;
 
 LPAR : '(';
 RPAR : ')';
@@ -69,10 +84,17 @@ MINUS : 'MINUS' | 'minus' ;
 UNION : 'UNION' | 'union';
 JOIN : 'JOIN' | 'join';
 GROUPBY : 'GROUP BY' | 'group by';
+ORDERBY : 'ORDER BY' | 'order by';
 AND : 'AND' | 'and';
 OR : 'OR' | 'or';
 NOT : 'NOT' | 'not';
 IN : 'IN' | 'in';
+DESC : 'DESC' | 'desc';
+ASC : 'ASC' | 'asc';
+MAX : 'MAX' | 'max';
+MIN : 'MIN' | 'min';
+COUNT : 'COUNT' | 'count'
+SUM : 'SUM' | 'sum'
 
 EQ : '=';
 NEQ : '!=';
