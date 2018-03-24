@@ -63,7 +63,7 @@ class Visitor(ParseTreeVisitor):
             print_debug(" End project")
         if ctx.DISTINCT() is not None :
             resultRelation = project_distinct(resultRelation)
-            
+
         return resultRelation
 
     # Visit a parse tree produced by miniSQLParser#sqlMinus.
@@ -80,7 +80,7 @@ class Visitor(ParseTreeVisitor):
         rel2 = self.visit(ctx.sql(1))
         return union(rel1,rel2)
 
-
+    # _________________________ subsql rules ___________________________________
     def visitSubSql(self, ctx, attr):
         print_debug("visitSubSql")
         clue = ctx.getChild(3).getText()
@@ -112,6 +112,9 @@ class Visitor(ParseTreeVisitor):
         condTree2, rels2 = self.visitSubSql(ctx.sql(1), attr)
         return [Or([And(condTree1),And(condTree2)])], rels1+rels2
 
+    # _________________________ groupby rules __________________________________
+    def visitSqlGroupBy(self, ctx:miniSQLParser.SqlGroupByContext):
+        return self.visitChildren(ctx)
 
     # _________________________ atts rules _____________________________________
     def visitAttributeDeclAll(self, ctx:miniSQLParser.AttributeDeclAllContext):
