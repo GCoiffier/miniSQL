@@ -34,6 +34,11 @@ class miniSQLVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by miniSQLParser#orderBy.
+    def visitOrderBy(self, ctx:miniSQLParser.OrderByContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by miniSQLParser#AttributeDeclAll.
     def visitAttributeDeclAll(self, ctx:miniSQLParser.AttributeDeclAllContext):
         return self.visitChildren(ctx)

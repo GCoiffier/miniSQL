@@ -7,10 +7,14 @@ main
     : sql (COLON)? ;
 
 sql
-    : SELECT (DISTINCT)? atts FROM rels (WHERE cond)? (ORDERBY att (DESC|ASC)?)?  #sqlNormal
-    | SELECT (DISTINCT)? attgrp FROM rels (WHERE cond)? GROUPBY att #sqlGroupBy
+    : SELECT (DISTINCT)? atts FROM rels (WHERE cond)? orderby?  #sqlNormal
+    | SELECT (DISTINCT)? attgrp FROM rels (WHERE cond)? GROUPBY att orderby? #sqlGroupBy
     | LPAR sql RPAR MINUS LPAR sql RPAR     #sqlMinus
     | LPAR sql RPAR UNION LPAR sql RPAR    #sqlUnion
+    ;
+
+orderby
+    : ORDERBY atts (DESC|ASC)? #orderBy
     ;
 
 atts

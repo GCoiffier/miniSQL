@@ -99,12 +99,18 @@ def joinProjectRename(rel1,rel2, attr, conds):
 
     pass
 
-## __________________________ Group By and Order By ____________________________
+## __________________________ Group By ____________________________
 
-def orderBy(rel, attr, decr=False):
-    if decr:
-        compare = lambda x,y: x[rel.keys[attr]] > y[rel.keys[attr]]
-    else:
-        compare = lambda x,y: x[rel.keys[attr]] < y[rel.keys[attr]]
-    sorted = sort([x for x in rel.data], compare)
-    return Table(rel.name, rel.keys, sorted)
+def groupBySingleRelation(rel,attr):
+    return rel
+
+## __________________________ Order By ____________________________
+
+def orderBy(rel, attr, desc=False):
+    """
+    Order the entries of table rel according to attr.
+    """
+    compare = lambda x : [int(x[rel.keys[a]]) for a in attr]
+    sorted = [x for x in rel.data]
+    sorted.sort(key = compare, reverse=desc)
+    return Table(rel.name, rel.get_keys(), iter(sorted))

@@ -46,7 +46,7 @@ class Visitor(ParseTreeVisitor):
         else:
             resultRelation = reduce(lambda x,y : join(x, y), self.dataManager.get_tables(relations))
 
-        attributes = self.visit(ctx.atts())
+        attributes = self.visit(ctx.atts(0))
         print_debug(" Attributes :", attributes)
 
         if ctx.cond() is not None:
@@ -57,13 +57,17 @@ class Visitor(ParseTreeVisitor):
             resultRelation = select(resultRelation, Or(condTree))
             print_debug(" End select")
 
-        if not self.allAttr: # No * request -> perform a projection
+        if not self.allAttr:
+            # Not a * -> perform a projection
             print_debug(" Perform project in main query")
             resultRelation = project(resultRelation, attributes)
             print_debug(" End project")
         if ctx.DISTINCT() is not None :
             resultRelation = project_distinct(resultRelation)
-            
+        if ctx.ORDERBY() is not None :
+            orderkeys = self.visit(ctx.atts(1))
+            print("Order keys : ")
+            resultRelation = orderBy(resultRelation, orderkeys, desc = (ctx.DESC() is not None))
         return resultRelation
 
     # Visit a parse tree produced by miniSQLParser#sqlMinus.
@@ -79,7 +83,6 @@ class Visitor(ParseTreeVisitor):
         rel1 = self.visit(ctx.sql(0))
         rel2 = self.visit(ctx.sql(1))
         return union(rel1,rel2)
-
 
     def visitSubSql(self, ctx, attr):
         print_debug("visitSubSql")
@@ -112,6 +115,11 @@ class Visitor(ParseTreeVisitor):
         condTree2, rels2 = self.visitSubSql(ctx.sql(1), attr)
         return [Or([And(condTree1),And(condTree2)])], rels1+rels2
 
+
+    # _________________________ sqlOrderBy _____________________________________
+
+    def visitOrderBy(self, ctx:miniSQLParser.OrderByContext):
+        return self.visitChildren(ctx)
 
     # _________________________ atts rules _____________________________________
     def visitAttributeDeclAll(self, ctx:miniSQLParser.AttributeDeclAllContext):
