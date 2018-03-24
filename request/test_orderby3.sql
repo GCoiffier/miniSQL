@@ -1,1 +1,1 @@
-SELECT e.nom, d.nom FROM "employes.csv" e, "departements.csv" d ORDER BY e.dpt, d.directeur;
+SELECT e.nom,e.dpt FROM "employes.csv" e ORDER BY e.dpt,e.nom;

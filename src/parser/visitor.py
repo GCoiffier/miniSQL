@@ -26,17 +26,16 @@ class Visitor(ParseTreeVisitor):
     # ________________________ sql rules _______________________________________
     def visitSqlNormal(self, ctx:miniSQLParser.SqlNormalContext):
         # SELECT (DISTINCT)? atts FROM rels (WHERE cond)? orderby?
-
         print_debug("visitSqlNormal")
 
-        relations = self.visit(ctx.rels()) # Get the tables in main query
+        # 1/ Get the tables in main query
+        relations = self.visit(ctx.rels())
         if ctx.cond() is not None:
-            # Get conditions and eventually tables from subquery
-            condTree,relList = self.visit(ctx.cond())
+            # 2/ Get conditions and eventually tables from subquery
+            _,relList = self.visit(ctx.cond())
             relations += relList
-
         for i,(fileName,tableName) in enumerate(relations) :
-            # Load all the tables
+            # 3/ Load all the tables
             self.dataManager.load(fileName)
             self.relationNames[tableName]=fileName
             if fileName!=tableName :
@@ -44,41 +43,38 @@ class Visitor(ParseTreeVisitor):
             relations[i]=tableName # get rid of fileName : not useful from now
         print_debug(" Relations :" + str(self.relationNames))
 
-        # perform a join on the tables
+        # 4/ Perform a join on the tables
         if len(relations)==1:
             resultRelation = self.dataManager[relations[0]]
         else:
             resultRelation = reduce(lambda x,y : join(x, y), self.dataManager.get_tables(relations))
 
+        # 5/ Getting attributes
         attributes = self.visit(ctx.atts())
         print_debug(" Attributes :", attributes)
 
         if ctx.cond() is not None:
-            condTree,relList = self.visit(ctx.cond())   # A list of list : CDF form
-                                                        # Second return value is the list of the relations into IN subqueries
+            condTree,_ = self.visit(ctx.cond()) #2nd pass over conditions to get condition tree
             print_debug(" Conditions : " + str(condTree))
-            print_debug(" Perform select in main query")
             resultRelation = select(resultRelation, Or(condTree))
-            print_debug(" End select")
 
         if ctx.DISTINCT() is not None :
             resultRelation = project_distinct(resultRelation)
 
         if ctx.orderby() is not None :
             orderkeys,desc = self.visit(ctx.orderby())
-            print("Order keys : ")
+            print_debug("Order keys : ", orderkeys)
             resultRelation = orderBy(resultRelation, orderkeys, desc=desc)
 
         if not self.allAttr:
             # Not a * -> perform a projection
-            print_debug(" Perform project in main query")
             resultRelation = project(resultRelation, attributes)
-            print_debug(" End project")
 
         return resultRelation
 
     # Visit a parse tree produced by miniSQLParser#sqlMinus.
     def visitSqlMinus(self, ctx:miniSQLParser.SqlMinusContext):
+        # LPAR sql RPAR MINUS LPAR sql RPAR
         print_debug("visitSqlMinus")
         rel1 = self.visit(ctx.sql(0))
         rel2 = self.visit(ctx.sql(1))
@@ -86,6 +82,7 @@ class Visitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by miniSQLParser#sqlUnion.
     def visitSqlUnion(self, ctx:miniSQLParser.SqlUnionContext):
+        # LPAR sql RPAR UNION LPAR sql RPAR
         print_debug("visitSqlUnion")
         rel1 = self.visit(ctx.sql(0))
         rel2 = self.visit(ctx.sql(1))
@@ -98,6 +95,9 @@ class Visitor(ParseTreeVisitor):
 
     # _________________________ subsql rules ___________________________________
     def visitSubSql(self, ctx, attr):
+        """
+        Called when visiting a sub query
+        """
         print_debug("visitSubSql")
         clue = ctx.getChild(3).getText()
         if clue == 'MINUS':
@@ -265,7 +265,4 @@ class Visitor(ParseTreeVisitor):
     def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
         print_debug("visitCompNotIn")
         attr = self.visit(ctx.att())
-        table = self.dataManager[attr.table]
-        rel = self.visitSqlSub(ctx.sql(), table, attr)
-        rel.rename(attr.table)
-        return NotInCondition(attr,rel), set(rel.name)
+        return self.visitSubSql(ctx.sql(), attr)
