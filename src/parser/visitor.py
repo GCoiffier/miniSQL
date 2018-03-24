@@ -25,14 +25,18 @@ class Visitor(ParseTreeVisitor):
 
     # ________________________ sql rules _______________________________________
     def visitSqlNormal(self, ctx:miniSQLParser.SqlNormalContext):
+        # SELECT (DISTINCT)? atts FROM rels (WHERE cond)? orderby?
+
         print_debug("visitSqlNormal")
 
-        relations = self.visit(ctx.rels()) # Load the tables & builds self.relationNames
+        relations = self.visit(ctx.rels()) # Get the tables in main query
         if ctx.cond() is not None:
+            # Get conditions and eventually tables from subquery
             condTree,relList = self.visit(ctx.cond())
             relations += relList
 
         for i,(fileName,tableName) in enumerate(relations) :
+            # Load all the tables
             self.dataManager.load(fileName)
             self.relationNames[tableName]=fileName
             if fileName!=tableName :
@@ -46,7 +50,7 @@ class Visitor(ParseTreeVisitor):
         else:
             resultRelation = reduce(lambda x,y : join(x, y), self.dataManager.get_tables(relations))
 
-        attributes = self.visit(ctx.atts(0))
+        attributes = self.visit(ctx.atts())
         print_debug(" Attributes :", attributes)
 
         if ctx.cond() is not None:
@@ -57,17 +61,20 @@ class Visitor(ParseTreeVisitor):
             resultRelation = select(resultRelation, Or(condTree))
             print_debug(" End select")
 
+        if ctx.DISTINCT() is not None :
+            resultRelation = project_distinct(resultRelation)
+
+        if ctx.orderby() is not None :
+            orderkeys,desc = self.visit(ctx.orderby())
+            print("Order keys : ")
+            resultRelation = orderBy(resultRelation, orderkeys, desc=desc)
+
         if not self.allAttr:
             # Not a * -> perform a projection
             print_debug(" Perform project in main query")
             resultRelation = project(resultRelation, attributes)
             print_debug(" End project")
-        if ctx.DISTINCT() is not None :
-            resultRelation = project_distinct(resultRelation)
-        if ctx.ORDERBY() is not None :
-            orderkeys = self.visit(ctx.atts(1))
-            print("Order keys : ")
-            resultRelation = orderBy(resultRelation, orderkeys, desc = (ctx.DESC() is not None))
+
         return resultRelation
 
     # Visit a parse tree produced by miniSQLParser#sqlMinus.
@@ -83,6 +90,11 @@ class Visitor(ParseTreeVisitor):
         rel1 = self.visit(ctx.sql(0))
         rel2 = self.visit(ctx.sql(1))
         return union(rel1,rel2)
+
+    # _________________________ Group By rules __________________________________
+    def visitSqlGroupBy(self, ctx:miniSQLParser.SqlGroupByContext):
+        # SELECT (DISTINCT)? attgrp FROM rels (WHERE cond)? GROUPBY att orderby?
+        return self.visitChildren(ctx)
 
     # _________________________ subsql rules ___________________________________
     def visitSubSql(self, ctx, attr):
@@ -116,14 +128,13 @@ class Visitor(ParseTreeVisitor):
         condTree2, rels2 = self.visitSubSql(ctx.sql(1), attr)
         return [Or([And(condTree1),And(condTree2)])], rels1+rels2
 
-    # _________________________ Group By rules __________________________________
-    def visitSqlGroupBy(self, ctx:miniSQLParser.SqlGroupByContext):
-        return self.visitChildren(ctx)
-
     # _________________________ Order By rules _____________________________________
 
     def visitOrderBy(self, ctx:miniSQLParser.OrderByContext):
-        return self.visitChildren(ctx)
+        # ORDERBY atts (DESC|ASC)?
+        orderkeys = self.visit(ctx.atts())
+        desc = ctx.DESC() is not None
+        return orderkeys,desc
 
     # _________________________ atts rules _____________________________________
     def visitAttributeDeclAll(self, ctx:miniSQLParser.AttributeDeclAllContext):

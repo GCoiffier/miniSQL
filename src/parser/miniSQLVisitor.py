@@ -19,11 +19,6 @@ class miniSQLVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by miniSQLParser#sqlGroupBy.
-    def visitSqlGroupBy(self, ctx:miniSQLParser.SqlGroupByContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by miniSQLParser#sqlMinus.
     def visitSqlMinus(self, ctx:miniSQLParser.SqlMinusContext):
         return self.visitChildren(ctx)
@@ -31,6 +26,11 @@ class miniSQLVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by miniSQLParser#sqlUnion.
     def visitSqlUnion(self, ctx:miniSQLParser.SqlUnionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by miniSQLParser#sqlGroupBy.
+    def visitSqlGroupBy(self, ctx:miniSQLParser.SqlGroupByContext):
         return self.visitChildren(ctx)
 
 
