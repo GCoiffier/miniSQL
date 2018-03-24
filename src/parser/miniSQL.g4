@@ -29,7 +29,7 @@ att : ID '.' ID ;
 attgrp
     : att
     | att ',' attgrpbis
-    | att AS ID
+    | att AS ID
     | att AS ID ',' attgrpbis
     | aggr LPAR att RPAR ',' attgrp
     ;
@@ -90,11 +90,11 @@ OR : 'OR' | 'or';
 NOT : 'NOT' | 'not';
 IN : 'IN' | 'in';
 DESC : 'DESC' | 'desc';
-ASC : 'ASC' | 'asc';
+ASC : 'ASC' | 'asc';
 MAX : 'MAX' | 'max';
-MIN : 'MIN' | 'min';
-COUNT : 'COUNT' | 'count'
-SUM : 'SUM' | 'sum'
+MIN : 'MIN' | 'min';
+COUNT : 'COUNT' | 'count';
+SUM : 'SUM' | 'sum';
 
 EQ : '=';
 NEQ : '!=';
