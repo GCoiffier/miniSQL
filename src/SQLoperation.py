@@ -16,6 +16,15 @@ def project(rel, attributes):
     new = Table("projectRequest", attributes, entries)
     return new
 
+def project_distinct(rel):
+    def unique_values(iterable):
+        seen = set()
+        for item in iterable:
+            if item not in seen:
+                seen.add(item)
+                yield item
+    return Table("distinctProject", rel.get_keys(), unique_values(rel.data))
+
 ## ____________________ Selection ______________________________________________
 def verify_conditions(entry, cond, keys):
     """
@@ -67,7 +76,27 @@ def minus(relA,relB):
     new = Table("minusRequest", relA.get_keys(), entries)
     return new
 
+
 ## ________________________ Better Operators ___________________________________
 
-def readSelectProjectRename(rel):
+def readSelectProjectRename(filename, tableName, attr, conds,):
+    """
+    Reads a CSV file, filter lines and transform remaning tuples
+    keeping only the proper attributes after renaming
+    """
+    rel = Table.from_file(filename)
+    rel = rel.rename(tableName)
+    rel = select(rel,conds)
+    rel = project(rel,attr)
+    return rel
+
+def joinProjectRename(rel1,rel2, attr, conds):
+    """
+    Combines two relations in a θ-join and transform resulting tuples keeping
+    only the proper attributes after renaming
+    (the θ-join being a cartesian product followed by a selection)
+    """
+
     pass
+
+## __________________________ Group By and Order By ____________________________

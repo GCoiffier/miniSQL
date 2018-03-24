@@ -61,7 +61,9 @@ class Visitor(ParseTreeVisitor):
             print_debug(" Perform project in main query")
             resultRelation = project(resultRelation, attributes)
             print_debug(" End project")
-
+        if ctx.DISTINCT() is not None :
+            resultRelation = project_distinct(resultRelation)
+            
         return resultRelation
 
     # Visit a parse tree produced by miniSQLParser#sqlMinus.

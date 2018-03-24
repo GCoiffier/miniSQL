@@ -7,7 +7,7 @@ main
     : sql (COLON)? ;
 
 sql
-    : SELECT atts FROM rels (WHERE cond)?   #sqlNormal
+    : SELECT (DISTINCT)? atts FROM rels (WHERE cond)?   #sqlNormal
     | LPAR sql RPAR MINUS LPAR sql RPAR     #sqlMinus
     | LPAR sql RPAR UNION LPAR sql RPAR    #sqlUnion
     ;
@@ -60,7 +60,8 @@ COLON : ';';
 STAR : '*';
 QUOTE : '"';
 
-SELECT : 'SELECT' | 'select' ;
+SELECT : 'SELECT'|'select' ;
+DISTINCT : 'DISTINCT'|'distinct' ;
 FROM : 'FROM'|'from' ;
 WHERE : 'WHERE' | 'where';
 AS : 'AS' | 'as' ;
