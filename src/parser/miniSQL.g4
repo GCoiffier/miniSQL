@@ -50,7 +50,7 @@ rels
 
 rel
     : QUOTE FILENAME QUOTE ID  #RelationID
-    | LPAR sql RPAR  ID #Subquery
+    | LPAR sql RPAR  ID #RelationSubQuery
     ;
 
 cond

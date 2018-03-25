@@ -1173,7 +1173,7 @@ class miniSQLParser ( Parser ):
                 return visitor.visitChildren(self)
 
 
-    class SubqueryContext(RelContext):
+    class RelationSubQueryContext(RelContext):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a miniSQLParser.RelContext
             super().__init__(parser)
@@ -1190,8 +1190,8 @@ class miniSQLParser ( Parser ):
             return self.getToken(miniSQLParser.ID, 0)
 
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitSubquery" ):
-                return visitor.visitSubquery(self)
+            if hasattr( visitor, "visitRelationSubQuery" ):
+                return visitor.visitRelationSubQuery(self)
             else:
                 return visitor.visitChildren(self)
 
@@ -1218,7 +1218,7 @@ class miniSQLParser ( Parser ):
                 self.match(miniSQLParser.ID)
                 pass
             elif token in [miniSQLParser.LPAR]:
-                localctx = miniSQLParser.SubqueryContext(self, localctx)
+                localctx = miniSQLParser.RelationSubQueryContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
                 self.state = 155
                 self.match(miniSQLParser.LPAR)

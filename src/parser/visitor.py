@@ -113,7 +113,8 @@ class Visitor(ParseTreeVisitor):
     def visitSubSqlNormal(self, ctx, attr):
         print_debug("visitSubSqlNormal")
         attributes = self.visit(ctx.atts())
-        assert(len(attributes)==1) # There should be only one here
+        if len(attributes)!=1 : # There should be only one here
+             raise InvalidCommand()
         subAttr = attributes[0]
         relations = self.visit(ctx.rels())
         condTree, rels = self.visit(ctx.cond()) # condTree a list of list : CDF form
@@ -195,8 +196,10 @@ class Visitor(ParseTreeVisitor):
         tableName = ctx.ID().getText()
         return (fileName,tableName)
 
-    def visitSubquery(self, ctx:miniSQLParser.SubqueryContext):
-        # When a table in the FROM is a subquery
+    def visitRelationSubQuery(self, ctx:miniSQLParser.RelationSubQueryContext):
+        """
+        When a table in the FROM is a subquery
+        """
         print_debug("visitSubquery")
         tableName = ctx.ID().getText()
 
@@ -228,7 +231,7 @@ class Visitor(ParseTreeVisitor):
         print_debug("visitCondAndOr")
         queueCond, listRel1 = self.visit(ctx.and_cond())
         firstCond, listRel2 = self.visit(ctx.cond())
-        return [Or(firstCond)]+queueCond, listRel1+listRel2
+        return [Or(firstCond)]+queueCond,1 listRel1+listRel2
 
     def visitCondAndList(self, ctx:miniSQLParser.CondAndListContext):
         print_debug("visitCondAndList")
@@ -268,4 +271,5 @@ class Visitor(ParseTreeVisitor):
     def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
         print_debug("visitCompNotIn")
         attr = self.visit(ctx.att())
-        return self.visitSubSql(ctx.sql(), attr)
+        cond,rel = self.visitSubSql(ctx.sql(), attr)
+        cond = toCNF(cond)

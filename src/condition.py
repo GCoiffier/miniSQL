@@ -50,15 +50,14 @@ class Condition:
     def __repr__(self):
         return str((self.attr1, self.operator, self.attr2))
 
-def tseitin(condTree):
-    """
-    Tseitin transformation, from :
-        https://perso.liris.cnrs.fr/emmanuel.coquery/dokuwiki/lib/exe/fetch.php?media=enseignement:logique:logique-td3-correction.pdf
-    Converts an arbitrary boolean formula into a CNF
-    Useful in MINUS and NOT IN requests.
-    """
+def toCNF(condTree):
     #TODO or TODELETE
-    return condTree
+    if isinstance(condTree, Or):
+        
+    elif isinstance(condTree, And):
+
+    else:
+        return condTree
 
 class NotInCondition(Condition):
 
