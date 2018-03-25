@@ -62,8 +62,13 @@ class Visitor(ParseTreeVisitor):
         if ctx.cond() is not None:
             condTree,_,notIn = self.visit(ctx.cond())
             if notIn:
-                print_debug("___ NOT INT SUBQUERY ___")
-                resultRelation = minus()
+                print_debug("___ NOT IN SUBQUERY ___")
+                resultNormal = select(resultRelation, Or(condTree), True)
+                print_debug("coucou")
+                resultWithIn = select(resultRelation, Or(condTree), False)
+                print_debug("toto")
+                resultRelation = minus(resultNormal,resultWithIn)
+                print_debug("foo")
             else:
                 resultRelation = select(resultRelation, Or(condTree))
             print_debug(" Conditions : " + str(condTree))
@@ -121,11 +126,11 @@ class Visitor(ParseTreeVisitor):
 
     def visitSubSqlNormal(self, ctx, attr):
         print_debug("visitSubSqlNormal")
-        attributes = self.visit(ctx.atts())
+        attributes,_ = self.visit(ctx.atts())
         assert(len(attributes)==1) # There should be only one here
         subAttr = attributes[0]
         relations = self.visit(ctx.rels())
-        condTree, rels = self.visit(ctx.cond()) # condTree a list of list : CDF form
+        condTree, rels, _ = self.visit(ctx.cond()) # condTree a list of list : CDF form
         return [Or(condTree),Condition(attr,Op.EQ,subAttr)], relations+rels
 
     def visitSubSqlMinus(self, ctx, attr): # TODO : false version
@@ -296,4 +301,4 @@ class Visitor(ParseTreeVisitor):
         attr = self.visit(ctx.att())
         cond,rel = self.visitSubSql(ctx.sql(), attr)
         self.notInCond = toCNF(cond)
-        return [], rel, True
+        return [NotInCond(cond)], rel, True

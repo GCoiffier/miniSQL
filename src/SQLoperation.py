@@ -1,6 +1,6 @@
 from database import *
 from exceptions import *
-from condition import Or, And
+from condition import Or, And, NotInCond
 from itertools import product,chain,dropwhile
 
 ## _____________________ Projection ____________________________________________
@@ -26,27 +26,34 @@ def project_distinct(rel):
     return Table("distinctProject", rel.get_keys(), unique_values(rel.data))
 
 ## ____________________ Selection ______________________________________________
-def verify_conditions(entry, cond, keys):
+def verify_conditions(entry, cond, keys, ignoreNotIn):
     """
     condTree is a list of list -> CDF form
     """
     if isinstance(cond,Or):
         for clause in cond.args:
-            if verify_conditions(entry,clause,keys):
+            if verify_conditions(entry,clause,keys,ignoreNotIn):
                 return True
         return False
 
     elif isinstance(cond,And):
         for clause in cond.args:
-            if not verify_conditions(entry,clause,keys):
+            if not verify_conditions(entry,clause,keys,ignoreNotIn):
                 return False
         return True
+
+    elif isinstance(cond,NotInCond):
+        if ignoreNotIn :
+            return True
+        else :
+            cond = And(cond.withIn)
+            return verify_conditions(entry,cond,keys,ignoreNotIn)
 
     else :
         return cond.eval(keys,entry)
 
-def select(rel, condTree):
-    selection = lambda x : verify_conditions(x, condTree, rel.keys)
+def select(rel, condTree, ignoreNotIn=True):
+    selection = lambda x : verify_conditions(x, condTree, rel.keys, ignoreNotIn)
     filtered = filter(selection , rel.data)
     new = Table("selectRequest", rel.get_keys(), filtered)
     return new

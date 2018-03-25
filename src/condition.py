@@ -52,6 +52,13 @@ class Condition:
     def __repr__(self):
         return str((self.attr1, self.operator, self.attr2))
 
+class NotInCond:
+    def __init__(self, clauseIn):
+        self.withIn = clauseIn
+
+    def __repr__(self):
+        return "NotInCond("+str(self.withIn)+")"
+
 def toCNF(condTree):
     """
     Transforms a condition tree into a CNF formula
