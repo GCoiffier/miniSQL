@@ -19,9 +19,6 @@ def project(rel, attributes):
 
 ## ____________________ Selection ______________________________________________
 def verify_conditions(entry, cond, keys, ignoreNotIn):
-    """
-    condTree is a list of list -> CDF form
-    """
     if isinstance(cond,Or):
         for clause in cond.args:
             if verify_conditions(entry,clause,keys,ignoreNotIn):
@@ -45,12 +42,18 @@ def verify_conditions(entry, cond, keys, ignoreNotIn):
         return cond.eval(keys,entry)
 
 def select(rel, condTree, ignoreNotIn=True):
+    """
+    Filters a table and keep only entries satisfyinf conditions in condTree
+    """
     selection = lambda x : verify_conditions(x, condTree, rel.keys, ignoreNotIn)
     filtered = filter(selection , rel.data)
     new = Table("selectRequest", rel.get_keys(), filtered)
     return new
 
 def select_distinct(rel):
+    """
+    Filters a table and delete duplicates
+    """
     def unique_values(iterable):
         seen = set()
         for item in iterable:
@@ -84,9 +87,7 @@ def minus(relA,relB):
     new = Table("minusRequest", relA.get_keys(), entries)
     return new
 
-
 ## ________________________ Better Operators ___________________________________
-
 def readSelectProjectRename(filename, tableName, attr, conds,):
     """
     Reads a CSV file, filter lines and transform remaning tuples

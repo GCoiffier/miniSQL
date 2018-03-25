@@ -27,10 +27,15 @@ example:
 The commandline handles history and autocompletion
 
 ## Progress
-- Full miniSQL syntax support
+- SELECT ... FROM ... WHERE <simple Cond>
+- SELECT ... FROM ... WHERE ... IN <subquery>
+- SELECT ... FROM ... WHERE ... NOT IN <subquery>
 - SELECT DISTINCT
+- Subqueries in the FROM part
 - GROUP BY and aggregation (MIN, MAX, COUNT, SUM)
 - ORDER BY
+
+/!\ We still have troubles with double nested queries (especially NOT IN ... NOT IN)
 
 ## Technical choices
 #### Relations
@@ -39,9 +44,11 @@ A relation in represented by a python object that has the following attribute
 - a python iterator over the csv file
 - a dictionnary Attribute -> int, that tells us in which position in the tuple each field is
 
+relations are not loaded in memory, except after the application of
+an ORDER BY or a GROUP BY operator
+
 #### DataManager
-The DataManager class handles every operation on tables, like loading, remaning, or accessing a table.
-For now, every table is loaded into the memory.
+The DataManager class handles every operation on tables, like creating a new one, remaning, or accessing a table.
 
 #### Antlr and visitor pattern
 For the lexer/parser of SQL queries, we used python's binding to ANTLR.
@@ -50,4 +57,4 @@ We then just had to implement the visitor.
 
 ## What remains to be done
 - Possibility to output result of a query in a csv file
-- Push Down selects
+- Push Down Selects

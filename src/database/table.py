@@ -74,5 +74,23 @@ class Table:
             print_debug("Loading table "+filename+" from file")
             return Table(filename, keys, cursor)
         except FileNotFoundError as e:
-            print("Error in Relation.read_data : " + path + ", this file does not exist")
+            print("Error in Table.from_file : " + path + ", this file does not exist")
+            return None
+
+    @staticmethod
+    def to_file(table, filename):
+        """
+        Writes a relation into a .csv file
+        """
+        try:
+            path = pjoin("output",filename)
+            csvfile = open(path, 'w', newline='')
+            csvwriter = csv.writer(csvfile, delimiter=',')
+            csvwriter.writerow(table.get_keys())
+            for entry in table.get_data():
+                csvwriter.writerow(entry)
+            csvfile.close()
+            print_debug("Result table correctly written in file "+path)
+        except FileNotFoundError as e:
+            print("Error in Table.to_file : " + path + ", this file does not exist")
             return None

@@ -18,15 +18,20 @@ def read_request(path):
     except FileNotFoundError as e:
         print("Error in read_request : " + path + ", this file does not exist")
 
-def run_request(reqString):
+def run_request(reqString, outputPath=None):
+    # 1/ Generate AST
     lexer = miniSQLLexer(antlr4.InputStream(reqString))
     stream = antlr4.CommonTokenStream(lexer)
     parser = miniSQLParser(stream)
     tree = parser.main() # rule 'main' is the entry point of the grammar
-    #try:
+
+    # 2/ Run visitor
     visitor = Visitor()
-    resultRelation = visitor.visit(tree) # run visitor
-    print_debug("Visiting exited without raising an error")
-    print(resultRelation)
-    #except Exception as e :
-    #    print ("[ERROR] " + e.args[0])
+    resultRelation = visitor.visit(tree)
+    print_debug(" -- VISITING DONE : visitor exited without raising an error")
+
+    # 3/ Output result
+    if outputPath is None : # Output in terminal
+        print(resultRelation)
+    else :
+        Table.to_file(resultRelation, outputPath)

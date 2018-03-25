@@ -71,11 +71,14 @@ def run_command(inputString):
                 raise InvalidCommand("Usage : .debug <on|off>")
 
         elif mainKeyWord in [".run", ".read"]:
+            outputPath = None
+            if len(command)>3 and command[2]==">":
+                outputPath = command[3]
             reqPath = command[1]
             assert_extension(reqPath,"sql")
             reqString = parser.read_request(reqPath)
             if reqString is not None :
-                parser.run_request(reqString)
+                parser.run_request(reqString,outputPath)
 
         else:
             parser.run_request(inputString)
@@ -86,7 +89,9 @@ def run_command(inputString):
 ## _______________ Auto completion and history in command line _________________
 
 requestFiles = [req for _,_,req in os.walk("request")][0]
-TO_COMPLETE = COMMANDS + requestFiles
+outputFiles = [req for _,_,req in os.walk("output")][0]
+
+TO_COMPLETE = COMMANDS + requestFiles + outputFiles
 
 def completer(text, state):
     options = [i for i in TO_COMPLETE if i.startswith(text)]
