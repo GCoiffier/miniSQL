@@ -13,7 +13,8 @@ class Visitor(ParseTreeVisitor):
 
         self.relationNames = dict() # alias -> real name
         self.attributeNames = dict() # alias -> Attribute(table,name)
-        self.aggregate = dict() # name ->  operator
+        self.aggregate = dict() # name -> operator
+        self.attributeNeeded = dict() # table -> attribute list
 
         self.allAttr = False
         self.hasAggreg = False
@@ -49,7 +50,7 @@ class Visitor(ParseTreeVisitor):
             self.relationNames[tableName]=fileName
             if fileName!=tableName :
                 self.dataManager.rename_table(fileName,tableName)
-            relations[i]=tableName # get rid of fileName : not useful from now
+            relations[i]=tableName # get rid of fileName : not useful from now on
         print_debug(" Relations :" + str(self.relationNames))
 
         # 4/ Perform a join on the tables]
@@ -66,18 +67,14 @@ class Visitor(ParseTreeVisitor):
             if notIn:
                 print_debug("___ NOT IN SUBQUERY ___")
                 resultNormal = select(resultRelation, Or(condTree), True)
-                print_debug("coucou")
                 resultWithIn = select(resultRelation, Or(condTree), False)
-                print_debug("toto")
                 resultRelation = minus(resultNormal,resultWithIn)
-                print_debug("foo")
             else:
                 resultRelation = select(resultRelation, Or(condTree))
             print_debug(" Conditions : " + str(condTree))
 
         # 8/ Sorting of output
         if ctx.orderby() is not None :
-            print_debug("bar")
             orderkeys,desc = self.visit(ctx.orderby())
             print_debug("Order keys : ", orderkeys[0])
             resultRelation = orderBy(resultRelation, orderkeys[0], desc=desc)
