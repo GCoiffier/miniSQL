@@ -20,8 +20,6 @@ class Visitor(ParseTreeVisitor):
 
         self.dataManager = DataManager() # will handle relation loading
 
-        self.notInCond = []
-
     def visitMain(self, ctx:miniSQLParser.MainContext):
         print_debug("visitMain")
         resultRelation = self.visit(ctx.sql())
@@ -134,7 +132,7 @@ class Visitor(ParseTreeVisitor):
 
     def visitSubSqlNormal(self, ctx, attr):
         print_debug("visitSubSqlNormal")
-        attributes,_ = self.visit(ctx.atts())
+        attributes = self.visit(ctx.atts())
         assert(len(attributes)==1) # There should be only one here
         subAttr = attributes[0]
         relations = self.visit(ctx.rels())
@@ -311,5 +309,4 @@ class Visitor(ParseTreeVisitor):
         print_debug("visitCompNotIn")
         attr = self.visit(ctx.att())
         cond,rel = self.visitSubSql(ctx.sql(), attr)
-        self.notInCond = toCNF(cond)
         return [NotInCond(cond)], rel, True
