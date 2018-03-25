@@ -17,6 +17,8 @@ class Visitor(ParseTreeVisitor):
 
         self.dataManager = DataManager() # will handle relation loading
 
+        self.notInCond = []
+
     def visitMain(self, ctx:miniSQLParser.MainContext):
         print_debug("visitMain")
         resultRelation = self.visit(ctx.sql())
@@ -33,9 +35,7 @@ class Visitor(ParseTreeVisitor):
 
         # 2/ Get eventual tables from subqueries
         if ctx.cond() is not None:
-            _,relList,notIn = self.visit(ctx.cond())
-            if notIn:
-                print_debug("___ NOT INT SUBQUERY ___")
+            _,relList,_ = self.visit(ctx.cond())
             relations += relList
 
         # 3/ Load all the tables
@@ -59,9 +59,13 @@ class Visitor(ParseTreeVisitor):
 
         # 6/ 2nd pass over conditions to get condition tree
         if ctx.cond() is not None:
-            condTree,_,_ = self.visit(ctx.cond())
+            condTree,_,notIn = self.visit(ctx.cond())
+            if notIn:
+                print_debug("___ NOT INT SUBQUERY ___")
+                resultRelation = minus()
+            else:
+                resultRelation = select(resultRelation, Or(condTree))
             print_debug(" Conditions : " + str(condTree))
-            resultRelation = select(resultRelation, Or(condTree))
 
         # 7/ Group By
         if ctx.att() is not None:
@@ -277,4 +281,5 @@ class Visitor(ParseTreeVisitor):
         print_debug("visitCompNotIn")
         attr = self.visit(ctx.att())
         cond,rel = self.visitSubSql(ctx.sql(), attr)
-        cond = toCNF(cond), rel, True
+        self.notInCond = toCNF(cond)
+        return [], rel, True
