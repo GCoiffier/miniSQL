@@ -28,7 +28,7 @@ def run_request(reqString, outputPath=None):
     # 2/ Run visitor
     visitor = Visitor()
     resultRelation = visitor.visit(tree)
-    print_debug(" -- VISITING DONE : visitor exited without raising an error")
+    print_debug(" -- VISITING DONE --\n  Visitor exited without raising an error")
 
     # 3/ Output result
     if outputPath is None : # Output in terminal

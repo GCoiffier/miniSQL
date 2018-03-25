@@ -21,6 +21,16 @@ class Visitor(ParseTreeVisitor):
 
         self.dataManager = DataManager() # will handle relation loading
 
+    def reset(self):
+        print_debug("Reseting all attributes of visitor class")
+        self.relationNames = dict()
+        self.attributeNames = dict()
+        self.aggregate = dict()
+        self.attributeNeeded = dict()
+        self.allAttr = False
+        self.hasAggreg = False
+        self.dataManager = DataManager()
+
     def visitMain(self, ctx:miniSQLParser.MainContext):
         print_debug("visitMain")
         resultRelation = self.visit(ctx.sql())
@@ -72,7 +82,6 @@ class Visitor(ParseTreeVisitor):
         if ctx.cond() is not None:
             condTree,_,notIn = self.visit(ctx.cond())
             if notIn:
-                print_debug("___ NOT IN SUBQUERY ___")
                 resultNormal = select(resultRelation, Or(condTree), True)
                 resultWithIn = select(resultRelation, Or(condTree), False)
                 resultRelation = minus(resultNormal,resultWithIn)
@@ -110,6 +119,7 @@ class Visitor(ParseTreeVisitor):
         # LPAR sql RPAR MINUS LPAR sql RPAR
         print_debug("visitSqlMinus")
         rel1 = self.visit(ctx.sql(0))
+        self.reset()
         rel2 = self.visit(ctx.sql(1))
         return minus(rel1,rel2)
 
@@ -117,6 +127,7 @@ class Visitor(ParseTreeVisitor):
         # LPAR sql RPAR UNION LPAR sql RPAR
         print_debug("visitSqlUnion")
         rel1 = self.visit(ctx.sql(0))
+        self.reset()
         rel2 = self.visit(ctx.sql(1))
         return union(rel1,rel2)
 

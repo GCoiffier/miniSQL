@@ -1,7 +1,7 @@
 from database import *
 from exceptions import *
 from condition import Or, And, NotInCond
-from itertools import product,chain,dropwhile,tee
+from itertools import product,chain,filterfalse,tee
 from functools import reduce
 
 ## _____________________ Projection ____________________________________________
@@ -83,7 +83,7 @@ def union(relA,relB):
 
 ## ___________________________ Minus ___________________________________________
 def minus(relA,relB):
-    entries = dropwhile(lambda x : x in relB.data , relA.data)
+    entries = filterfalse(lambda x : x in relB.get_data() , relA.data)
     new = Table("minusRequest", relA.get_keys(), entries)
     return new
 

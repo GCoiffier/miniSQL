@@ -1,1 +1,1 @@
-(SELECT t.name FROM "test.csv" t) UNION (SELECT t2.name FROM "test.csv" t2);
+(SELECT * FROM "employes.csv" e WHERE e.ide<3) UNION (SELECT * FROM "employes.csv" e WHERE e.ide>96);
