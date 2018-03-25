@@ -220,9 +220,9 @@ class Visitor(ParseTreeVisitor):
         tableName = ctx.ID().getText()
         return (fileName,tableName)
 
-    def visitSubquery(self, ctx:miniSQLParser.SubqueryContext):
+    def visitRelationSubQuery(self, ctx:miniSQLParser.RelationSubQueryContext):
         # When a table in the FROM is a subquery
-        print_debug("visitSubquery")
+        print_debug("visitRelationSubQuery")
         tableName = ctx.ID().getText()
 
         mem = self.allAttr
@@ -251,15 +251,9 @@ class Visitor(ParseTreeVisitor):
     # ____________________ and_cond rules ______________________________________
     def visitCondAndOr(self, ctx:miniSQLParser.CondAndOrContext):
         print_debug("visitCondAndOr")
-<<<<<<< HEAD
-        queueCond, listRel1 = self.visit(ctx.and_cond())
-        firstCond, listRel2 = self.visit(ctx.cond())
-        return [Or(firstCond)]+queueCond, listRel1+listRel2
-=======
         queueCond, listRel1, notIn1 = self.visit(ctx.and_cond())
         firstCond, listRel2, notIn2 = self.visit(ctx.cond())
         return [Or(firstCond)]+queueCond, listRel1+listRel2, (notIn1 or notIn2)
->>>>>>> 708f664d848510fcd93a8989941f746fe904dcc4
 
     def visitCondAndList(self, ctx:miniSQLParser.CondAndListContext):
         print_debug("visitCondAndList")
