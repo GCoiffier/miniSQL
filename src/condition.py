@@ -12,6 +12,20 @@ class Op(Enum):
     GT  = 5  # >
     GE  = 6  # >=
 
+def text_to_OP(txt):
+    if txt == "=":
+        return  Op.EQ
+    elif txt == "!=":
+        return  Op.NEQ
+    elif txt == "<=":
+        return  Op.LE
+    elif txt == "<":
+        return  Op.LT
+    elif txt == ">=":
+        return  Op.GE
+    elif txt == ">":
+        return  Op.GT
+
 class Or:
     def __init__(self, clauseList):
         self.args = clauseList
@@ -41,16 +55,40 @@ class Condition:
         elif self.operator == Op.NEQ:
             return entry1!=entry2
         elif self.operator == Op.LT:
-            return int(entry1)>=int(entry2)
-        elif self.operator == Op.LE:
-            return int(entry1)>int(entry2)
-        elif self.operator == Op.GT:
             return int(entry1)<int(entry2)
-        elif self.operator == Op.GE:
+        elif self.operator == Op.LE:
             return int(entry1)<=int(entry2)
+        elif self.operator == Op.GT:
+            return int(entry1)>int(entry2)
+        elif self.operator == Op.GE:
+            return int(entry1)>=int(entry2)
 
     def __repr__(self):
         return str((self.attr1, self.operator, self.attr2))
+
+class ConstCondition(Condition):
+        def __init__(self, attr, operator, cst):
+            self.attr=attr
+            self.const=cst
+            self.operator = operator
+
+        def eval(self, keys, entry):
+            e = entry[keys[self.attr]]
+            if self.operator == Op.EQ:
+                return e==self.const
+            elif self.operator == Op.NEQ:
+                return e!=self.const
+            elif self.operator == Op.LT:
+                return int(e)<int(self.const)
+            elif self.operator == Op.LE:
+                return int(e)<=int(self.const)
+            elif self.operator == Op.GT:
+                return int(e)>int(self.const)
+            elif self.operator == Op.GE:
+                return int(e)>=int(self.const)
+
+        def __repr__(self):
+            return str((self.attr, self.operator, self.const))
 
 class NotInCond:
     def __init__(self, clauseIn):
@@ -84,14 +122,3 @@ def toCNF(condTree):
         return Or(l2)
     else:
         return condTree
-
-def isAtomicConjunction(condTree):
-    """
-    Conjunction of atomic conditions
-    """
-    if not isinstance(condTree,And):
-        return False
-    for x in condTree.args:
-        if not (isinstance(x,Condition)):
-            return False
-    return True

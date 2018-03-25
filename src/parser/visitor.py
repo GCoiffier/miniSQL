@@ -31,8 +31,6 @@ class Visitor(ParseTreeVisitor):
     def visitSqlNormal(self, ctx:miniSQLParser.SqlNormalContext):
         # SELECT (DISTINCT)? atts FROM rels (WHERE cond)? (GROUPBY att)? orderby?
         print_debug("visitSqlNormal")
-        relations = None
-        condTree = None
 
         # 1/ Get the tables in main query
         relations = self.visit(ctx.rels())
@@ -44,11 +42,14 @@ class Visitor(ParseTreeVisitor):
 
         # 2.5/ Only one relation => using special operator
         if len(relations)==1:
-            print_debug("Calling readSelectProjectRename")
-            rel = relations[0]
-            print(rel)
             attributes = self.visit(ctx.atts())
-            return readSelectProjectRename(rel[0], rel[1], attributes,condTree)
+            if not self.aggregate:
+                print_debug("Calling readSelectProjectRename")
+                rel = relations[0]
+                condTree = None
+                if ctx.cond() is not None:
+                    condTree,_,_ = self.visit(ctx.cond())
+                return readSelectProjectRename(rel[0], rel[1], attributes, self.allAttr, condTree[0])
 
         # 3/ Load all the tables
         for i,(fileName,tableName) in enumerate(relations) :
@@ -286,21 +287,13 @@ class Visitor(ParseTreeVisitor):
     # ____________________ at_cond rules _______________________________________
     def visitCompSimple(self, ctx:miniSQLParser.CompSimpleContext):
         print_debug("visitCompSimple")
-        op = ctx.op().getText()
-        if op == "=":
-            op = Op.EQ
-        elif op == "!=":
-            op = Op.NEQ
-        elif op == "<=":
-            op = Op.LE
-        elif op == "<":
-            op = Op.LT
-        elif op == ">=":
-            op = Op.GE
-        elif op == ">":
-            op = Op.GT
-        attr1,attr2 = self.visit(ctx.att(0)), self.visit(ctx.att(1))
-        return [Condition(attr1,op,attr2)], [], False
+        op = text_to_OP(ctx.op().getText())
+        if ctx.CONST() is not None :
+            attr,const = self.visit(ctx.att(0)), ctx.CONST().getText()
+            return [ConstCondition(attr,op,const)], [], False
+        else:
+            attr1,attr2 = self.visit(ctx.att(0)), self.visit(ctx.att(1))
+            return [Condition(attr1,op,attr2)], [], False
 
     def visitCompIn(self, ctx:miniSQLParser.CompInContext):
         print_debug("visitCompIn")

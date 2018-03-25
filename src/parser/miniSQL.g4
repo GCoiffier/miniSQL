@@ -52,7 +52,7 @@ and_cond
     ;
 
 at_cond
-    : att op att #CompSimple
+    : att op (att | CONST ) #CompSimple
     | att IN LPAR sql RPAR #CompIn
     | att NOT IN LPAR sql RPAR #CompNotIn
     ;
@@ -96,5 +96,6 @@ GE : '>=';
 
 FILENAME : [A-Za-z][a-zA-Z0-9_]*'.csv';
 ID : [A-Za-z][a-zA-Z0-9_]* ;
+CONST : [0-9]+ | ID ;
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
 NEWLINE: [\n]+;

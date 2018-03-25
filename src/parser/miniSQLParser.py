@@ -7,8 +7,8 @@ import sys
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\'")
-        buf.write("\u009f\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3(")
+        buf.write("\u00a1\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
         buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\4\16")
         buf.write("\t\16\3\2\3\2\5\2\37\n\2\3\3\3\3\5\3#\n\3\3\3\3\3\3\3")
         buf.write("\3\3\3\3\5\3*\n\3\3\3\3\3\5\3.\n\3\3\3\5\3\61\n\3\3\3")
@@ -19,49 +19,51 @@ def serializedATN():
         buf.write("\n\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\5\tr\n\t\3\n")
         buf.write("\3\n\3\n\3\n\3\n\5\ny\n\n\3\13\3\13\3\13\3\13\3\13\3\13")
         buf.write("\3\13\3\13\3\13\3\13\3\13\5\13\u0086\n\13\3\f\3\f\3\f")
-        buf.write("\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3")
-        buf.write("\f\5\f\u0099\n\f\3\r\3\r\3\16\3\16\3\16\2\2\17\2\4\6\b")
-        buf.write("\n\f\16\20\22\24\26\30\32\2\5\3\2\30\31\3\2\36#\3\2\32")
-        buf.write("\35\2\u00a4\2\34\3\2\2\2\4B\3\2\2\2\6D\3\2\2\2\bO\3\2")
-        buf.write("\2\2\n[\3\2\2\2\f]\3\2\2\2\16f\3\2\2\2\20q\3\2\2\2\22")
-        buf.write("x\3\2\2\2\24\u0085\3\2\2\2\26\u0098\3\2\2\2\30\u009a\3")
-        buf.write("\2\2\2\32\u009c\3\2\2\2\34\36\5\4\3\2\35\37\7\7\2\2\36")
-        buf.write("\35\3\2\2\2\36\37\3\2\2\2\37\3\3\2\2\2 \"\7\n\2\2!#\7")
-        buf.write("\13\2\2\"!\3\2\2\2\"#\3\2\2\2#$\3\2\2\2$%\5\b\5\2%&\7")
-        buf.write("\f\2\2&)\5\16\b\2\'(\7\r\2\2(*\5\22\n\2)\'\3\2\2\2)*\3")
-        buf.write("\2\2\2*-\3\2\2\2+,\7\22\2\2,.\5\f\7\2-+\3\2\2\2-.\3\2")
-        buf.write("\2\2.\60\3\2\2\2/\61\5\6\4\2\60/\3\2\2\2\60\61\3\2\2\2")
-        buf.write("\61C\3\2\2\2\62\63\7\5\2\2\63\64\5\4\3\2\64\65\7\6\2\2")
-        buf.write("\65\66\7\17\2\2\66\67\7\5\2\2\678\5\4\3\289\7\6\2\29C")
-        buf.write("\3\2\2\2:;\7\5\2\2;<\5\4\3\2<=\7\6\2\2=>\7\20\2\2>?\7")
-        buf.write("\5\2\2?@\5\4\3\2@A\7\6\2\2AC\3\2\2\2B \3\2\2\2B\62\3\2")
-        buf.write("\2\2B:\3\2\2\2C\5\3\2\2\2DE\7\23\2\2EG\5\b\5\2FH\t\2\2")
-        buf.write("\2GF\3\2\2\2GH\3\2\2\2H\7\3\2\2\2IP\7\b\2\2JK\5\n\6\2")
-        buf.write("KL\7\3\2\2LM\5\b\5\2MP\3\2\2\2NP\5\n\6\2OI\3\2\2\2OJ\3")
-        buf.write("\2\2\2ON\3\2\2\2P\t\3\2\2\2Q\\\5\f\7\2RS\5\f\7\2ST\7\16")
-        buf.write("\2\2TU\7%\2\2U\\\3\2\2\2VW\5\32\16\2WX\7\5\2\2XY\5\f\7")
-        buf.write("\2YZ\7\6\2\2Z\\\3\2\2\2[Q\3\2\2\2[R\3\2\2\2[V\3\2\2\2")
-        buf.write("\\\13\3\2\2\2]^\7%\2\2^_\7\4\2\2_`\7%\2\2`\r\3\2\2\2a")
-        buf.write("b\5\20\t\2bc\7\3\2\2cd\5\16\b\2dg\3\2\2\2eg\5\20\t\2f")
-        buf.write("a\3\2\2\2fe\3\2\2\2g\17\3\2\2\2hi\7\t\2\2ij\7$\2\2jk\7")
-        buf.write("\t\2\2kr\7%\2\2lm\7\5\2\2mn\5\4\3\2no\7\6\2\2op\7%\2\2")
-        buf.write("pr\3\2\2\2qh\3\2\2\2ql\3\2\2\2r\21\3\2\2\2st\5\24\13\2")
-        buf.write("tu\7\25\2\2uv\5\22\n\2vy\3\2\2\2wy\5\24\13\2xs\3\2\2\2")
-        buf.write("xw\3\2\2\2y\23\3\2\2\2z{\7\5\2\2{|\5\22\n\2|}\7\6\2\2")
-        buf.write("}~\7\24\2\2~\177\5\24\13\2\177\u0086\3\2\2\2\u0080\u0081")
-        buf.write("\5\26\f\2\u0081\u0082\7\24\2\2\u0082\u0083\5\24\13\2\u0083")
-        buf.write("\u0086\3\2\2\2\u0084\u0086\5\26\f\2\u0085z\3\2\2\2\u0085")
-        buf.write("\u0080\3\2\2\2\u0085\u0084\3\2\2\2\u0086\25\3\2\2\2\u0087")
-        buf.write("\u0088\5\f\7\2\u0088\u0089\5\30\r\2\u0089\u008a\5\f\7")
-        buf.write("\2\u008a\u0099\3\2\2\2\u008b\u008c\5\f\7\2\u008c\u008d")
-        buf.write("\7\27\2\2\u008d\u008e\7\5\2\2\u008e\u008f\5\4\3\2\u008f")
-        buf.write("\u0090\7\6\2\2\u0090\u0099\3\2\2\2\u0091\u0092\5\f\7\2")
-        buf.write("\u0092\u0093\7\26\2\2\u0093\u0094\7\27\2\2\u0094\u0095")
-        buf.write("\7\5\2\2\u0095\u0096\5\4\3\2\u0096\u0097\7\6\2\2\u0097")
-        buf.write("\u0099\3\2\2\2\u0098\u0087\3\2\2\2\u0098\u008b\3\2\2\2")
-        buf.write("\u0098\u0091\3\2\2\2\u0099\27\3\2\2\2\u009a\u009b\t\3")
-        buf.write("\2\2\u009b\31\3\2\2\2\u009c\u009d\t\4\2\2\u009d\33\3\2")
-        buf.write("\2\2\20\36\")-\60BGO[fqx\u0085\u0098")
+        buf.write("\3\f\5\f\u008c\n\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f\3\f")
+        buf.write("\3\f\3\f\3\f\3\f\5\f\u009b\n\f\3\r\3\r\3\16\3\16\3\16")
+        buf.write("\2\2\17\2\4\6\b\n\f\16\20\22\24\26\30\32\2\5\3\2\30\31")
+        buf.write("\3\2\36#\3\2\32\35\2\u00a7\2\34\3\2\2\2\4B\3\2\2\2\6D")
+        buf.write("\3\2\2\2\bO\3\2\2\2\n[\3\2\2\2\f]\3\2\2\2\16f\3\2\2\2")
+        buf.write("\20q\3\2\2\2\22x\3\2\2\2\24\u0085\3\2\2\2\26\u009a\3\2")
+        buf.write("\2\2\30\u009c\3\2\2\2\32\u009e\3\2\2\2\34\36\5\4\3\2\35")
+        buf.write("\37\7\7\2\2\36\35\3\2\2\2\36\37\3\2\2\2\37\3\3\2\2\2 ")
+        buf.write("\"\7\n\2\2!#\7\13\2\2\"!\3\2\2\2\"#\3\2\2\2#$\3\2\2\2")
+        buf.write("$%\5\b\5\2%&\7\f\2\2&)\5\16\b\2\'(\7\r\2\2(*\5\22\n\2")
+        buf.write(")\'\3\2\2\2)*\3\2\2\2*-\3\2\2\2+,\7\22\2\2,.\5\f\7\2-")
+        buf.write("+\3\2\2\2-.\3\2\2\2.\60\3\2\2\2/\61\5\6\4\2\60/\3\2\2")
+        buf.write("\2\60\61\3\2\2\2\61C\3\2\2\2\62\63\7\5\2\2\63\64\5\4\3")
+        buf.write("\2\64\65\7\6\2\2\65\66\7\17\2\2\66\67\7\5\2\2\678\5\4")
+        buf.write("\3\289\7\6\2\29C\3\2\2\2:;\7\5\2\2;<\5\4\3\2<=\7\6\2\2")
+        buf.write("=>\7\20\2\2>?\7\5\2\2?@\5\4\3\2@A\7\6\2\2AC\3\2\2\2B ")
+        buf.write("\3\2\2\2B\62\3\2\2\2B:\3\2\2\2C\5\3\2\2\2DE\7\23\2\2E")
+        buf.write("G\5\b\5\2FH\t\2\2\2GF\3\2\2\2GH\3\2\2\2H\7\3\2\2\2IP\7")
+        buf.write("\b\2\2JK\5\n\6\2KL\7\3\2\2LM\5\b\5\2MP\3\2\2\2NP\5\n\6")
+        buf.write("\2OI\3\2\2\2OJ\3\2\2\2ON\3\2\2\2P\t\3\2\2\2Q\\\5\f\7\2")
+        buf.write("RS\5\f\7\2ST\7\16\2\2TU\7%\2\2U\\\3\2\2\2VW\5\32\16\2")
+        buf.write("WX\7\5\2\2XY\5\f\7\2YZ\7\6\2\2Z\\\3\2\2\2[Q\3\2\2\2[R")
+        buf.write("\3\2\2\2[V\3\2\2\2\\\13\3\2\2\2]^\7%\2\2^_\7\4\2\2_`\7")
+        buf.write("%\2\2`\r\3\2\2\2ab\5\20\t\2bc\7\3\2\2cd\5\16\b\2dg\3\2")
+        buf.write("\2\2eg\5\20\t\2fa\3\2\2\2fe\3\2\2\2g\17\3\2\2\2hi\7\t")
+        buf.write("\2\2ij\7$\2\2jk\7\t\2\2kr\7%\2\2lm\7\5\2\2mn\5\4\3\2n")
+        buf.write("o\7\6\2\2op\7%\2\2pr\3\2\2\2qh\3\2\2\2ql\3\2\2\2r\21\3")
+        buf.write("\2\2\2st\5\24\13\2tu\7\25\2\2uv\5\22\n\2vy\3\2\2\2wy\5")
+        buf.write("\24\13\2xs\3\2\2\2xw\3\2\2\2y\23\3\2\2\2z{\7\5\2\2{|\5")
+        buf.write("\22\n\2|}\7\6\2\2}~\7\24\2\2~\177\5\24\13\2\177\u0086")
+        buf.write("\3\2\2\2\u0080\u0081\5\26\f\2\u0081\u0082\7\24\2\2\u0082")
+        buf.write("\u0083\5\24\13\2\u0083\u0086\3\2\2\2\u0084\u0086\5\26")
+        buf.write("\f\2\u0085z\3\2\2\2\u0085\u0080\3\2\2\2\u0085\u0084\3")
+        buf.write("\2\2\2\u0086\25\3\2\2\2\u0087\u0088\5\f\7\2\u0088\u008b")
+        buf.write("\5\30\r\2\u0089\u008c\5\f\7\2\u008a\u008c\7&\2\2\u008b")
+        buf.write("\u0089\3\2\2\2\u008b\u008a\3\2\2\2\u008c\u009b\3\2\2\2")
+        buf.write("\u008d\u008e\5\f\7\2\u008e\u008f\7\27\2\2\u008f\u0090")
+        buf.write("\7\5\2\2\u0090\u0091\5\4\3\2\u0091\u0092\7\6\2\2\u0092")
+        buf.write("\u009b\3\2\2\2\u0093\u0094\5\f\7\2\u0094\u0095\7\26\2")
+        buf.write("\2\u0095\u0096\7\27\2\2\u0096\u0097\7\5\2\2\u0097\u0098")
+        buf.write("\5\4\3\2\u0098\u0099\7\6\2\2\u0099\u009b\3\2\2\2\u009a")
+        buf.write("\u0087\3\2\2\2\u009a\u008d\3\2\2\2\u009a\u0093\3\2\2\2")
+        buf.write("\u009b\27\3\2\2\2\u009c\u009d\t\3\2\2\u009d\31\3\2\2\2")
+        buf.write("\u009e\u009f\t\4\2\2\u009f\33\3\2\2\2\21\36\")-\60BGO")
+        buf.write("[fqx\u0085\u008b\u009a")
         return buf.getvalue()
 
 
@@ -88,7 +90,7 @@ class miniSQLParser ( Parser ):
                       "WHERE", "AS", "MINUS", "UNION", "JOIN", "GROUPBY", 
                       "ORDERBY", "AND", "OR", "NOT", "IN", "DESC", "ASC", 
                       "MAX", "MIN", "COUNT", "SUM", "EQ", "NEQ", "LT", "LE", 
-                      "GT", "GE", "FILENAME", "ID", "WS", "NEWLINE" ]
+                      "GT", "GE", "FILENAME", "ID", "CONST", "WS", "NEWLINE" ]
 
     RULE_main = 0
     RULE_sql = 1
@@ -143,8 +145,9 @@ class miniSQLParser ( Parser ):
     GE=33
     FILENAME=34
     ID=35
-    WS=36
-    NEWLINE=37
+    CONST=36
+    WS=37
+    NEWLINE=38
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -1288,6 +1291,8 @@ class miniSQLParser ( Parser ):
         def op(self):
             return self.getTypedRuleContext(miniSQLParser.OpContext,0)
 
+        def CONST(self):
+            return self.getToken(miniSQLParser.CONST, 0)
 
         def accept(self, visitor:ParseTreeVisitor):
             if hasattr( visitor, "visitCompSimple" ):
@@ -1302,9 +1307,9 @@ class miniSQLParser ( Parser ):
         localctx = miniSQLParser.At_condContext(self, self._ctx, self.state)
         self.enterRule(localctx, 20, self.RULE_at_cond)
         try:
-            self.state = 150
+            self.state = 152
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,13,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,14,self._ctx)
             if la_ == 1:
                 localctx = miniSQLParser.CompSimpleContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
@@ -1312,39 +1317,51 @@ class miniSQLParser ( Parser ):
                 self.att()
                 self.state = 134
                 self.op()
-                self.state = 135
-                self.att()
+                self.state = 137
+                self._errHandler.sync(self)
+                token = self._input.LA(1)
+                if token in [miniSQLParser.ID]:
+                    self.state = 135
+                    self.att()
+                    pass
+                elif token in [miniSQLParser.CONST]:
+                    self.state = 136
+                    self.match(miniSQLParser.CONST)
+                    pass
+                else:
+                    raise NoViableAltException(self)
+
                 pass
 
             elif la_ == 2:
                 localctx = miniSQLParser.CompInContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 137
-                self.att()
-                self.state = 138
-                self.match(miniSQLParser.IN)
                 self.state = 139
-                self.match(miniSQLParser.LPAR)
+                self.att()
                 self.state = 140
-                self.sql()
+                self.match(miniSQLParser.IN)
                 self.state = 141
+                self.match(miniSQLParser.LPAR)
+                self.state = 142
+                self.sql()
+                self.state = 143
                 self.match(miniSQLParser.RPAR)
                 pass
 
             elif la_ == 3:
                 localctx = miniSQLParser.CompNotInContext(self, localctx)
                 self.enterOuterAlt(localctx, 3)
-                self.state = 143
-                self.att()
-                self.state = 144
-                self.match(miniSQLParser.NOT)
                 self.state = 145
-                self.match(miniSQLParser.IN)
+                self.att()
                 self.state = 146
-                self.match(miniSQLParser.LPAR)
+                self.match(miniSQLParser.NOT)
                 self.state = 147
-                self.sql()
+                self.match(miniSQLParser.IN)
                 self.state = 148
+                self.match(miniSQLParser.LPAR)
+                self.state = 149
+                self.sql()
+                self.state = 150
                 self.match(miniSQLParser.RPAR)
                 pass
 
@@ -1400,7 +1417,7 @@ class miniSQLParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 152
+            self.state = 154
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << miniSQLParser.EQ) | (1 << miniSQLParser.NEQ) | (1 << miniSQLParser.LT) | (1 << miniSQLParser.LE) | (1 << miniSQLParser.GT) | (1 << miniSQLParser.GE))) != 0)):
                 self._errHandler.recoverInline(self)
@@ -1452,7 +1469,7 @@ class miniSQLParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 154
+            self.state = 156
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << miniSQLParser.MAX) | (1 << miniSQLParser.MIN) | (1 << miniSQLParser.COUNT) | (1 << miniSQLParser.SUM))) != 0)):
                 self._errHandler.recoverInline(self)

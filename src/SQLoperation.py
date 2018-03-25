@@ -88,7 +88,7 @@ def minus(relA,relB):
     return new
 
 ## ________________________ Better Operators ___________________________________
-def readSelectProjectRename(fileName, tableName, attr, conds):
+def readSelectProjectRename(fileName, tableName, attr, isStart, conds):
     """
     Reads a CSV file, filter lines and transform remaning tuples
     keeping only the proper attributes after renaming
@@ -97,7 +97,8 @@ def readSelectProjectRename(fileName, tableName, attr, conds):
     rel.rename(tableName)
     if conds is not None :
         rel = select(rel,conds)
-    rel = project(rel,attr)
+    if not isStart :
+        rel = project(rel,attr)
     return rel
 
 def joinProjectRename(rel1,rel2, attr, conds):
