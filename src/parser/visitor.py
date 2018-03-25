@@ -75,11 +75,13 @@ class Visitor(ParseTreeVisitor):
 
         # 7/ Group By
         if ctx.GROUPBY() is not None:
+            print_debug("kiki")
             grpAttr = self.visit(ctx.att())
             resultRelation = groupBy(resultRelation, grpAttr, aggregation)
 
         # 8/ Sorting of output
         if ctx.orderby() is not None :
+            print_debug("bar")
             orderkeys,desc = self.visit(ctx.orderby())
             print_debug("Order keys : ", orderkeys[0])
             resultRelation = orderBy(resultRelation, orderkeys[0], desc=desc)
@@ -93,6 +95,8 @@ class Visitor(ParseTreeVisitor):
             print_debug("Select Distinct")
             resultRelation = project_distinct(resultRelation)
 
+
+        print_debug("drone")
         return resultRelation
 
 
