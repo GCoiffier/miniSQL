@@ -50,7 +50,7 @@ class Visitor(ParseTreeVisitor):
             resultRelation = reduce(lambda x,y : join(x, y), self.dataManager.get_tables(relations))
 
         # 5/ Getting attributes
-        attributes = self.visit(ctx.atts())
+        attributes, aggregations = self.visit(ctx.atts())
         print_debug(" Attributes :", attributes)
 
         # 6/ 2nd pass over conditions to get condition tree
@@ -61,7 +61,7 @@ class Visitor(ParseTreeVisitor):
 
         # 7/ Group By
         if ctx.att() is not None:
-            resultRelation = groupBy(resultRelation, ctx.att())
+            resultRelation = groupBy(resultRelation, ctx.att(), aggregation)
 
         # 8/ Sorting of output
         if ctx.orderby() is not None :
@@ -98,7 +98,7 @@ class Visitor(ParseTreeVisitor):
     # _________________________ subsql rules ___________________________________
     def visitSubSql(self, ctx, attr):
         """
-        Called when visiting a sub query with IN or NOT IN
+        Called when visiting a sub query
         """
         print_debug("visitSubSql")
         clue = ctx.getChild(3).getText()
@@ -109,18 +109,16 @@ class Visitor(ParseTreeVisitor):
         else:
             return self.visitSubSqlNormal(ctx,attr)
 
-    def visitSubSqlNormal(self, ctx, attr, notIN=False):
+    def visitSubSqlNormal(self, ctx, attr):
         print_debug("visitSubSqlNormal")
         attributes = self.visit(ctx.atts())
-        if len(attributes)!=1 : # There should be only one here
-             raise InvalidCommand()
+        assert(len(attributes)==1) # There should be only one here
         subAttr = attributes[0]
         relations = self.visit(ctx.rels())
         condTree, rels = self.visit(ctx.cond()) # condTree a list of list : CDF form
         return [Or(condTree),Condition(attr,Op.EQ,subAttr)], relations+rels
 
-    def visitSubSqlMinus(self, ctx, attr):
-        # TODO : false version
+    def visitSubSqlMinus(self, ctx, attr): # TODO : false version
         print_debug("visitSubSqlUnion")
         condTree1, rels1 = self.visitSubSql(ctx.sql(0), attr)
         condTree2, rels2 = self.visitSubSql(ctx.sql(1), attr)
@@ -145,31 +143,47 @@ class Visitor(ParseTreeVisitor):
         # SELECT *
         print_debug("visitAttributeDeclAll")
         self.allAttr = True
-        return []
+        return [], []
 
     def visitAttributeDeclList(self, ctx:miniSQLParser.AttributeDeclListContext):
         print_debug("visitAttributeDeclList")
-        queueOfList = self.visit(ctx.atts())
-        firstElem = self.visit(ctx.attd())
-        return [firstElem]+queueOfList
+        queueOfAttrList, queueOfAggrList = self.visit(ctx.atts())
+        firstAttrElem, firstAggrElem = self.visit(ctx.attd())
+        return [firstAttrElem]+queueOfAttrList, [firstAggrElem]+queueOfAggrList,
 
     def visitAttributeDeclSimple(self, ctx:miniSQLParser.AttributeDeclSimpleContext):
         print_debug("visitAttributeDeclSimple")
-        return [self.visitChildren(ctx)]
+        attr, aggr = self.visitChildren(ctx)]
+        return [attr], [aggr]
 
     # ___________________ attd rules ___________________________________________
     def visitAttributeSimple(self, ctx:miniSQLParser.AttributeSimpleContext):
         print_debug("visitAttributeSimple")
         attr = self.visit(ctx.att())
         self.attributeNames[attr.fullName] = attr
-        return attr
+        return attr, Aggregation.GROUPBY
 
     def visitAttributeAs(self, ctx:miniSQLParser.AttributeAsContext):
         print_debug("visitAttributeAs")
         attr = self.visit(ctx.att())
         alias = ctx.ID().getText()
         self.attributeNames[alias] = attr
-        return attr
+        return attr, Aggregation.GROUPBY
+
+    def visitAttributeAggr(self, ctx:miniSQLParser.AttributeAggrContext):
+        print_debug("visitAttributeAggr")
+        attr = self.visit(ctx.att())
+        self.attributeNames[attr.fullName] = attr
+        aggr = ctx.aggr().getText()
+        if aggr == "MAX":
+            aggr = Aggregation.MAX
+        elif aggr == "MIN":
+            aggr = Aggregation.MIN
+        elif aggr == "COUNT":
+            aggr = Aggregation.COUNT
+        elif aggr == "SUM":
+            aggr = Aggregation.SUM
+        return attr, aggr
 
     # __________________ att rule ______________________________________________
     def visitAtt(self, ctx:miniSQLParser.AttContext):
@@ -196,10 +210,8 @@ class Visitor(ParseTreeVisitor):
         tableName = ctx.ID().getText()
         return (fileName,tableName)
 
-    def visitRelationSubQuery(self, ctx:miniSQLParser.RelationSubQueryContext):
-        """
-        When a table in the FROM is a subquery
-        """
+    def visitSubquery(self, ctx:miniSQLParser.SubqueryContext):
+        # When a table in the FROM is a subquery
         print_debug("visitSubquery")
         tableName = ctx.ID().getText()
 
@@ -231,7 +243,7 @@ class Visitor(ParseTreeVisitor):
         print_debug("visitCondAndOr")
         queueCond, listRel1 = self.visit(ctx.and_cond())
         firstCond, listRel2 = self.visit(ctx.cond())
-        return [Or(firstCond)]+queueCond,1 listRel1+listRel2
+        return [Or(firstCond)]+queueCond, listRel1+listRel2
 
     def visitCondAndList(self, ctx:miniSQLParser.CondAndListContext):
         print_debug("visitCondAndList")
@@ -271,6 +283,4 @@ class Visitor(ParseTreeVisitor):
     def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
         print_debug("visitCompNotIn")
         attr = self.visit(ctx.att())
-        cond,rel = self.visitSubSql(ctx.sql(), attr)
-        cond = toCNF(cond)
-        
+        return self.visitSubSql(ctx.sql(), attr)
