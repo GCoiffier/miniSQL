@@ -7,8 +7,7 @@ main
     : sql (COLON)? ;
 
 sql
-    : SELECT (DISTINCT)? atts FROM rels (WHERE cond)? orderby?  #sqlNormal
-    | SELECT (DISTINCT)? attsgrp FROM rels (WHERE cond)? GROUPBY att orderby? #sqlGroupBy
+    : SELECT (DISTINCT)? atts FROM rels (WHERE cond)? (GROUPBY att)? orderby? #sqlNormal
     | LPAR sql RPAR MINUS LPAR sql RPAR     #sqlMinus
     | LPAR sql RPAR UNION LPAR sql RPAR    #sqlUnion
     ;
@@ -24,21 +23,12 @@ atts
     ;
 
 attd
-    : att         #AttributeSimple
-    | att AS ID   #AttributeAs
+    : att                 #AttributeSimple
+    | att AS ID           #AttributeAs
+    | aggr LPAR att RPAR  #AttributeAggr
     ;
 
 att : ID '.' ID ;
-
-attsgrp
-    : attgrp ',' attsgrp  #AttributeGroupByDeclAll
-    | attgrp              #AttributeGroupByDeclSimple
-    ;
-
-attgrp
-    : att                 #AttributeGroupBySimple
-    | aggr LPAR att RPAR  #AttributeGroupByAggr
-    ;
 
 rels
     : rel ',' rels  #RelationDeclList

@@ -101,7 +101,7 @@ def joinProjectRename(rel1,rel2, attr, conds):
 
 ## __________________________ Group By ____________________________
 
-def groupBySingleRelation(rel,attr):
+def groupBy(rel,attr):
     return rel
 
 ## __________________________ Order By ____________________________
