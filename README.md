@@ -24,16 +24,19 @@ Available commands :
 example:
     `.run test.csv` to run the query file 'request/test.csv'
 
+The commandline handles history and autocompletion
+
 ## Progress
 - Full miniSQL syntax support
 - SELECT DISTINCT
+- GROUP BY and aggregation (MIN, MAX, COUNT, SUM)
 - ORDER BY
 
 ## Technical choices
 #### Relations
 A relation in represented by a python object that has the following attribute
 - a name <string>
-- a set of entries (an entry is represented by a tuple)
+- a python iterator over the csv file
 - a dictionnary Attribute -> int, that tells us in which position in the tuple each field is
 
 #### DataManager
@@ -46,8 +49,5 @@ Given a .g4 file in which the grammar is described, ANTLR automatically generate
 We then just had to implement the visitor.
 
 ## What remains to be done
-- The whole 'A Better Algebra Engine' part of the project
-- Optimisation of join
-- Use of iterators on tables instead of loading everything in memory
 - Possibility to output result of a query in a csv file
-- Maybe some other fancy things
+- Push Down selects

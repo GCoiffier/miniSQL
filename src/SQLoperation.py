@@ -2,6 +2,7 @@ from database import *
 from exceptions import *
 from condition import Or, And, NotInCond
 from itertools import product,chain,dropwhile,tee
+from functools import reduce
 
 ## _____________________ Projection ____________________________________________
 def project(rel, attributes):
@@ -106,35 +107,46 @@ def joinProjectRename(rel1,rel2, attr, conds):
 
     pass
 
-## __________________________ Group By ____________________________
+## _______________________ Aggregation and Group By ____________________________
 
 def add_to_aggregate(aggr, entry, keyAggrOp):
+    """
+    Aggregates the entry 'entry' to entry aggr, using aggregation operators
+    described in 'keyAggrOp' dict
+    """
     if aggr is None :
         aggr = [None]*len(entry)
+        for i in keyAggrOp.keys():
+            if keyAggrOp[i]==Aggregation.COUNT:
+                aggr[i]=1
+            else:
+                try:
+                    aggr[i]=int(entry[i])
+                except:
+                    aggr[i]=entry[i]
     for i in keyAggrOp.keys():
         if keyAggrOp[i] == Aggregation.SUM:
-            if aggr[i] is None :
-                aggr[i] = int(entry[i])
-            else:
-                aggr[i] += int(entry[i])
+            aggr[i] += int(entry[i])
         elif keyAggrOp[i] == Aggregation.MIN:
-            if aggr[i] is None :
-                aggr[i] = int(entry[i])
-            else:
-                aggr[i] = min(aggr[i], int(entry[i]))
+            aggr[i] = min(aggr[i], int(entry[i]))
         elif keyAggrOp[i] == Aggregation.MAX:
-            if aggr[i] is None :
-                aggr[i] = int(entry[i])
-            else:
-                aggr[i] = max(aggr[i], int(entry[i]))
+            aggr[i] = max(aggr[i], int(entry[i]))
         elif keyAggrOp[i] == Aggregation.COUNT:
-            if aggr[i] is None :
-                aggr[i] = 1
-            else:
-                aggr[i] += 1
+            aggr[i] += 1
         elif keyAggrOp[i] == Aggregation.NONE:
             aggr[i]=entry[i]
     return aggr
+
+def aggregate(rel, aggrOp):
+    """
+    Perform an aggregation on rel (all fields at once)
+    """
+    keyAggrOp = dict() # a dict int -> Aggregation operator
+    for (attr,aggr) in aggrOp.items():
+        keyAggrOp[rel.keys[attr]]=aggr
+    data = [reduce(lambda x,y : add_to_aggregate(x,y, keyAggrOp), rel.get_data(), None)]
+    rel = Table(rel.name, rel.get_keys(), iter(data))
+    return rel
 
 def groupBy(rel, grpAttr, aggrOp):
     """
@@ -144,14 +156,10 @@ def groupBy(rel, grpAttr, aggrOp):
     aggrOp  : a dict  attribute->Aggregation operator
     """
     key = rel.keys[grpAttr]
-    print_debug("## ", grpAttr, key)
 
     keyAggrOp = dict() # a dict int -> Aggregation operator
     for (attr,aggr) in aggrOp.items():
         keyAggrOp[rel.keys[attr]]=aggr
-    keyAggrOp[key]=Aggregation.NONE
-
-    print(keyAggrOp)
 
     datadict = dict()
     for entry in rel.get_data():
@@ -162,8 +170,8 @@ def groupBy(rel, grpAttr, aggrOp):
         if value not in datadict :
             datadict[value] = None
         datadict[value] = add_to_aggregate(datadict[value], entry , keyAggrOp)
-    rel = Table("groupBy", list(aggrOp.keys()), iter(datadict.values()) )
-    rel = project(rel, list(aggrOp.keys()))
+
+    rel = Table("groupBy", rel.get_keys(), iter(datadict.values()) )
     return rel
 
 

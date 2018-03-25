@@ -13,8 +13,10 @@ class Visitor(ParseTreeVisitor):
 
         self.relationNames = dict() # alias -> real name
         self.attributeNames = dict() # alias -> Attribute(table,name)
-        self.aggregate = dict() # name -> Aggregation operator
+        self.aggregate = dict() # name ->  operator
+
         self.allAttr = False
+        self.hasAggreg = False
 
         self.dataManager = DataManager() # will handle relation loading
 
@@ -39,6 +41,10 @@ class Visitor(ParseTreeVisitor):
             _,relList,_ = self.visit(ctx.cond())
             relations += relList
 
+        # 2.5/ Only one relation => using special operator
+        if len(relations)==1:
+            pass
+
         # 3/ Load all the tables
         for i,(fileName,tableName) in enumerate(relations) :
             self.dataManager.load(fileName)
@@ -48,16 +54,13 @@ class Visitor(ParseTreeVisitor):
             relations[i]=tableName # get rid of fileName : not useful from now
         print_debug(" Relations :" + str(self.relationNames))
 
-        # 4/ Perform a join on the tables
-        if len(relations)==1:
-            resultRelation = self.dataManager[relations[0]]
-        else:
-            resultRelation = reduce(lambda x,y : join(x, y), self.dataManager.get_tables(relations))
+        # 4/ Perform a join on the tables]
+        resultRelation = reduce(lambda x,y : join(x, y), self.dataManager.get_tables(relations))
 
         # 5/ Getting attributes
         attributes = self.visit(ctx.atts())
-        print_debug(self.aggregate)
         print_debug(" Attributes :", attributes)
+        print_debug(" Aggregates :", self.aggregate)
 
         # 6/ 2nd pass over conditions to get condition tree
         if ctx.cond() is not None:
@@ -74,12 +77,6 @@ class Visitor(ParseTreeVisitor):
                 resultRelation = select(resultRelation, Or(condTree))
             print_debug(" Conditions : " + str(condTree))
 
-        # 7/ Group By
-        if ctx.GROUPBY() is not None:
-            print_debug("kiki")
-            grpAttr = self.visit(ctx.att())
-            resultRelation = groupBy(resultRelation, grpAttr, aggregation)
-
         # 8/ Sorting of output
         if ctx.orderby() is not None :
             print_debug("bar")
@@ -87,23 +84,23 @@ class Visitor(ParseTreeVisitor):
             print_debug("Order keys : ", orderkeys[0])
             resultRelation = orderBy(resultRelation, orderkeys[0], desc=desc)
 
-        # 8/ Group By or project
+        # 9/ Group By or aggregate result
         if ctx.GROUPBY() is not None:
             print_debug("Group By")
             grpAttr = self.visit(ctx.att())
             resultRelation = groupBy(resultRelation, grpAttr, self.aggregate)
-        else :
-            # Perform final projection if not a 'SELECT *'
-            if not self.allAttr:
-                resultRelation = project(resultRelation, attributes)
+        elif self.hasAggreg:
+            resultRelation = aggregate(resultRelation, self.aggregate)
 
-        # 9/ Delete duplicates
+        # 10/ Perform final projection if not a 'SELECT *'
+        if not self.allAttr:
+            resultRelation = project(resultRelation, attributes)
+
+        # 11/ Delete duplicates
         if ctx.DISTINCT() is not None :
             print_debug("Select Distinct")
             resultRelation = select_distinct(resultRelation)
 
-
-        print_debug("drone")
         return resultRelation
 
 
@@ -202,6 +199,7 @@ class Visitor(ParseTreeVisitor):
         print_debug("visitAttributeAggr")
         attr = self.visit(ctx.att())
         self.attributeNames[attr.fullName] = attr
+        self.hasAggreg = True
         aggr = ctx.aggr().getText()
         if aggr == "MAX":
             aggr = Aggregation.MAX
