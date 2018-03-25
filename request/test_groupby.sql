@@ -1,1 +1,1 @@
-SELECT e.nom, MAX(e.ide) FROM "employes.csv" e GROUP BY e.dpt;
+SELECT e.nom, e.dpt, MAX(e.ide) FROM "employes.csv" e GROUP BY e.dpt;

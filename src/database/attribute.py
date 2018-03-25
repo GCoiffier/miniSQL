@@ -25,5 +25,4 @@ class Aggregation(Enum):
     MIN     = 2  # min
     MAX     = 3  # max
     COUNT   = 4
-    AVG     = 5  # average
-    GROUPBY = 6  # No function as it is the attribute we group by
+    NONE = 5  # No function as it is the attribute we group by

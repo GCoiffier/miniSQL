@@ -13,6 +13,7 @@ class Visitor(ParseTreeVisitor):
 
         self.relationNames = dict() # alias -> real name
         self.attributeNames = dict() # alias -> Attribute(table,name)
+        self.aggregate = dict() # name -> Aggregation operator
         self.allAttr = False
 
         self.dataManager = DataManager() # will handle relation loading
@@ -54,8 +55,8 @@ class Visitor(ParseTreeVisitor):
             resultRelation = reduce(lambda x,y : join(x, y), self.dataManager.get_tables(relations))
 
         # 5/ Getting attributes
-        attributes, aggregations = self.visit(ctx.atts())
-        print_debug(aggregations)
+        attributes = self.visit(ctx.atts())
+        print_debug(self.aggregate)
         print_debug(" Attributes :", attributes)
 
         # 6/ 2nd pass over conditions to get condition tree
@@ -68,25 +69,26 @@ class Visitor(ParseTreeVisitor):
                 resultRelation = select(resultRelation, Or(condTree))
             print_debug(" Conditions : " + str(condTree))
 
-        # 7/ Group By
-        if ctx.GROUPBY() is not None:
-            grpAttr = self.visit(ctx.att())
-            resultRelation = groupBy(resultRelation, grpAttr, aggregation)
-
-        # 8/ Sorting of output
+        # 7/ Sorting of output
         if ctx.orderby() is not None :
             orderkeys,desc = self.visit(ctx.orderby())
             print_debug("Order keys : ", orderkeys[0])
             resultRelation = orderBy(resultRelation, orderkeys[0], desc=desc)
 
-        # 9/ Perform final projection if not a 'SELECT *'
-        if not self.allAttr:
-            resultRelation = project(resultRelation, attributes)
+        # 8/ Group By or project
+        if ctx.GROUPBY() is not None:
+            print_debug("Group By")
+            grpAttr = self.visit(ctx.att())
+            resultRelation = groupBy(resultRelation, grpAttr, self.aggregate)
+        else :
+            # Perform final projection if not a 'SELECT *'
+            if not self.allAttr:
+                resultRelation = project(resultRelation, attributes)
 
-        # 10/ Delete duplicates
+        # 9/ Delete duplicates
         if ctx.DISTINCT() is not None :
             print_debug("Select Distinct")
-            resultRelation = project_distinct(resultRelation)
+            resultRelation = select_distinct(resultRelation)
 
         return resultRelation
 
@@ -153,32 +155,34 @@ class Visitor(ParseTreeVisitor):
         # SELECT *
         print_debug("visitAttributeDeclAll")
         self.allAttr = True
-        return [], []
+        return []
 
     def visitAttributeDeclList(self, ctx:miniSQLParser.AttributeDeclListContext):
         print_debug("visitAttributeDeclList")
-        queueOfAttrList, queueOfAggrList = self.visit(ctx.atts())
-        firstAttrElem, firstAggrElem = self.visit(ctx.attd())
-        return [firstAttrElem]+queueOfAttrList, [firstAggrElem]+queueOfAggrList,
+        queueOfAttrList = self.visit(ctx.atts())
+        firstAttrElem, aggr =  self.visit(ctx.attd())
+        self.aggregate[firstAttrElem] = aggr
+        return [firstAttrElem]+queueOfAttrList
 
     def visitAttributeDeclSimple(self, ctx:miniSQLParser.AttributeDeclSimpleContext):
         print_debug("visitAttributeDeclSimple")
-        attr, aggr = self.visitChildren(ctx)
-        return [attr], [aggr]
+        attr, aggr = self.visit(ctx.attd())
+        self.aggregate[attr] = aggr
+        return [attr]
 
     # ___________________ attd rules ___________________________________________
     def visitAttributeSimple(self, ctx:miniSQLParser.AttributeSimpleContext):
         print_debug("visitAttributeSimple")
         attr = self.visit(ctx.att())
         self.attributeNames[attr.fullName] = attr
-        return attr, Aggregation.GROUPBY
+        return attr, Aggregation.NONE
 
     def visitAttributeAs(self, ctx:miniSQLParser.AttributeAsContext):
         print_debug("visitAttributeAs")
         attr = self.visit(ctx.att())
         alias = ctx.ID().getText()
         self.attributeNames[alias] = attr
-        return attr, Aggregation.GROUPBY
+        return attr, Aggregation.NONE
 
     def visitAttributeAggr(self, ctx:miniSQLParser.AttributeAggrContext):
         print_debug("visitAttributeAggr")

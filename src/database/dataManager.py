@@ -1,6 +1,5 @@
 import os
 from exceptions import *
-from itertools import tee
 from .table import Table
 from .attribute import Attribute
 
@@ -37,8 +36,7 @@ class DataManager:
 
     def rename_table(self,tableName,newTableName):
         rel = self.tables[tableName]
-        rel.data,newIter = tee(rel.data)
-        newRel = Table(newTableName, rel.get_keys(), newIter)
+        newRel = Table(newTableName, rel.get_keys(), rel.get_data())
         newRel.rename(newTableName)
         self.add_table(newRel)
 

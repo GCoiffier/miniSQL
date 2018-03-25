@@ -1,7 +1,7 @@
 from database import *
 from exceptions import *
 from condition import Or, And
-from itertools import product,chain,dropwhile
+from itertools import product,chain,dropwhile,tee
 
 ## _____________________ Projection ____________________________________________
 def project(rel, attributes):
@@ -15,15 +15,6 @@ def project(rel, attributes):
     entries = map(projection, rel.data)
     new = Table("projectRequest", attributes, entries)
     return new
-
-def project_distinct(rel):
-    def unique_values(iterable):
-        seen = set()
-        for item in iterable:
-            if tuple(item) not in seen:
-                seen.add(tuple(item))
-                yield item
-    return Table("distinctProject", rel.get_keys(), unique_values(rel.data))
 
 ## ____________________ Selection ______________________________________________
 def verify_conditions(entry, cond, keys):
@@ -50,6 +41,15 @@ def select(rel, condTree):
     filtered = filter(selection , rel.data)
     new = Table("selectRequest", rel.get_keys(), filtered)
     return new
+
+def select_distinct(rel):
+    def unique_values(iterable):
+        seen = set()
+        for item in iterable:
+            if tuple(item) not in seen:
+                seen.add(tuple(item))
+                yield item
+    return Table("distinctProject", rel.get_keys(), unique_values(rel.data))
 
 ## ______________________ Join _________________________________________________
 def join(relA, relB):
@@ -101,8 +101,64 @@ def joinProjectRename(rel1,rel2, attr, conds):
 
 ## __________________________ Group By ____________________________
 
-def groupBy(rel, attr, aggregation):
+def add_to_aggregate(aggr, entry, keyAggrOp):
+    if aggr is None :
+        aggr = [None]*len(entry)
+    for i in keyAggrOp.keys():
+        if keyAggrOp[i] == Aggregation.SUM:
+            if aggr[i] is None :
+                aggr[i] = int(entry[i])
+            else:
+                aggr[i] += int(entry[i])
+        elif keyAggrOp[i] == Aggregation.MIN:
+            if aggr[i] is None :
+                aggr[i] = int(entry[i])
+            else:
+                aggr[i] = min(aggr[i], int(entry[i]))
+        elif keyAggrOp[i] == Aggregation.MAX:
+            if aggr[i] is None :
+                aggr[i] = int(entry[i])
+            else:
+                aggr[i] = max(aggr[i], int(entry[i]))
+        elif keyAggrOp[i] == Aggregation.COUNT:
+            if aggr[i] is None :
+                aggr[i] = 1
+            else:
+                aggr[i] += 1
+        elif keyAggrOp[i] == Aggregation.NONE:
+            aggr[i]=entry[i]
+    return aggr
+
+def groupBy(rel, grpAttr, aggrOp):
+    """
+    Perform a GROUP BY
+    rel     : the initial table to aggregate
+    grpAttr : the attribute 'GROUP BY grpAttr'
+    aggrOp  : a dict  attribute->Aggregation operator
+    """
+    key = rel.keys[grpAttr]
+    print_debug("## ", grpAttr, key)
+
+    keyAggrOp = dict() # a dict int -> Aggregation operator
+    for (attr,aggr) in aggrOp.items():
+        keyAggrOp[rel.keys[attr]]=aggr
+    keyAggrOp[key]=Aggregation.NONE
+
+    print(keyAggrOp)
+
+    datadict = dict()
+    for entry in rel.get_data():
+        try:
+            value = int(entry[key])
+        except:
+            value = entry[key]
+        if value not in datadict :
+            datadict[value] = None
+        datadict[value] = add_to_aggregate(datadict[value], entry , keyAggrOp)
+    rel = Table("groupBy", list(aggrOp.keys()), iter(datadict.values()) )
+    rel = project(rel, list(aggrOp.keys()))
     return rel
+
 
 ## __________________________ Order By ____________________________
 

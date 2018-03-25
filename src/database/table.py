@@ -47,12 +47,15 @@ class Table:
         l = sorted(l, key= lambda x : int(self.keys[x]))
         return l
 
+    def get_data(self):
+        datacpy,self.data = tee(self.data)
+        return datacpy
+
     def __repr__(self):
         output="\n"
-        temp,self.data = tee(self.data)
-        for entry in temp:
+        for entry in self.get_data():
             for field in entry:
-                output+= field + " | "
+                output+= str(field) + " | "
             output+="\n"
         return output
 
