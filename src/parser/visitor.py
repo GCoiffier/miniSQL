@@ -30,12 +30,16 @@ class Visitor(ParseTreeVisitor):
 
         # 1/ Get the tables in main query
         relations = self.visit(ctx.rels())
+
+        # 2/ Get eventual tables from subqueries
         if ctx.cond() is not None:
-            # 2/ Get conditions and eventually tables from subquery
-            _,relList = self.visit(ctx.cond())
+            _,relList,notIn = self.visit(ctx.cond())
+            if notIn:
+                print_debug("___ NOT INT SUBQUERY ___")
             relations += relList
+
+        # 3/ Load all the tables
         for i,(fileName,tableName) in enumerate(relations) :
-            # 3/ Load all the tables
             self.dataManager.load(fileName)
             self.relationNames[tableName]=fileName
             if fileName!=tableName :
@@ -55,7 +59,7 @@ class Visitor(ParseTreeVisitor):
 
         # 6/ 2nd pass over conditions to get condition tree
         if ctx.cond() is not None:
-            condTree,_ = self.visit(ctx.cond())
+            condTree,_,_ = self.visit(ctx.cond())
             print_debug(" Conditions : " + str(condTree))
             resultRelation = select(resultRelation, Or(condTree))
 
@@ -232,32 +236,32 @@ class Visitor(ParseTreeVisitor):
     # _____________________ cond rules _________________________________________
     def visitCondOrList(self, ctx:miniSQLParser.CondOrListContext):
         print_debug("visitCondOrList")
-        queueCond, listRel1 = self.visit(ctx.cond())
-        firstCond, listRel2 = self.visit(ctx.and_cond())
-        return [And(firstCond)]+queueCond, listRel1+listRel2
+        queueCond, listRel1, notIn1 = self.visit(ctx.cond())
+        firstCond, listRel2, notIn2 = self.visit(ctx.and_cond())
+        return [And(firstCond)]+queueCond, listRel1+listRel2, (notIn1 or notIn2)
 
     def visitCondOrSimple(self, ctx:miniSQLParser.CondOrSimpleContext):
         print_debug("visitCondOrSimple")
-        cond , listRel = self.visit(ctx.and_cond())
-        return ([And(cond)], listRel)
+        cond , listRel, notIn = self.visit(ctx.and_cond())
+        return [And(cond)], listRel, notIn
 
     # ____________________ and_cond rules ______________________________________
     def visitCondAndOr(self, ctx:miniSQLParser.CondAndOrContext):
         print_debug("visitCondAndOr")
-        queueCond, listRel1 = self.visit(ctx.and_cond())
-        firstCond, listRel2 = self.visit(ctx.cond())
-        return [Or(firstCond)]+queueCond,1 listRel1+listRel2
+        queueCond, listRel1, notIn1 = self.visit(ctx.and_cond())
+        firstCond, listRel2, notIn2 = self.visit(ctx.cond())
+        return [Or(firstCond)]+queueCond, listRel1+listRel2, (notIn1 or notIn2)
 
     def visitCondAndList(self, ctx:miniSQLParser.CondAndListContext):
         print_debug("visitCondAndList")
-        queueCond, listRel1 = self.visit(ctx.and_cond())
-        firstCond, listRel2 = self.visit(ctx.at_cond())
-        return firstCond+queueCond, listRel1+listRel2
+        queueCond, listRel1, notIn1 = self.visit(ctx.and_cond())
+        firstCond, listRel2, notIn2 = self.visit(ctx.at_cond())
+        return firstCond+queueCond, listRel1+listRel2, notIn1 or notIn2
 
     def visitCondAndSimple(self, ctx:miniSQLParser.CondAndSimpleContext):
         print_debug("visitCondAndSimple")
-        cond,rel = self.visit(ctx.at_cond())
-        return (cond,rel)
+        cond, rel, notIn = self.visit(ctx.at_cond())
+        return (cond, rel, notIn)
 
     # ____________________ at_cond rules _______________________________________
     def visitCompSimple(self, ctx:miniSQLParser.CompSimpleContext):
@@ -276,16 +280,16 @@ class Visitor(ParseTreeVisitor):
         elif op == ">":
             op = Op.GT
         attr1,attr2 = self.visit(ctx.att(0)), self.visit(ctx.att(1))
-        return [Condition(attr1,op,attr2)], []
+        return [Condition(attr1,op,attr2)], [], False
 
     def visitCompIn(self, ctx:miniSQLParser.CompInContext):
         print_debug("visitCompIn")
         attr = self.visit(ctx.att())
-        return self.visitSubSql(ctx.sql(), attr)
+        cond, rel = self.visitSubSql(ctx.sql(), attr)
+        return cond, rel, False
 
     def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
         print_debug("visitCompNotIn")
         attr = self.visit(ctx.att())
         cond,rel = self.visitSubSql(ctx.sql(), attr)
-        cond = toCNF(cond)
-        
+        cond = toCNF(cond), rel, True
