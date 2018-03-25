@@ -1,6 +1,8 @@
 from enum import Enum
 from database import Attribute
 
+from functools import reduce
+
 class Op(Enum):
     """ Condition operator """
     EQ  = 1  # =
@@ -50,29 +52,28 @@ class Condition:
     def __repr__(self):
         return str((self.attr1, self.operator, self.attr2))
 
-def tseitin(condTree):
+def toCNF(condTree):
     """
-    Tseitin transformation, from :
-        https://perso.liris.cnrs.fr/emmanuel.coquery/dokuwiki/lib/exe/fetch.php?media=enseignement:logique:logique-td3-correction.pdf
-    Converts an arbitrary boolean formula into a CNF
-    Useful in MINUS and NOT IN requests.
+    Transforms a condition tree into a CNF formula
     """
-    #TODO or TODELETE
-    return condTree
 
-class NotInCondition(Condition):
+    def CNFproduct(x,y):
+        l = []
+        for cx in x:
+            for cy in y:
+                l.append(And(cx,cy))
+        return l
 
-    def __init__(self, attr, rel):
-        self.rel = rel
-        realName = self.rel.get_keys()[0]
-        self.attr = Attribute(realName.table, attr.attr)
-
-    def eval(self, keys, entry):
-        entryAttr = entry[keys[self.attr]]
-        for line in self.rel.data:
-            if line[0]==entryAttr:
-                return False
-        return True
-
-    def __repr__(self):
-        return "NotInCondition("+str(self.attr)+","+ self.rel.name+")"
+    if isinstance(condTree, Or):
+        rec = [toCNF(x).args for x in condTree.args]
+        return Or(reduce(rec,CNFproduct))
+    elif isinstance(condTree, And):
+        l = []
+        for x in condTree.args :
+            l.append(toCNF(x))
+        l2=[]
+        for x in l: # flatten all And
+            l2 += x.args
+        return Or(l2)
+    else:
+        return condTree

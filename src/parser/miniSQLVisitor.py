@@ -84,8 +84,8 @@ class miniSQLVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by miniSQLParser#Subquery.
-    def visitSubquery(self, ctx:miniSQLParser.SubqueryContext):
+    # Visit a parse tree produced by miniSQLParser#RelationSubQuery.
+    def visitRelationSubQuery(self, ctx:miniSQLParser.RelationSubQueryContext):
         return self.visitChildren(ctx)
 
 
