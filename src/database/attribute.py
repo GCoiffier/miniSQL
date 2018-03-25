@@ -1,5 +1,7 @@
+from enum import Enum
+
 class Attribute:
-    
+
     def __init__(self, table, attr):
         self.table = table
         self.attr = attr
@@ -16,3 +18,12 @@ class Attribute:
 
     def __str__(self):
         return self.attr
+
+class Aggregation(Enum):
+    """ Condition operator """
+    SUM     = 1  # +
+    MIN     = 2  # min
+    MAX     = 3  # max
+    COUNT   = 4
+    AVG     = 5  # average
+    GROUPBY = 6  # No function as it is the attribute we group by

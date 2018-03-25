@@ -25,7 +25,7 @@ class Visitor(ParseTreeVisitor):
 
     # ________________________ sql rules _______________________________________
     def visitSqlNormal(self, ctx:miniSQLParser.SqlNormalContext):
-        # SELECT (DISTINCT)? atts FROM rels (WHERE cond)? orderby?
+        # SELECT (DISTINCT)? atts FROM rels (WHERE cond)? (GROUPBY att)? orderby?
         print_debug("visitSqlNormal")
 
         # 1/ Get the tables in main query
@@ -59,17 +59,21 @@ class Visitor(ParseTreeVisitor):
             print_debug(" Conditions : " + str(condTree))
             resultRelation = select(resultRelation, Or(condTree))
 
-        # 7/ Sorting of output
+        # 7/ Group By
+        if ctx.att() is not None:
+            resultRelation = groupBy(resultRelation, ctx.att())
+
+        # 8/ Sorting of output
         if ctx.orderby() is not None :
             orderkeys,desc = self.visit(ctx.orderby())
             print_debug("Order keys : ", orderkeys)
             resultRelation = orderBy(resultRelation, orderkeys, desc=desc)
 
-        # 8/ Perform final projection if not a 'SELECT *'
+        # 9/ Perform final projection if not a 'SELECT *'
         if not self.allAttr:
             resultRelation = project(resultRelation, attributes)
 
-        # 9/ Delete duplicates
+        # 10/ Delete duplicates
         if ctx.DISTINCT() is not None :
             print_debug("Select Distinct")
             resultRelation = project_distinct(resultRelation)
@@ -90,11 +94,6 @@ class Visitor(ParseTreeVisitor):
         rel1 = self.visit(ctx.sql(0))
         rel2 = self.visit(ctx.sql(1))
         return union(rel1,rel2)
-
-    # _________________________ Group By rules __________________________________
-    def visitSqlGroupBy(self, ctx:miniSQLParser.SqlGroupByContext):
-        # SELECT (DISTINCT)? attsgrp FROM rels (WHERE cond)? GROUPBY att orderby?
-        return self.visitChildren(ctx)
 
     # _________________________ subsql rules ___________________________________
     def visitSubSql(self, ctx, attr):
@@ -176,20 +175,6 @@ class Visitor(ParseTreeVisitor):
         tableName = ctx.ID(0).getText()
         attrName = ctx.ID(1).getText()
         return Attribute(tableName,attrName)
-
-    #__________________ attsgrp rule ___________________________________________
-    def visitAttributeGroupByDeclAll(self, ctx:miniSQLParser.AttributeGroupByDeclAllContext):
-        return self.visitChildren(ctx)
-
-    def visitAttributeGroupByDeclSimple(self, ctx:miniSQLParser.AttributeGroupByDeclSimpleContext):
-        return self.visitChildren(ctx)
-
-    #__________________ attgrp rule ___________________________________________
-    def visitAttributeGroupBySimple(self, ctx:miniSQLParser.AttributeGroupBySimpleContext):
-        return self.visitChildren(ctx)
-
-    def visitAttributeGroupByAggr(self, ctx:miniSQLParser.AttributeGroupByAggrContext):
-        return self.visitChildren(ctx)
 
     # __________________ rels rules ____________________________________________
     def visitRelationDeclList(self, ctx:miniSQLParser.RelationDeclListContext):

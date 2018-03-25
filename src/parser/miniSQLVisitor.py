@@ -19,11 +19,6 @@ class miniSQLVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by miniSQLParser#sqlGroupBy.
-    def visitSqlGroupBy(self, ctx:miniSQLParser.SqlGroupByContext):
-        return self.visitChildren(ctx)
-
-
     # Visit a parse tree produced by miniSQLParser#sqlMinus.
     def visitSqlMinus(self, ctx:miniSQLParser.SqlMinusContext):
         return self.visitChildren(ctx)
@@ -64,28 +59,13 @@ class miniSQLVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by miniSQLParser#AttributeAggr.
+    def visitAttributeAggr(self, ctx:miniSQLParser.AttributeAggrContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by miniSQLParser#att.
     def visitAtt(self, ctx:miniSQLParser.AttContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by miniSQLParser#AttributeGroupByDeclAll.
-    def visitAttributeGroupByDeclAll(self, ctx:miniSQLParser.AttributeGroupByDeclAllContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by miniSQLParser#AttributeGroupByDeclSimple.
-    def visitAttributeGroupByDeclSimple(self, ctx:miniSQLParser.AttributeGroupByDeclSimpleContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by miniSQLParser#AttributeGroupBySimple.
-    def visitAttributeGroupBySimple(self, ctx:miniSQLParser.AttributeGroupBySimpleContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by miniSQLParser#AttributeGroupByAggr.
-    def visitAttributeGroupByAggr(self, ctx:miniSQLParser.AttributeGroupByAggrContext):
         return self.visitChildren(ctx)
 
 
