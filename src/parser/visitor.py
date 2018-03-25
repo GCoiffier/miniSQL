@@ -55,6 +55,7 @@ class Visitor(ParseTreeVisitor):
 
         # 5/ Getting attributes
         attributes, aggregations = self.visit(ctx.atts())
+        print_debug(aggregations)
         print_debug(" Attributes :", attributes)
 
         # 6/ 2nd pass over conditions to get condition tree
@@ -68,8 +69,9 @@ class Visitor(ParseTreeVisitor):
             print_debug(" Conditions : " + str(condTree))
 
         # 7/ Group By
-        if ctx.att() is not None:
-            resultRelation = groupBy(resultRelation, ctx.att(), aggregation)
+        if ctx.GROUPBY() is not None:
+            grpAttr = self.visit(ctx.att())
+            resultRelation = groupBy(resultRelation, grpAttr, aggregation)
 
         # 8/ Sorting of output
         if ctx.orderby() is not None :
@@ -161,7 +163,7 @@ class Visitor(ParseTreeVisitor):
 
     def visitAttributeDeclSimple(self, ctx:miniSQLParser.AttributeDeclSimpleContext):
         print_debug("visitAttributeDeclSimple")
-        attr, aggr = self.visitChildren(ctx)]
+        attr, aggr = self.visitChildren(ctx)
         return [attr], [aggr]
 
     # ___________________ attd rules ___________________________________________
@@ -298,10 +300,6 @@ class Visitor(ParseTreeVisitor):
     def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
         print_debug("visitCompNotIn")
         attr = self.visit(ctx.att())
-<<<<<<< HEAD
-        return self.visitSubSql(ctx.sql(), attr)
-=======
         cond,rel = self.visitSubSql(ctx.sql(), attr)
         self.notInCond = toCNF(cond)
         return [], rel, True
->>>>>>> 708f664d848510fcd93a8989941f746fe904dcc4

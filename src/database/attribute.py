@@ -20,7 +20,7 @@ class Attribute:
         return self.attr
 
 class Aggregation(Enum):
-    """ Condition operator """
+    """ Aggregation operator """
     SUM     = 1  # +
     MIN     = 2  # min
     MAX     = 3  # max
