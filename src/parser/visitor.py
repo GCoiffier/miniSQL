@@ -76,8 +76,8 @@ class Visitor(ParseTreeVisitor):
         # 8/ Sorting of output
         if ctx.orderby() is not None :
             orderkeys,desc = self.visit(ctx.orderby())
-            print_debug("Order keys : ", orderkeys)
-            resultRelation = orderBy(resultRelation, orderkeys, desc=desc)
+            print_debug("Order keys : ", orderkeys[0])
+            resultRelation = orderBy(resultRelation, orderkeys[0], desc=desc)
 
         # 9/ Perform final projection if not a 'SELECT *'
         if not self.allAttr:
