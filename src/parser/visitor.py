@@ -99,7 +99,7 @@ class Visitor(ParseTreeVisitor):
     # _________________________ subsql rules ___________________________________
     def visitSubSql(self, ctx, attr):
         """
-        Called when visiting a sub query
+        Called when visiting a sub query with IN or NOT IN
         """
         print_debug("visitSubSql")
         clue = ctx.getChild(3).getText()
@@ -110,7 +110,7 @@ class Visitor(ParseTreeVisitor):
         else:
             return self.visitSubSqlNormal(ctx,attr)
 
-    def visitSubSqlNormal(self, ctx, attr):
+    def visitSubSqlNormal(self, ctx, attr, notIN=False):
         print_debug("visitSubSqlNormal")
         attributes = self.visit(ctx.atts())
         if len(attributes)!=1 : # There should be only one here
@@ -120,7 +120,8 @@ class Visitor(ParseTreeVisitor):
         condTree, rels = self.visit(ctx.cond()) # condTree a list of list : CDF form
         return [Or(condTree),Condition(attr,Op.EQ,subAttr)], relations+rels
 
-    def visitSubSqlMinus(self, ctx, attr): # TODO : false version
+    def visitSubSqlMinus(self, ctx, attr):
+        # TODO : false version
         print_debug("visitSubSqlUnion")
         condTree1, rels1 = self.visitSubSql(ctx.sql(0), attr)
         condTree2, rels2 = self.visitSubSql(ctx.sql(1), attr)
@@ -287,3 +288,4 @@ class Visitor(ParseTreeVisitor):
         attr = self.visit(ctx.att())
         cond,rel = self.visitSubSql(ctx.sql(), attr)
         cond = toCNF(cond)
+        
