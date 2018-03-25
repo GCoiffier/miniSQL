@@ -88,14 +88,15 @@ def minus(relA,relB):
     return new
 
 ## ________________________ Better Operators ___________________________________
-def readSelectProjectRename(filename, tableName, attr, conds,):
+def readSelectProjectRename(fileName, tableName, attr, conds):
     """
     Reads a CSV file, filter lines and transform remaning tuples
     keeping only the proper attributes after renaming
     """
-    rel = Table.from_file(filename)
-    rel = rel.rename(tableName)
-    rel = select(rel,conds)
+    rel = Table.from_file(fileName)
+    rel.rename(tableName)
+    if conds is not None :
+        rel = select(rel,conds)
     rel = project(rel,attr)
     return rel
 
@@ -105,7 +106,6 @@ def joinProjectRename(rel1,rel2, attr, conds):
     only the proper attributes after renaming
     (the θ-join being a cartesian product followed by a selection)
     """
-
     pass
 
 ## _______________________ Aggregation and Group By ____________________________

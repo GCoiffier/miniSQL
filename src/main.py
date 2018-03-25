@@ -19,7 +19,7 @@ from exceptions import *
 from database import *
 
 ## ________________ Command reader _________________________________________
-COMMANDS = [".end", ".exit", ".quit", ".run", ".read", ".debug"]
+COMMANDS = [".end", ".quit", ".read", ".debug"]
 
 def assert_command(keyWord):
     """ Checks if we are given a supported command"""
@@ -36,7 +36,7 @@ def run_command(inputString):
     """
     miniSQL commands :
 
-    .exit | .quit | .end
+    .quit | .end
 
     .run |.read path/to/request.sql
 
@@ -70,7 +70,7 @@ def run_command(inputString):
             else:
                 raise InvalidCommand("Usage : .debug <on|off>")
 
-        elif mainKeyWord in [".run", ".read"]:
+        elif mainKeyWord ==".read":
             outputPath = None
             if len(command)>3 and command[2]==">":
                 outputPath = command[3]

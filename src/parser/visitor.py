@@ -31,18 +31,24 @@ class Visitor(ParseTreeVisitor):
     def visitSqlNormal(self, ctx:miniSQLParser.SqlNormalContext):
         # SELECT (DISTINCT)? atts FROM rels (WHERE cond)? (GROUPBY att)? orderby?
         print_debug("visitSqlNormal")
+        relations = None
+        condTree = None
 
         # 1/ Get the tables in main query
         relations = self.visit(ctx.rels())
 
         # 2/ Get eventual tables from subqueries
         if ctx.cond() is not None:
-            _,relList,_ = self.visit(ctx.cond())
+            condTree,relList,_ = self.visit(ctx.cond())
             relations += relList
 
         # 2.5/ Only one relation => using special operator
         if len(relations)==1:
-            pass
+            print_debug("Calling readSelectProjectRename")
+            rel = relations[0]
+            print(rel)
+            attributes = self.visit(ctx.atts())
+            return readSelectProjectRename(rel[0], rel[1], attributes,condTree)
 
         # 3/ Load all the tables
         for i,(fileName,tableName) in enumerate(relations) :

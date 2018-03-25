@@ -1,1 +1,1 @@
-SELECT m.idp FROM "membres.csv" m ;
+SELECT m.idp,m.ide FROM "membres.csv" m;

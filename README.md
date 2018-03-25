@@ -32,7 +32,7 @@ The commandline handles history and autocompletion
 - SELECT ... FROM ... WHERE ... NOT IN <subquery>
 - SELECT DISTINCT
 - Subqueries in the FROM part
-- GROUP BY and aggregation (MIN, MAX, COUNT, SUM)
+- GROUP BY and aggregation (MIN, MAX, COUNT, SUM) in SELECT clause
 - ORDER BY
 
 /!\ We still have troubles with double nested queries (especially NOT IN ... NOT IN)
