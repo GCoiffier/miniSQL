@@ -77,3 +77,14 @@ def toCNF(condTree):
         return Or(l2)
     else:
         return condTree
+
+def isAtomicConjunction(condTree):
+    """
+    Conjunction of atomic conditions
+    """
+    if not isinstance(condTree,And):
+        return False
+    for x in condTree.args:
+        if not (isinstance(x,Condition)):
+            return False
+    return True
