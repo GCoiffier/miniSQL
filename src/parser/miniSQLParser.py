@@ -7,87 +7,75 @@ import sys
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3(")
-        buf.write("\u00d0\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\'")
+        buf.write("\u00b9\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
         buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\4\16")
         buf.write("\t\16\4\17\t\17\4\20\t\20\3\2\3\2\5\2#\n\2\3\3\3\3\5\3")
         buf.write("\'\n\3\3\3\3\3\3\3\3\3\3\3\5\3.\n\3\3\3\5\3\61\n\3\3\3")
-        buf.write("\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3")
-        buf.write("\3\3\3\3\3\3\3\5\3E\n\3\3\3\3\3\3\3\3\3\3\3\5\3L\n\3\3")
-        buf.write("\3\3\3\3\3\5\3Q\n\3\5\3S\n\3\3\4\3\4\3\4\5\4X\n\4\3\5")
-        buf.write("\3\5\3\5\3\5\3\5\3\5\5\5`\n\5\3\6\3\6\3\6\3\6\3\6\5\6")
-        buf.write("g\n\6\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b")
-        buf.write("\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3")
-        buf.write("\b\5\b\u0083\n\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3")
-        buf.write("\t\3\t\3\t\5\t\u0091\n\t\3\n\3\n\3\n\3\n\3\n\5\n\u0098")
-        buf.write("\n\n\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\5\13")
-        buf.write("\u00a3\n\13\3\f\3\f\3\f\3\f\3\f\5\f\u00aa\n\f\3\r\3\r")
-        buf.write("\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\5\r\u00b7\n\r\3\16")
-        buf.write("\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16")
-        buf.write("\3\16\3\16\3\16\3\16\3\16\5\16\u00ca\n\16\3\17\3\17\3")
-        buf.write("\20\3\20\3\20\2\2\21\2\4\6\b\n\f\16\20\22\24\26\30\32")
-        buf.write("\34\36\2\5\3\2\30\31\3\2\37$\3\2\32\36\2\u00da\2 \3\2")
-        buf.write("\2\2\4R\3\2\2\2\6T\3\2\2\2\b_\3\2\2\2\nf\3\2\2\2\fh\3")
-        buf.write("\2\2\2\16\u0082\3\2\2\2\20\u0090\3\2\2\2\22\u0097\3\2")
-        buf.write("\2\2\24\u00a2\3\2\2\2\26\u00a9\3\2\2\2\30\u00b6\3\2\2")
-        buf.write("\2\32\u00c9\3\2\2\2\34\u00cb\3\2\2\2\36\u00cd\3\2\2\2")
-        buf.write(" \"\5\4\3\2!#\7\7\2\2\"!\3\2\2\2\"#\3\2\2\2#\3\3\2\2\2")
-        buf.write("$&\7\n\2\2%\'\7\13\2\2&%\3\2\2\2&\'\3\2\2\2\'(\3\2\2\2")
-        buf.write("()\5\b\5\2)*\7\f\2\2*-\5\22\n\2+,\7\r\2\2,.\5\26\f\2-")
-        buf.write("+\3\2\2\2-.\3\2\2\2.\60\3\2\2\2/\61\5\6\4\2\60/\3\2\2")
-        buf.write("\2\60\61\3\2\2\2\61S\3\2\2\2\62\63\7\5\2\2\63\64\5\4\3")
-        buf.write("\2\64\65\7\6\2\2\65\66\7\17\2\2\66\67\7\5\2\2\678\5\4")
-        buf.write("\3\289\7\6\2\29S\3\2\2\2:;\7\5\2\2;<\5\4\3\2<=\7\6\2\2")
-        buf.write("=>\7\20\2\2>?\7\5\2\2?@\5\4\3\2@A\7\6\2\2AS\3\2\2\2BD")
-        buf.write("\7\n\2\2CE\7\13\2\2DC\3\2\2\2DE\3\2\2\2EF\3\2\2\2FG\5")
-        buf.write("\16\b\2GH\7\f\2\2HK\5\22\n\2IJ\7\r\2\2JL\5\26\f\2KI\3")
-        buf.write("\2\2\2KL\3\2\2\2LM\3\2\2\2MN\7\22\2\2NP\5\f\7\2OQ\5\6")
-        buf.write("\4\2PO\3\2\2\2PQ\3\2\2\2QS\3\2\2\2R$\3\2\2\2R\62\3\2\2")
-        buf.write("\2R:\3\2\2\2RB\3\2\2\2S\5\3\2\2\2TU\7\23\2\2UW\5\b\5\2")
-        buf.write("VX\t\2\2\2WV\3\2\2\2WX\3\2\2\2X\7\3\2\2\2Y`\7\b\2\2Z[")
-        buf.write("\5\n\6\2[\\\7\3\2\2\\]\5\b\5\2]`\3\2\2\2^`\5\n\6\2_Y\3")
-        buf.write("\2\2\2_Z\3\2\2\2_^\3\2\2\2`\t\3\2\2\2ag\5\f\7\2bc\5\f")
-        buf.write("\7\2cd\7\16\2\2de\7&\2\2eg\3\2\2\2fa\3\2\2\2fb\3\2\2\2")
-        buf.write("g\13\3\2\2\2hi\7&\2\2ij\7\4\2\2jk\7&\2\2k\r\3\2\2\2l\u0083")
-        buf.write("\5\f\7\2mn\5\f\7\2no\7\3\2\2op\5\20\t\2p\u0083\3\2\2\2")
-        buf.write("qr\5\f\7\2rs\7\16\2\2st\7&\2\2t\u0083\3\2\2\2uv\5\f\7")
-        buf.write("\2vw\7\16\2\2wx\7&\2\2xy\7\3\2\2yz\5\20\t\2z\u0083\3\2")
-        buf.write("\2\2{|\5\36\20\2|}\7\5\2\2}~\5\f\7\2~\177\7\6\2\2\177")
-        buf.write("\u0080\7\3\2\2\u0080\u0081\5\16\b\2\u0081\u0083\3\2\2")
-        buf.write("\2\u0082l\3\2\2\2\u0082m\3\2\2\2\u0082q\3\2\2\2\u0082")
-        buf.write("u\3\2\2\2\u0082{\3\2\2\2\u0083\17\3\2\2\2\u0084\u0085")
-        buf.write("\5\36\20\2\u0085\u0086\7\5\2\2\u0086\u0087\5\f\7\2\u0087")
-        buf.write("\u0088\7\6\2\2\u0088\u0091\3\2\2\2\u0089\u008a\5\36\20")
-        buf.write("\2\u008a\u008b\7\5\2\2\u008b\u008c\5\f\7\2\u008c\u008d")
-        buf.write("\7\6\2\2\u008d\u008e\7\3\2\2\u008e\u008f\5\20\t\2\u008f")
-        buf.write("\u0091\3\2\2\2\u0090\u0084\3\2\2\2\u0090\u0089\3\2\2\2")
-        buf.write("\u0091\21\3\2\2\2\u0092\u0093\5\24\13\2\u0093\u0094\7")
-        buf.write("\3\2\2\u0094\u0095\5\22\n\2\u0095\u0098\3\2\2\2\u0096")
-        buf.write("\u0098\5\24\13\2\u0097\u0092\3\2\2\2\u0097\u0096\3\2\2")
-        buf.write("\2\u0098\23\3\2\2\2\u0099\u009a\7\t\2\2\u009a\u009b\7")
-        buf.write("%\2\2\u009b\u009c\7\t\2\2\u009c\u00a3\7&\2\2\u009d\u009e")
-        buf.write("\7\5\2\2\u009e\u009f\5\4\3\2\u009f\u00a0\7\6\2\2\u00a0")
-        buf.write("\u00a1\7&\2\2\u00a1\u00a3\3\2\2\2\u00a2\u0099\3\2\2\2")
-        buf.write("\u00a2\u009d\3\2\2\2\u00a3\25\3\2\2\2\u00a4\u00a5\5\30")
-        buf.write("\r\2\u00a5\u00a6\7\25\2\2\u00a6\u00a7\5\26\f\2\u00a7\u00aa")
-        buf.write("\3\2\2\2\u00a8\u00aa\5\30\r\2\u00a9\u00a4\3\2\2\2\u00a9")
-        buf.write("\u00a8\3\2\2\2\u00aa\27\3\2\2\2\u00ab\u00ac\7\5\2\2\u00ac")
-        buf.write("\u00ad\5\26\f\2\u00ad\u00ae\7\6\2\2\u00ae\u00af\7\24\2")
-        buf.write("\2\u00af\u00b0\5\30\r\2\u00b0\u00b7\3\2\2\2\u00b1\u00b2")
-        buf.write("\5\32\16\2\u00b2\u00b3\7\24\2\2\u00b3\u00b4\5\30\r\2\u00b4")
-        buf.write("\u00b7\3\2\2\2\u00b5\u00b7\5\32\16\2\u00b6\u00ab\3\2\2")
-        buf.write("\2\u00b6\u00b1\3\2\2\2\u00b6\u00b5\3\2\2\2\u00b7\31\3")
-        buf.write("\2\2\2\u00b8\u00b9\5\f\7\2\u00b9\u00ba\5\34\17\2\u00ba")
-        buf.write("\u00bb\5\f\7\2\u00bb\u00ca\3\2\2\2\u00bc\u00bd\5\f\7\2")
-        buf.write("\u00bd\u00be\7\27\2\2\u00be\u00bf\7\5\2\2\u00bf\u00c0")
-        buf.write("\5\4\3\2\u00c0\u00c1\7\6\2\2\u00c1\u00ca\3\2\2\2\u00c2")
-        buf.write("\u00c3\5\f\7\2\u00c3\u00c4\7\26\2\2\u00c4\u00c5\7\27\2")
-        buf.write("\2\u00c5\u00c6\7\5\2\2\u00c6\u00c7\5\4\3\2\u00c7\u00c8")
-        buf.write("\7\6\2\2\u00c8\u00ca\3\2\2\2\u00c9\u00b8\3\2\2\2\u00c9")
-        buf.write("\u00bc\3\2\2\2\u00c9\u00c2\3\2\2\2\u00ca\33\3\2\2\2\u00cb")
-        buf.write("\u00cc\t\3\2\2\u00cc\35\3\2\2\2\u00cd\u00ce\t\4\2\2\u00ce")
-        buf.write("\37\3\2\2\2\24\"&-\60DKPRW_f\u0082\u0090\u0097\u00a2\u00a9")
-        buf.write("\u00b6\u00c9")
+        buf.write("\3\3\5\3\65\n\3\3\3\3\3\3\3\3\3\3\3\5\3<\n\3\3\3\3\3\3")
+        buf.write("\3\5\3A\n\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3")
+        buf.write("\3\3\3\3\3\3\3\3\3\3\3\5\3S\n\3\3\4\3\4\3\4\5\4X\n\4\3")
+        buf.write("\5\3\5\3\5\3\5\3\5\3\5\5\5`\n\5\3\6\3\6\3\6\3\6\3\6\5")
+        buf.write("\6g\n\6\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\5\br\n\b\3")
+        buf.write("\t\3\t\3\t\3\t\3\t\3\t\5\tz\n\t\3\n\3\n\3\n\3\n\3\n\5")
+        buf.write("\n\u0081\n\n\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3")
+        buf.write("\13\5\13\u008c\n\13\3\f\3\f\3\f\3\f\3\f\5\f\u0093\n\f")
+        buf.write("\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\3\r\5\r\u00a0")
+        buf.write("\n\r\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16\3\16")
+        buf.write("\3\16\3\16\3\16\3\16\3\16\3\16\3\16\5\16\u00b3\n\16\3")
+        buf.write("\17\3\17\3\20\3\20\3\20\2\2\21\2\4\6\b\n\f\16\20\22\24")
+        buf.write("\26\30\32\34\36\2\5\3\2\30\31\3\2\36#\3\2\32\35\2\u00c0")
+        buf.write("\2 \3\2\2\2\4R\3\2\2\2\6T\3\2\2\2\b_\3\2\2\2\nf\3\2\2")
+        buf.write("\2\fh\3\2\2\2\16q\3\2\2\2\20y\3\2\2\2\22\u0080\3\2\2\2")
+        buf.write("\24\u008b\3\2\2\2\26\u0092\3\2\2\2\30\u009f\3\2\2\2\32")
+        buf.write("\u00b2\3\2\2\2\34\u00b4\3\2\2\2\36\u00b6\3\2\2\2 \"\5")
+        buf.write("\4\3\2!#\7\7\2\2\"!\3\2\2\2\"#\3\2\2\2#\3\3\2\2\2$&\7")
+        buf.write("\n\2\2%\'\7\13\2\2&%\3\2\2\2&\'\3\2\2\2\'(\3\2\2\2()\5")
+        buf.write("\b\5\2)*\7\f\2\2*-\5\22\n\2+,\7\r\2\2,.\5\26\f\2-+\3\2")
+        buf.write("\2\2-.\3\2\2\2.\60\3\2\2\2/\61\5\6\4\2\60/\3\2\2\2\60")
+        buf.write("\61\3\2\2\2\61S\3\2\2\2\62\64\7\n\2\2\63\65\7\13\2\2\64")
+        buf.write("\63\3\2\2\2\64\65\3\2\2\2\65\66\3\2\2\2\66\67\5\16\b\2")
+        buf.write("\678\7\f\2\28;\5\22\n\29:\7\r\2\2:<\5\26\f\2;9\3\2\2\2")
+        buf.write(";<\3\2\2\2<=\3\2\2\2=>\7\22\2\2>@\5\f\7\2?A\5\6\4\2@?")
+        buf.write("\3\2\2\2@A\3\2\2\2AS\3\2\2\2BC\7\5\2\2CD\5\4\3\2DE\7\6")
+        buf.write("\2\2EF\7\17\2\2FG\7\5\2\2GH\5\4\3\2HI\7\6\2\2IS\3\2\2")
+        buf.write("\2JK\7\5\2\2KL\5\4\3\2LM\7\6\2\2MN\7\20\2\2NO\7\5\2\2")
+        buf.write("OP\5\4\3\2PQ\7\6\2\2QS\3\2\2\2R$\3\2\2\2R\62\3\2\2\2R")
+        buf.write("B\3\2\2\2RJ\3\2\2\2S\5\3\2\2\2TU\7\23\2\2UW\5\b\5\2VX")
+        buf.write("\t\2\2\2WV\3\2\2\2WX\3\2\2\2X\7\3\2\2\2Y`\7\b\2\2Z[\5")
+        buf.write("\n\6\2[\\\7\3\2\2\\]\5\b\5\2]`\3\2\2\2^`\5\n\6\2_Y\3\2")
+        buf.write("\2\2_Z\3\2\2\2_^\3\2\2\2`\t\3\2\2\2ag\5\f\7\2bc\5\f\7")
+        buf.write("\2cd\7\16\2\2de\7%\2\2eg\3\2\2\2fa\3\2\2\2fb\3\2\2\2g")
+        buf.write("\13\3\2\2\2hi\7%\2\2ij\7\4\2\2jk\7%\2\2k\r\3\2\2\2lm\5")
+        buf.write("\20\t\2mn\7\3\2\2no\5\16\b\2or\3\2\2\2pr\5\20\t\2ql\3")
+        buf.write("\2\2\2qp\3\2\2\2r\17\3\2\2\2sz\5\f\7\2tu\5\36\20\2uv\7")
+        buf.write("\5\2\2vw\5\f\7\2wx\7\6\2\2xz\3\2\2\2ys\3\2\2\2yt\3\2\2")
+        buf.write("\2z\21\3\2\2\2{|\5\24\13\2|}\7\3\2\2}~\5\22\n\2~\u0081")
+        buf.write("\3\2\2\2\177\u0081\5\24\13\2\u0080{\3\2\2\2\u0080\177")
+        buf.write("\3\2\2\2\u0081\23\3\2\2\2\u0082\u0083\7\t\2\2\u0083\u0084")
+        buf.write("\7$\2\2\u0084\u0085\7\t\2\2\u0085\u008c\7%\2\2\u0086\u0087")
+        buf.write("\7\5\2\2\u0087\u0088\5\4\3\2\u0088\u0089\7\6\2\2\u0089")
+        buf.write("\u008a\7%\2\2\u008a\u008c\3\2\2\2\u008b\u0082\3\2\2\2")
+        buf.write("\u008b\u0086\3\2\2\2\u008c\25\3\2\2\2\u008d\u008e\5\30")
+        buf.write("\r\2\u008e\u008f\7\25\2\2\u008f\u0090\5\26\f\2\u0090\u0093")
+        buf.write("\3\2\2\2\u0091\u0093\5\30\r\2\u0092\u008d\3\2\2\2\u0092")
+        buf.write("\u0091\3\2\2\2\u0093\27\3\2\2\2\u0094\u0095\7\5\2\2\u0095")
+        buf.write("\u0096\5\26\f\2\u0096\u0097\7\6\2\2\u0097\u0098\7\24\2")
+        buf.write("\2\u0098\u0099\5\30\r\2\u0099\u00a0\3\2\2\2\u009a\u009b")
+        buf.write("\5\32\16\2\u009b\u009c\7\24\2\2\u009c\u009d\5\30\r\2\u009d")
+        buf.write("\u00a0\3\2\2\2\u009e\u00a0\5\32\16\2\u009f\u0094\3\2\2")
+        buf.write("\2\u009f\u009a\3\2\2\2\u009f\u009e\3\2\2\2\u00a0\31\3")
+        buf.write("\2\2\2\u00a1\u00a2\5\f\7\2\u00a2\u00a3\5\34\17\2\u00a3")
+        buf.write("\u00a4\5\f\7\2\u00a4\u00b3\3\2\2\2\u00a5\u00a6\5\f\7\2")
+        buf.write("\u00a6\u00a7\7\27\2\2\u00a7\u00a8\7\5\2\2\u00a8\u00a9")
+        buf.write("\5\4\3\2\u00a9\u00aa\7\6\2\2\u00aa\u00b3\3\2\2\2\u00ab")
+        buf.write("\u00ac\5\f\7\2\u00ac\u00ad\7\26\2\2\u00ad\u00ae\7\27\2")
+        buf.write("\2\u00ae\u00af\7\5\2\2\u00af\u00b0\5\4\3\2\u00b0\u00b1")
+        buf.write("\7\6\2\2\u00b1\u00b3\3\2\2\2\u00b2\u00a1\3\2\2\2\u00b2")
+        buf.write("\u00a5\3\2\2\2\u00b2\u00ab\3\2\2\2\u00b3\33\3\2\2\2\u00b4")
+        buf.write("\u00b5\t\3\2\2\u00b5\35\3\2\2\2\u00b6\u00b7\t\4\2\2\u00b7")
+        buf.write("\37\3\2\2\2\24\"&-\60\64;@RW_fqy\u0080\u008b\u0092\u009f")
+        buf.write("\u00b2")
         return buf.getvalue()
 
 
@@ -107,14 +95,14 @@ class miniSQLParser ( Parser ):
                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                     "<INVALID>", "'='", "'!='", "'<'", "'<='", "'>'", "'>='" ]
+                     "'='", "'!='", "'<'", "'<='", "'>'", "'>='" ]
 
     symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "LPAR", "RPAR", 
                       "COLON", "STAR", "QUOTE", "SELECT", "DISTINCT", "FROM", 
                       "WHERE", "AS", "MINUS", "UNION", "JOIN", "GROUPBY", 
                       "ORDERBY", "AND", "OR", "NOT", "IN", "DESC", "ASC", 
-                      "MAX", "MIN", "COUNT", "SUM", "AVG", "EQ", "NEQ", 
-                      "LT", "LE", "GT", "GE", "FILENAME", "ID", "WS", "NEWLINE" ]
+                      "MAX", "MIN", "COUNT", "SUM", "EQ", "NEQ", "LT", "LE", 
+                      "GT", "GE", "FILENAME", "ID", "WS", "NEWLINE" ]
 
     RULE_main = 0
     RULE_sql = 1
@@ -122,8 +110,8 @@ class miniSQLParser ( Parser ):
     RULE_atts = 3
     RULE_attd = 4
     RULE_att = 5
-    RULE_attgrp = 6
-    RULE_attgrpbis = 7
+    RULE_attsgrp = 6
+    RULE_attgrp = 7
     RULE_rels = 8
     RULE_rel = 9
     RULE_cond = 10
@@ -132,8 +120,8 @@ class miniSQLParser ( Parser ):
     RULE_op = 13
     RULE_aggr = 14
 
-    ruleNames =  [ "main", "sql", "orderby", "atts", "attd", "att", "attgrp", 
-                   "attgrpbis", "rels", "rel", "cond", "and_cond", "at_cond", 
+    ruleNames =  [ "main", "sql", "orderby", "atts", "attd", "att", "attsgrp", 
+                   "attgrp", "rels", "rel", "cond", "and_cond", "at_cond", 
                    "op", "aggr" ]
 
     EOF = Token.EOF
@@ -164,17 +152,16 @@ class miniSQLParser ( Parser ):
     MIN=25
     COUNT=26
     SUM=27
-    AVG=28
-    EQ=29
-    NEQ=30
-    LT=31
-    LE=32
-    GT=33
-    GE=34
-    FILENAME=35
-    ID=36
-    WS=37
-    NEWLINE=38
+    EQ=28
+    NEQ=29
+    LT=30
+    LE=31
+    GT=32
+    GE=33
+    FILENAME=34
+    ID=35
+    WS=36
+    NEWLINE=37
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -356,8 +343,8 @@ class miniSQLParser ( Parser ):
 
         def SELECT(self):
             return self.getToken(miniSQLParser.SELECT, 0)
-        def attgrp(self):
-            return self.getTypedRuleContext(miniSQLParser.AttgrpContext,0)
+        def attsgrp(self):
+            return self.getTypedRuleContext(miniSQLParser.AttsgrpContext,0)
 
         def FROM(self):
             return self.getToken(miniSQLParser.FROM, 0)
@@ -437,84 +424,84 @@ class miniSQLParser ( Parser ):
                 pass
 
             elif la_ == 2:
-                localctx = miniSQLParser.SqlMinusContext(self, localctx)
+                localctx = miniSQLParser.SqlGroupByContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
                 self.state = 48
-                self.match(miniSQLParser.LPAR)
-                self.state = 49
-                self.sql()
+                self.match(miniSQLParser.SELECT)
                 self.state = 50
-                self.match(miniSQLParser.RPAR)
-                self.state = 51
-                self.match(miniSQLParser.MINUS)
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                if _la==miniSQLParser.DISTINCT:
+                    self.state = 49
+                    self.match(miniSQLParser.DISTINCT)
+
+
                 self.state = 52
-                self.match(miniSQLParser.LPAR)
+                self.attsgrp()
                 self.state = 53
-                self.sql()
+                self.match(miniSQLParser.FROM)
                 self.state = 54
-                self.match(miniSQLParser.RPAR)
+                self.rels()
+                self.state = 57
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                if _la==miniSQLParser.WHERE:
+                    self.state = 55
+                    self.match(miniSQLParser.WHERE)
+                    self.state = 56
+                    self.cond()
+
+
+                self.state = 59
+                self.match(miniSQLParser.GROUPBY)
+                self.state = 60
+                self.att()
+                self.state = 62
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                if _la==miniSQLParser.ORDERBY:
+                    self.state = 61
+                    self.orderby()
+
+
                 pass
 
             elif la_ == 3:
-                localctx = miniSQLParser.SqlUnionContext(self, localctx)
+                localctx = miniSQLParser.SqlMinusContext(self, localctx)
                 self.enterOuterAlt(localctx, 3)
-                self.state = 56
+                self.state = 64
                 self.match(miniSQLParser.LPAR)
-                self.state = 57
+                self.state = 65
                 self.sql()
-                self.state = 58
+                self.state = 66
                 self.match(miniSQLParser.RPAR)
-                self.state = 59
-                self.match(miniSQLParser.UNION)
-                self.state = 60
+                self.state = 67
+                self.match(miniSQLParser.MINUS)
+                self.state = 68
                 self.match(miniSQLParser.LPAR)
-                self.state = 61
+                self.state = 69
                 self.sql()
-                self.state = 62
+                self.state = 70
                 self.match(miniSQLParser.RPAR)
                 pass
 
             elif la_ == 4:
-                localctx = miniSQLParser.SqlGroupByContext(self, localctx)
+                localctx = miniSQLParser.SqlUnionContext(self, localctx)
                 self.enterOuterAlt(localctx, 4)
-                self.state = 64
-                self.match(miniSQLParser.SELECT)
-                self.state = 66
-                self._errHandler.sync(self)
-                _la = self._input.LA(1)
-                if _la==miniSQLParser.DISTINCT:
-                    self.state = 65
-                    self.match(miniSQLParser.DISTINCT)
-
-
-                self.state = 68
-                self.attgrp()
-                self.state = 69
-                self.match(miniSQLParser.FROM)
-                self.state = 70
-                self.rels()
+                self.state = 72
+                self.match(miniSQLParser.LPAR)
                 self.state = 73
-                self._errHandler.sync(self)
-                _la = self._input.LA(1)
-                if _la==miniSQLParser.WHERE:
-                    self.state = 71
-                    self.match(miniSQLParser.WHERE)
-                    self.state = 72
-                    self.cond()
-
-
+                self.sql()
+                self.state = 74
+                self.match(miniSQLParser.RPAR)
                 self.state = 75
-                self.match(miniSQLParser.GROUPBY)
+                self.match(miniSQLParser.UNION)
                 self.state = 76
-                self.att()
+                self.match(miniSQLParser.LPAR)
+                self.state = 77
+                self.sql()
                 self.state = 78
-                self._errHandler.sync(self)
-                _la = self._input.LA(1)
-                if _la==miniSQLParser.ORDERBY:
-                    self.state = 77
-                    self.orderby()
-
-
+                self.match(miniSQLParser.RPAR)
                 pass
 
 
@@ -845,113 +832,83 @@ class miniSQLParser ( Parser ):
             self.exitRule()
         return localctx
 
-    class AttgrpContext(ParserRuleContext):
+    class AttsgrpContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
-        def att(self):
-            return self.getTypedRuleContext(miniSQLParser.AttContext,0)
+
+        def getRuleIndex(self):
+            return miniSQLParser.RULE_attsgrp
+
+     
+        def copyFrom(self, ctx:ParserRuleContext):
+            super().copyFrom(ctx)
 
 
-        def attgrpbis(self):
-            return self.getTypedRuleContext(miniSQLParser.AttgrpbisContext,0)
+
+    class AttributeGroupByDeclAllContext(AttsgrpContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a miniSQLParser.AttsgrpContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
+        def attgrp(self):
+            return self.getTypedRuleContext(miniSQLParser.AttgrpContext,0)
+
+        def attsgrp(self):
+            return self.getTypedRuleContext(miniSQLParser.AttsgrpContext,0)
 
 
-        def AS(self):
-            return self.getToken(miniSQLParser.AS, 0)
-
-        def ID(self):
-            return self.getToken(miniSQLParser.ID, 0)
-
-        def aggr(self):
-            return self.getTypedRuleContext(miniSQLParser.AggrContext,0)
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAttributeGroupByDeclAll" ):
+                return visitor.visitAttributeGroupByDeclAll(self)
+            else:
+                return visitor.visitChildren(self)
 
 
-        def LPAR(self):
-            return self.getToken(miniSQLParser.LPAR, 0)
+    class AttributeGroupByDeclSimpleContext(AttsgrpContext):
 
-        def RPAR(self):
-            return self.getToken(miniSQLParser.RPAR, 0)
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a miniSQLParser.AttsgrpContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
 
         def attgrp(self):
             return self.getTypedRuleContext(miniSQLParser.AttgrpContext,0)
 
 
-        def getRuleIndex(self):
-            return miniSQLParser.RULE_attgrp
-
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitAttgrp" ):
-                return visitor.visitAttgrp(self)
+            if hasattr( visitor, "visitAttributeGroupByDeclSimple" ):
+                return visitor.visitAttributeGroupByDeclSimple(self)
             else:
                 return visitor.visitChildren(self)
 
 
 
+    def attsgrp(self):
 
-    def attgrp(self):
-
-        localctx = miniSQLParser.AttgrpContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 12, self.RULE_attgrp)
+        localctx = miniSQLParser.AttsgrpContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 12, self.RULE_attsgrp)
         try:
-            self.state = 128
+            self.state = 111
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,11,self._ctx)
             if la_ == 1:
+                localctx = miniSQLParser.AttributeGroupByDeclAllContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
                 self.state = 106
-                self.att()
+                self.attgrp()
+                self.state = 107
+                self.match(miniSQLParser.T__0)
+                self.state = 108
+                self.attsgrp()
                 pass
 
             elif la_ == 2:
+                localctx = miniSQLParser.AttributeGroupByDeclSimpleContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 107
-                self.att()
-                self.state = 108
-                self.match(miniSQLParser.T__0)
-                self.state = 109
-                self.attgrpbis()
-                pass
-
-            elif la_ == 3:
-                self.enterOuterAlt(localctx, 3)
-                self.state = 111
-                self.att()
-                self.state = 112
-                self.match(miniSQLParser.AS)
-                self.state = 113
-                self.match(miniSQLParser.ID)
-                pass
-
-            elif la_ == 4:
-                self.enterOuterAlt(localctx, 4)
-                self.state = 115
-                self.att()
-                self.state = 116
-                self.match(miniSQLParser.AS)
-                self.state = 117
-                self.match(miniSQLParser.ID)
-                self.state = 118
-                self.match(miniSQLParser.T__0)
-                self.state = 119
-                self.attgrpbis()
-                pass
-
-            elif la_ == 5:
-                self.enterOuterAlt(localctx, 5)
-                self.state = 121
-                self.aggr()
-                self.state = 122
-                self.match(miniSQLParser.LPAR)
-                self.state = 123
-                self.att()
-                self.state = 124
-                self.match(miniSQLParser.RPAR)
-                self.state = 125
-                self.match(miniSQLParser.T__0)
-                self.state = 126
+                self.state = 110
                 self.attgrp()
                 pass
 
@@ -964,78 +921,92 @@ class miniSQLParser ( Parser ):
             self.exitRule()
         return localctx
 
-    class AttgrpbisContext(ParserRuleContext):
+    class AttgrpContext(ParserRuleContext):
 
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
 
+
+        def getRuleIndex(self):
+            return miniSQLParser.RULE_attgrp
+
+     
+        def copyFrom(self, ctx:ParserRuleContext):
+            super().copyFrom(ctx)
+
+
+
+    class AttributeGroupByAggrContext(AttgrpContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a miniSQLParser.AttgrpContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
         def aggr(self):
             return self.getTypedRuleContext(miniSQLParser.AggrContext,0)
 
-
         def LPAR(self):
             return self.getToken(miniSQLParser.LPAR, 0)
+        def att(self):
+            return self.getTypedRuleContext(miniSQLParser.AttContext,0)
+
+        def RPAR(self):
+            return self.getToken(miniSQLParser.RPAR, 0)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAttributeGroupByAggr" ):
+                return visitor.visitAttributeGroupByAggr(self)
+            else:
+                return visitor.visitChildren(self)
+
+
+    class AttributeGroupBySimpleContext(AttgrpContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a miniSQLParser.AttgrpContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
 
         def att(self):
             return self.getTypedRuleContext(miniSQLParser.AttContext,0)
 
 
-        def RPAR(self):
-            return self.getToken(miniSQLParser.RPAR, 0)
-
-        def attgrpbis(self):
-            return self.getTypedRuleContext(miniSQLParser.AttgrpbisContext,0)
-
-
-        def getRuleIndex(self):
-            return miniSQLParser.RULE_attgrpbis
-
         def accept(self, visitor:ParseTreeVisitor):
-            if hasattr( visitor, "visitAttgrpbis" ):
-                return visitor.visitAttgrpbis(self)
+            if hasattr( visitor, "visitAttributeGroupBySimple" ):
+                return visitor.visitAttributeGroupBySimple(self)
             else:
                 return visitor.visitChildren(self)
 
 
 
+    def attgrp(self):
 
-    def attgrpbis(self):
-
-        localctx = miniSQLParser.AttgrpbisContext(self, self._ctx, self.state)
-        self.enterRule(localctx, 14, self.RULE_attgrpbis)
+        localctx = miniSQLParser.AttgrpContext(self, self._ctx, self.state)
+        self.enterRule(localctx, 14, self.RULE_attgrp)
         try:
-            self.state = 142
+            self.state = 119
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,12,self._ctx)
-            if la_ == 1:
+            token = self._input.LA(1)
+            if token in [miniSQLParser.ID]:
+                localctx = miniSQLParser.AttributeGroupBySimpleContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
-                self.state = 130
-                self.aggr()
-                self.state = 131
-                self.match(miniSQLParser.LPAR)
-                self.state = 132
+                self.state = 113
                 self.att()
-                self.state = 133
-                self.match(miniSQLParser.RPAR)
                 pass
-
-            elif la_ == 2:
+            elif token in [miniSQLParser.MAX, miniSQLParser.MIN, miniSQLParser.COUNT, miniSQLParser.SUM]:
+                localctx = miniSQLParser.AttributeGroupByAggrContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 135
+                self.state = 114
                 self.aggr()
-                self.state = 136
+                self.state = 115
                 self.match(miniSQLParser.LPAR)
-                self.state = 137
+                self.state = 116
                 self.att()
-                self.state = 138
+                self.state = 117
                 self.match(miniSQLParser.RPAR)
-                self.state = 139
-                self.match(miniSQLParser.T__0)
-                self.state = 140
-                self.attgrpbis()
                 pass
-
+            else:
+                raise NoViableAltException(self)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -1104,24 +1075,24 @@ class miniSQLParser ( Parser ):
         localctx = miniSQLParser.RelsContext(self, self._ctx, self.state)
         self.enterRule(localctx, 16, self.RULE_rels)
         try:
-            self.state = 149
+            self.state = 126
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,13,self._ctx)
             if la_ == 1:
                 localctx = miniSQLParser.RelationDeclListContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
-                self.state = 144
+                self.state = 121
                 self.rel()
-                self.state = 145
+                self.state = 122
                 self.match(miniSQLParser.T__0)
-                self.state = 146
+                self.state = 123
                 self.rels()
                 pass
 
             elif la_ == 2:
                 localctx = miniSQLParser.RelationDeclSimpleContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 148
+                self.state = 125
                 self.rel()
                 pass
 
@@ -1202,31 +1173,31 @@ class miniSQLParser ( Parser ):
         localctx = miniSQLParser.RelContext(self, self._ctx, self.state)
         self.enterRule(localctx, 18, self.RULE_rel)
         try:
-            self.state = 160
+            self.state = 137
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [miniSQLParser.QUOTE]:
                 localctx = miniSQLParser.RelationIDContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
-                self.state = 151
+                self.state = 128
                 self.match(miniSQLParser.QUOTE)
-                self.state = 152
+                self.state = 129
                 self.match(miniSQLParser.FILENAME)
-                self.state = 153
+                self.state = 130
                 self.match(miniSQLParser.QUOTE)
-                self.state = 154
+                self.state = 131
                 self.match(miniSQLParser.ID)
                 pass
             elif token in [miniSQLParser.LPAR]:
                 localctx = miniSQLParser.SubqueryContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 155
+                self.state = 132
                 self.match(miniSQLParser.LPAR)
-                self.state = 156
+                self.state = 133
                 self.sql()
-                self.state = 157
+                self.state = 134
                 self.match(miniSQLParser.RPAR)
-                self.state = 158
+                self.state = 135
                 self.match(miniSQLParser.ID)
                 pass
             else:
@@ -1301,24 +1272,24 @@ class miniSQLParser ( Parser ):
         localctx = miniSQLParser.CondContext(self, self._ctx, self.state)
         self.enterRule(localctx, 20, self.RULE_cond)
         try:
-            self.state = 167
+            self.state = 144
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,15,self._ctx)
             if la_ == 1:
                 localctx = miniSQLParser.CondOrListContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
-                self.state = 162
+                self.state = 139
                 self.and_cond()
-                self.state = 163
+                self.state = 140
                 self.match(miniSQLParser.OR)
-                self.state = 164
+                self.state = 141
                 self.cond()
                 pass
 
             elif la_ == 2:
                 localctx = miniSQLParser.CondOrSimpleContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 166
+                self.state = 143
                 self.and_cond()
                 pass
 
@@ -1418,39 +1389,39 @@ class miniSQLParser ( Parser ):
         localctx = miniSQLParser.And_condContext(self, self._ctx, self.state)
         self.enterRule(localctx, 22, self.RULE_and_cond)
         try:
-            self.state = 180
+            self.state = 157
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,16,self._ctx)
             if la_ == 1:
                 localctx = miniSQLParser.CondAndOrContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
-                self.state = 169
+                self.state = 146
                 self.match(miniSQLParser.LPAR)
-                self.state = 170
+                self.state = 147
                 self.cond()
-                self.state = 171
+                self.state = 148
                 self.match(miniSQLParser.RPAR)
-                self.state = 172
+                self.state = 149
                 self.match(miniSQLParser.AND)
-                self.state = 173
+                self.state = 150
                 self.and_cond()
                 pass
 
             elif la_ == 2:
                 localctx = miniSQLParser.CondAndListContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 175
+                self.state = 152
                 self.at_cond()
-                self.state = 176
+                self.state = 153
                 self.match(miniSQLParser.AND)
-                self.state = 177
+                self.state = 154
                 self.and_cond()
                 pass
 
             elif la_ == 3:
                 localctx = miniSQLParser.CondAndSimpleContext(self, localctx)
                 self.enterOuterAlt(localctx, 3)
-                self.state = 179
+                self.state = 156
                 self.at_cond()
                 pass
 
@@ -1562,49 +1533,49 @@ class miniSQLParser ( Parser ):
         localctx = miniSQLParser.At_condContext(self, self._ctx, self.state)
         self.enterRule(localctx, 24, self.RULE_at_cond)
         try:
-            self.state = 199
+            self.state = 176
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,17,self._ctx)
             if la_ == 1:
                 localctx = miniSQLParser.CompSimpleContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
-                self.state = 182
+                self.state = 159
                 self.att()
-                self.state = 183
+                self.state = 160
                 self.op()
-                self.state = 184
+                self.state = 161
                 self.att()
                 pass
 
             elif la_ == 2:
                 localctx = miniSQLParser.CompInContext(self, localctx)
                 self.enterOuterAlt(localctx, 2)
-                self.state = 186
+                self.state = 163
                 self.att()
-                self.state = 187
+                self.state = 164
                 self.match(miniSQLParser.IN)
-                self.state = 188
+                self.state = 165
                 self.match(miniSQLParser.LPAR)
-                self.state = 189
+                self.state = 166
                 self.sql()
-                self.state = 190
+                self.state = 167
                 self.match(miniSQLParser.RPAR)
                 pass
 
             elif la_ == 3:
                 localctx = miniSQLParser.CompNotInContext(self, localctx)
                 self.enterOuterAlt(localctx, 3)
-                self.state = 192
+                self.state = 169
                 self.att()
-                self.state = 193
+                self.state = 170
                 self.match(miniSQLParser.NOT)
-                self.state = 194
+                self.state = 171
                 self.match(miniSQLParser.IN)
-                self.state = 195
+                self.state = 172
                 self.match(miniSQLParser.LPAR)
-                self.state = 196
+                self.state = 173
                 self.sql()
-                self.state = 197
+                self.state = 174
                 self.match(miniSQLParser.RPAR)
                 pass
 
@@ -1660,7 +1631,7 @@ class miniSQLParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 201
+            self.state = 178
             _la = self._input.LA(1)
             if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << miniSQLParser.EQ) | (1 << miniSQLParser.NEQ) | (1 << miniSQLParser.LT) | (1 << miniSQLParser.LE) | (1 << miniSQLParser.GT) | (1 << miniSQLParser.GE))) != 0)):
                 self._errHandler.recoverInline(self)
@@ -1693,9 +1664,6 @@ class miniSQLParser ( Parser ):
         def SUM(self):
             return self.getToken(miniSQLParser.SUM, 0)
 
-        def AVG(self):
-            return self.getToken(miniSQLParser.AVG, 0)
-
         def getRuleIndex(self):
             return miniSQLParser.RULE_aggr
 
@@ -1715,9 +1683,9 @@ class miniSQLParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 203
+            self.state = 180
             _la = self._input.LA(1)
-            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << miniSQLParser.MAX) | (1 << miniSQLParser.MIN) | (1 << miniSQLParser.COUNT) | (1 << miniSQLParser.SUM) | (1 << miniSQLParser.AVG))) != 0)):
+            if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << miniSQLParser.MAX) | (1 << miniSQLParser.MIN) | (1 << miniSQLParser.COUNT) | (1 << miniSQLParser.SUM))) != 0)):
                 self._errHandler.recoverInline(self)
             else:
                 self._errHandler.reportMatch(self)
