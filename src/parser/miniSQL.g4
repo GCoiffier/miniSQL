@@ -8,9 +8,9 @@ main
 
 sql
     : SELECT (DISTINCT)? atts FROM rels (WHERE cond)? orderby?  #sqlNormal
+    | SELECT (DISTINCT)? attsgrp FROM rels (WHERE cond)? GROUPBY att orderby? #sqlGroupBy
     | LPAR sql RPAR MINUS LPAR sql RPAR     #sqlMinus
     | LPAR sql RPAR UNION LPAR sql RPAR    #sqlUnion
-    | SELECT (DISTINCT)? attgrp FROM rels (WHERE cond)? GROUPBY att orderby? #sqlGroupBy
     ;
 
 orderby
@@ -30,17 +30,14 @@ attd
 
 att : ID '.' ID ;
 
-attgrp
-    : att
-    | att ',' attgrpbis
-    | att AS ID
-    | att AS ID ',' attgrpbis
-    | aggr LPAR att RPAR ',' attgrp
+attsgrp
+    : attgrp ',' attsgrp  #AttributeGroupByDeclAll
+    | attgrp              #AttributeGroupByDeclSimple
     ;
 
-attgrpbis
-    : aggr LPAR att RPAR
-    | aggr LPAR att RPAR ',' attgrpbis
+attgrp
+    : att                 #AttributeGroupBySimple
+    | aggr LPAR att RPAR  #AttributeGroupByAggr
     ;
 
 rels
@@ -71,7 +68,7 @@ at_cond
     ;
 
 op : EQ | NEQ | LT | LE | GT | GE ;
-aggr : MAX | MIN | COUNT | SUM | AVG ;
+aggr : MAX | MIN | COUNT | SUM ;
 
 LPAR : '(';
 RPAR : ')';
@@ -99,7 +96,6 @@ MAX : 'MAX' | 'max';
 MIN : 'MIN' | 'min';
 COUNT : 'COUNT' | 'count';
 SUM : 'SUM' | 'sum';
-AVG : 'AVG' | 'avg';
 
 EQ : '=';
 NEQ : '!=';

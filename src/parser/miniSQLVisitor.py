@@ -19,6 +19,11 @@ class miniSQLVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by miniSQLParser#sqlGroupBy.
+    def visitSqlGroupBy(self, ctx:miniSQLParser.SqlGroupByContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by miniSQLParser#sqlMinus.
     def visitSqlMinus(self, ctx:miniSQLParser.SqlMinusContext):
         return self.visitChildren(ctx)
@@ -26,11 +31,6 @@ class miniSQLVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by miniSQLParser#sqlUnion.
     def visitSqlUnion(self, ctx:miniSQLParser.SqlUnionContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by miniSQLParser#sqlGroupBy.
-    def visitSqlGroupBy(self, ctx:miniSQLParser.SqlGroupByContext):
         return self.visitChildren(ctx)
 
 
@@ -69,13 +69,23 @@ class miniSQLVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by miniSQLParser#attgrp.
-    def visitAttgrp(self, ctx:miniSQLParser.AttgrpContext):
+    # Visit a parse tree produced by miniSQLParser#AttributeGroupByDeclAll.
+    def visitAttributeGroupByDeclAll(self, ctx:miniSQLParser.AttributeGroupByDeclAllContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by miniSQLParser#attgrpbis.
-    def visitAttgrpbis(self, ctx:miniSQLParser.AttgrpbisContext):
+    # Visit a parse tree produced by miniSQLParser#AttributeGroupByDeclSimple.
+    def visitAttributeGroupByDeclSimple(self, ctx:miniSQLParser.AttributeGroupByDeclSimpleContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by miniSQLParser#AttributeGroupBySimple.
+    def visitAttributeGroupBySimple(self, ctx:miniSQLParser.AttributeGroupBySimpleContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by miniSQLParser#AttributeGroupByAggr.
+    def visitAttributeGroupByAggr(self, ctx:miniSQLParser.AttributeGroupByAggrContext):
         return self.visitChildren(ctx)
 
 

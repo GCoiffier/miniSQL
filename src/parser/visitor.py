@@ -93,7 +93,7 @@ class Visitor(ParseTreeVisitor):
 
     # _________________________ Group By rules __________________________________
     def visitSqlGroupBy(self, ctx:miniSQLParser.SqlGroupByContext):
-        # SELECT (DISTINCT)? attgrp FROM rels (WHERE cond)? GROUPBY att orderby?
+        # SELECT (DISTINCT)? attsgrp FROM rels (WHERE cond)? GROUPBY att orderby?
         return self.visitChildren(ctx)
 
     # _________________________ subsql rules ___________________________________
@@ -177,6 +177,20 @@ class Visitor(ParseTreeVisitor):
         tableName = ctx.ID(0).getText()
         attrName = ctx.ID(1).getText()
         return Attribute(tableName,attrName)
+
+    #__________________ attsgrp rule ___________________________________________
+    def visitAttributeGroupByDeclAll(self, ctx:miniSQLParser.AttributeGroupByDeclAllContext):
+        return self.visitChildren(ctx)
+
+    def visitAttributeGroupByDeclSimple(self, ctx:miniSQLParser.AttributeGroupByDeclSimpleContext):
+        return self.visitChildren(ctx)
+
+    #__________________ attgrp rule ___________________________________________
+    def visitAttributeGroupBySimple(self, ctx:miniSQLParser.AttributeGroupBySimpleContext):
+        return self.visitChildren(ctx)
+
+    def visitAttributeGroupByAggr(self, ctx:miniSQLParser.AttributeGroupByAggrContext):
+        return self.visitChildren(ctx)
 
     # __________________ rels rules ____________________________________________
     def visitRelationDeclList(self, ctx:miniSQLParser.RelationDeclListContext):
