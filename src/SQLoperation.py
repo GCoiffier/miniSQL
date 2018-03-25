@@ -20,8 +20,8 @@ def project_distinct(rel):
     def unique_values(iterable):
         seen = set()
         for item in iterable:
-            if item not in seen:
-                seen.add(item)
+            if tuple(item) not in seen:
+                seen.add(tuple(item))
                 yield item
     return Table("distinctProject", rel.get_keys(), unique_values(rel.data))
 

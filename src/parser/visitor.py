@@ -53,26 +53,30 @@ class Visitor(ParseTreeVisitor):
         attributes = self.visit(ctx.atts())
         print_debug(" Attributes :", attributes)
 
+        # 6/ 2nd pass over conditions to get condition tree
         if ctx.cond() is not None:
-            condTree,_ = self.visit(ctx.cond()) #2nd pass over conditions to get condition tree
+            condTree,_ = self.visit(ctx.cond())
             print_debug(" Conditions : " + str(condTree))
             resultRelation = select(resultRelation, Or(condTree))
 
-        if ctx.DISTINCT() is not None :
-            resultRelation = project_distinct(resultRelation)
-
+        # 7/ Sorting of output
         if ctx.orderby() is not None :
             orderkeys,desc = self.visit(ctx.orderby())
             print_debug("Order keys : ", orderkeys)
             resultRelation = orderBy(resultRelation, orderkeys, desc=desc)
 
+        # 8/ Perform final projection if not a 'SELECT *'
         if not self.allAttr:
-            # Not a * -> perform a projection
             resultRelation = project(resultRelation, attributes)
+
+        # 9/ Delete duplicates
+        if ctx.DISTINCT() is not None :
+            print_debug("Select Distinct")
+            resultRelation = project_distinct(resultRelation)
 
         return resultRelation
 
-    # Visit a parse tree produced by miniSQLParser#sqlMinus.
+
     def visitSqlMinus(self, ctx:miniSQLParser.SqlMinusContext):
         # LPAR sql RPAR MINUS LPAR sql RPAR
         print_debug("visitSqlMinus")
@@ -80,7 +84,6 @@ class Visitor(ParseTreeVisitor):
         rel2 = self.visit(ctx.sql(1))
         return minus(rel1,rel2)
 
-    # Visit a parse tree produced by miniSQLParser#sqlUnion.
     def visitSqlUnion(self, ctx:miniSQLParser.SqlUnionContext):
         # LPAR sql RPAR UNION LPAR sql RPAR
         print_debug("visitSqlUnion")
