@@ -50,7 +50,7 @@ class Visitor(ParseTreeVisitor):
             condTree,relList,_ = self.visit(ctx.cond())
             relations += relList
 
-        # 2.5/ Only one relation => using special operator
+        # 2.5/ Only one relation => using special operators
         if len(relations)==1:
             attributes = self.visit(ctx.atts())
             if not self.aggregate:
@@ -60,6 +60,14 @@ class Visitor(ParseTreeVisitor):
                 if ctx.cond() is not None:
                     condTree,_,_ = self.visit(ctx.cond())
                 return readSelectProjectRename(rel[0], rel[1], attributes, self.allAttr, Or(condTree))
+            elif ctx.GROUPBY() is not None:
+                print_debug("Calling readSelectRenameGroupByProject")
+                rel = relations[0]
+                condTree = None
+                if ctx.cond() is not None:
+                    condTree,_,_ = self.visit(ctx.cond())
+                grpAttr = self.visit(ctx.att())
+                return readSelectRenameGroupByProject(rel[0], rel[1], attributes, self.allAttr, Or(condTree), grpAttr, self.aggregate)
 
         # 3/ Load all the tables
         for i,(fileName,tableName) in enumerate(relations) :
