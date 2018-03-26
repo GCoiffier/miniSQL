@@ -43,7 +43,7 @@ def verify_conditions(entry, cond, keys, ignoreNotIn):
 
 def select(rel, condTree, ignoreNotIn=True):
     """
-    Filters a table and keep only entries satisfyinf conditions in condTree
+    Filters a table and keep only entries satisfying conditions in condTree
     """
     selection = lambda x : verify_conditions(x, condTree, rel.keys, ignoreNotIn)
     filtered = filter(selection , rel.data)
@@ -83,7 +83,7 @@ def union(relA,relB):
 
 ## ___________________________ Minus ___________________________________________
 def minus(relA,relB):
-    entries = filterfalse(lambda x : x in relB.get_data() , relA.data)
+    entries = filterfalse(lambda x : x in relB.get_data() , relA.get_data())
     new = Table("minusRequest", relA.get_keys(), entries)
     return new
 
@@ -107,7 +107,10 @@ def joinProjectRename(rel1,rel2, attr, conds):
     only the proper attributes after renaming
     (the θ-join being a cartesian product followed by a selection)
     """
-    pass
+    rel = join(rel1,rel2)
+    rel = select(rel,conds)
+    rel = project(rel,attr)
+    return rel
 
 ## _______________________ Aggregation and Group By ____________________________
 

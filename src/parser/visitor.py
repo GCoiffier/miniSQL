@@ -59,7 +59,7 @@ class Visitor(ParseTreeVisitor):
                 condTree = None
                 if ctx.cond() is not None:
                     condTree,_,_ = self.visit(ctx.cond())
-                return readSelectProjectRename(rel[0], rel[1], attributes, self.allAttr, condTree[0])
+                return readSelectProjectRename(rel[0], rel[1], attributes, self.allAttr, Or(condTree))
 
         # 3/ Load all the tables
         for i,(fileName,tableName) in enumerate(relations) :
@@ -82,8 +82,8 @@ class Visitor(ParseTreeVisitor):
         if ctx.cond() is not None:
             condTree,_,notIn = self.visit(ctx.cond())
             if notIn:
-                resultNormal = select(resultRelation, Or(condTree), True)
-                resultWithIn = select(resultRelation, Or(condTree), False)
+                resultNormal = select(select_distinct(resultRelation), Or(condTree), True)
+                resultWithIn = select(select_distinct(resultRelation), Or(condTree), False)
                 resultRelation = minus(resultNormal,resultWithIn)
             else:
                 resultRelation = select(resultRelation, Or(condTree))
