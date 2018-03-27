@@ -100,17 +100,29 @@ class Visitor(ParseTreeVisitor):
         if ctx.cond() is not None:
             condTree,_,notIn = self.visit(ctx.cond())
             if notIn:
+                print_debug("-------------------------------Result : ---------------------------------------")
+                print_debug(resultRelation)
+
                 r1,r2 = resultRelation, copy(resultRelation)
                 resultNormal = select(r1, Or(condTree), True)
                 print_debug("-------------------------------Le normal : ---------------------------------------")
                 print_debug(resultNormal)
 
+                print_debug("-------------------------------Result : ---------------------------------------")
+                print_debug(r1)
+                print_debug("-------------------------------Result : ---------------------------------------")
+                print_debug(r2)
+
                 resultWithIn = select(r2, Or(condTree), False)
                 print_debug("-------------------------------Le withIn : ---------------------------------------")
                 print_debug(resultWithIn)
 
-                print_debug("-------------------------------Le final : ---------------------------------------")
+                print_debug("-------------------------------Result : ---------------------------------------")
+                print_debug(resultRelation)
+
                 resultRelation = minus(resultNormal,resultWithIn)
+                #print_debug("-------------------------------Le final : ---------------------------------------")
+                #print_debug(resultRelation)
             else:
                 resultRelation = select(resultRelation, Or(condTree))
             print_debug(" Conditions : " + str(condTree))
