@@ -52,6 +52,10 @@ class Visitor(ParseTreeVisitor):
 
         # 3/ Getting attributes
         attributes = self.visit(ctx.atts())
+        if self.allAttr :
+            for table in relations :
+                for attribute in table.get_keys() :
+                    self.attributeNeeded[attribute.fullName] = attribute
         print_debug(" Attributes :", attributes)
         print_debug(" Aggregates :", self.aggregate)
 
