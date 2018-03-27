@@ -17,12 +17,12 @@ Simply type `make`
 An interface will open, in which you can type commands.
 Available commands :
 - `.end `, `.exit` or `.quit` to quit
-- `.run <request_file>.sql` to run command from a file
+- `.read <request_file>.sql` to run command from a file
 - A miniSQL query
 /!\ All query files should be located in the 'request' folder, and all csv files should be located in the 'data' folder. Paths are computed relatively to these folders in the program.
 
 example:
-    `.run test.csv` to run the query file 'request/test.csv'
+    `.read test.csv` to run the query file 'request/test.csv'
 
 The commandline handles history and autocompletion
 
@@ -35,9 +35,9 @@ The commandline handles history and autocompletion
 - GROUP BY and aggregation (MIN, MAX, COUNT, SUM) in SELECT clause
 - ORDER BY
 
-/!\ We still have troubles with double nested queries (especially NOT IN ... NOT IN),
+/!\ We still have troubles with double nested queries
 
-    + Performance problem with some subqueries (for instance, q3.sql)
+    + Performance problem with some subqueries (for instance, q3.sql take a bit more than a minute)
 Currently, there is no GROUP BY handled in subqueries
 
 
@@ -49,7 +49,9 @@ A relation in represented by a python object that has the following attribute
 - a dictionnary Attribute -> int, that tells us in which position in the tuple each field is
 
 Relations are implemented with pointers to memory. They are not loaded in memory,
-except after the application of an ORDER BY or a GROUP BY operator
+except after the application of an ORDER BY or a GROUP BY operator.
+
+We did not respect the redundancies: some may occur when it should not, and some may not when it should. Only the presence of 'DISTINCT' ensure no redundancy at all, however it does need a lot of memory.
 
 #### DataManager
 The DataManager class handles every operation on tables, like creating a new one, remaning, or accessing a table.
@@ -61,4 +63,4 @@ We then just had to implement the visitor.
 
 #### Limitations
 Unfortunately, we were not able to modify the Abstract Syntax Tree using antlr. This forced us to do the integrality of our operations in one visit.
-Afterward, Caml would have been more appropriate, because it is easier to make transformation on requests in caml (plus tha fact that this task is intrinsecally functionnal) to do this project, but we realized it to late.
+Afterward, Caml would have been more appropriate, because it is easier to make transformation on requests in caml (plus the fact that this task is intrinsecally functionnal) to do this project, but we realized it to late.
