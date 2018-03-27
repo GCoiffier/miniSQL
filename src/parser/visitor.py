@@ -51,6 +51,10 @@ class Visitor(ParseTreeVisitor):
 
         # 3/ Getting attributes
         attributes = self.visit(ctx.atts())
+        if self.allAttr :
+            for table in relations :
+                for attribute in table.get_keys() :
+                    self.attributeNeeded[attribute.fullName] = attribute
         print_debug(" Attributes :", attributes)
         print_debug(" Aggregates :", self.aggregate)
 
@@ -95,11 +99,14 @@ class Visitor(ParseTreeVisitor):
         if ctx.cond() is not None:
             condTree,_,notIn = self.visit(ctx.cond())
             if notIn:
-                resultNormal = select(select_distinct(resultRelation), Or(condTree), True)
+                print_debug("-------------------------------L'initial : ---------------------------------------")
+                print_debug(resultRelation)
+
+                resultNormal = select(resultRelation, Or(condTree), True)
                 print_debug("-------------------------------Le normal : ---------------------------------------")
                 print_debug(resultNormal)
 
-                resultWithIn = select(select_distinct(resultRelation), Or(condTree), False)
+                resultWithIn = select(resultRelation, Or(condTree), False)
                 print_debug("-------------------------------Le withIn : ---------------------------------------")
                 print_debug(resultWithIn)
 
