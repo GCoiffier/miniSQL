@@ -27,7 +27,7 @@ example:
 The commandline handles history and autocompletion
 
 ## Progress
-- SELECT ... FROM ... WHERE <simple Cond>
+- SELECT ... FROM ... WHERE <combination of simple Cond>
 - SELECT ... FROM ... WHERE ... IN <subquery>
 - SELECT ... FROM ... WHERE ... NOT IN <subquery>
 - SELECT DISTINCT
@@ -35,7 +35,11 @@ The commandline handles history and autocompletion
 - GROUP BY and aggregation (MIN, MAX, COUNT, SUM) in SELECT clause
 - ORDER BY
 
-/!\ We still have troubles with double nested queries (especially NOT IN ... NOT IN)
+/!\ We still have troubles with double nested queries (especially NOT IN ... NOT IN),
+
+    + Performance problem with some subqueries (for instance, q3.sql)
+Currently, there is no GROUP BY handled in subqueries
+
 
 ## Technical choices
 #### Relations
@@ -44,8 +48,8 @@ A relation in represented by a python object that has the following attribute
 - a python iterator over the csv file
 - a dictionnary Attribute -> int, that tells us in which position in the tuple each field is
 
-relations are not loaded in memory, except after the application of
-an ORDER BY or a GROUP BY operator
+Relations are implemented with pointers to memory. They are not loaded in memory,
+except after the application of an ORDER BY or a GROUP BY operator
 
 #### DataManager
 The DataManager class handles every operation on tables, like creating a new one, remaning, or accessing a table.
@@ -55,6 +59,6 @@ For the lexer/parser of SQL queries, we used python's binding to ANTLR.
 Given a .g4 file in which the grammar is described, ANTLR automatically generates a lexer, a parser and an empty visitor.
 We then just had to implement the visitor.
 
-## What remains to be done
-- Possibility to output result of a query in a csv file
-- Push Down Selects
+#### Limitations
+Unfortunately, we were not able to modify the Abstract Syntax Tree using antlr. This forced us to do the integrality of our operations in one visit.
+Afterward, Caml would have been more appropriate, because it is easier to make transformation on requests in caml (plus tha fact that this task is intrinsecally functionnal) to do this project, but we realized it to late.
