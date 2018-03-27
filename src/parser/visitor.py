@@ -89,10 +89,10 @@ class Visitor(ParseTreeVisitor):
         relations = temp
         print_debug(" Relations :" + str(self.relationNames))
 
-        # 6/ Potentially completing attributes needed
+        # 6/ Completing attributeNeeded, if is a 'SELECT *'
         if self.allAttr :
-            for table in relations :
-                for attribute in table.get_keys() :
+            for tableName,fileName in self.visit(ctx.rels()) :
+                for attribute in self.dataManager(tableName).get_keys() :
                     self.attributeNeeded[attribute.fullName] = attribute
         print_debug(" AttributeNeeded :", self.attributeNeeded)
 
