@@ -12,9 +12,14 @@ def project(rel, attributes):
             indices.append(rel.keys[a])
         except KeyError:
             raise UnknownAttribute("key "+str(a) + " is not an attribute of relation "+ str(rel.get_keys()) )
-    projection = lambda x : tuple(x[i] for i in indices)
-    entries = map(projection, rel.data)
-    new = Table("projectRequest", attributes, entries)
+    def projectionWithoutRepetition(iterable):
+        mem = None
+        for item in iterable:
+            newEntry = tuple(item[i] for i in indices)
+            if mem is None or mem != newEntry :
+                mem = newEntry
+                yield newEntry
+    new = Table("projectRequest", attributes, projectionWithoutRepetition(rel.data))
     return new
 
 ## ____________________ Selection ______________________________________________
@@ -45,7 +50,12 @@ def select(rel, condTree, ignoreNotIn=True):
     """
     Filters a table and keep only entries satisfying conditions in condTree
     """
-    selection = lambda x : verify_conditions(x, condTree, rel.keys, ignoreNotIn)
+    def is_not_previous(x,mem):
+        if mem is None or x != mem :
+            mem = x
+            return True
+        return False
+    selection = lambda x : is_not_previous(x,None) and verify_conditions(x, condTree, rel.keys, ignoreNotIn)
     filtered = filter(selection , rel.data)
     new = Table("selectRequest", rel.get_keys(), filtered)
     return new

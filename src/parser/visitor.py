@@ -53,10 +53,6 @@ class Visitor(ParseTreeVisitor):
 
         # 3/ Getting attributes
         attributes = self.visit(ctx.atts())
-        if self.allAttr :
-            for table in relations :
-                for attribute in table.get_keys() :
-                    self.attributeNeeded[attribute.fullName] = attribute
         print_debug(" Attributes :", attributes)
         print_debug(" Aggregates :", self.aggregate)
 
@@ -93,39 +89,31 @@ class Visitor(ParseTreeVisitor):
         relations = temp
         print_debug(" Relations :" + str(self.relationNames))
 
+        # 6/ Potentially completing attributes needed
+        if self.allAttr :
+            for table in relations :
+                for attribute in table.get_keys() :
+                    self.attributeNeeded[attribute.fullName] = attribute
+        print_debug(" AttributeNeeded :", self.attributeNeeded)
 
-        # 6/ Perform a join on the tables, only on usefull attributes
+        # 7/ Perform a join on the tables, only on usefull attributes
         def simplif(x):
-            #print_debug("Asked for :")
-            #print_debug(x.name)
-            #print_debug([attr for attr in self.attributeNeeded.values() if attr.table == x.name ])
             return project( x, [attr for attr in self.attributeNeeded.values() if attr.table == x.name ] )
         tables = [simplif(x) for x in self.dataManager.get_tables(relations)]
         resultRelation = reduce(lambda x,y : join(x,y), tables)
 
-        # 7/ 2nd pass over conditions to get condition tree
+        # 8/ 2nd pass over conditions to get condition tree
         if ctx.cond() is not None:
             condTree,_,notIn = self.visit(ctx.cond())
             if notIn:
-                print_debug("-------------------------------Result : ---------------------------------------")
-                print_debug(resultRelation)
-
-                r1,r2 = resultRelation, copy(resultRelation)
+                r1,r2 = Table.duplicate(resultRelation)
                 resultNormal = select(r1, Or(condTree), True)
-                print_debug("-------------------------------Le normal : ---------------------------------------")
-                print_debug(resultNormal)
-
-                print_debug("-------------------------------Result : ---------------------------------------")
-                print_debug(r1)
-                print_debug("-------------------------------Result : ---------------------------------------")
-                print_debug(r2)
+                #print_debug("-------------------------------Le normal : ---------------------------------------")
+                #print_debug(resultNormal)
 
                 resultWithIn = select(r2, Or(condTree), False)
-                print_debug("-------------------------------Le withIn : ---------------------------------------")
-                print_debug(resultWithIn)
-
-                print_debug("-------------------------------Result : ---------------------------------------")
-                print_debug(resultRelation)
+                #print_debug("-------------------------------Le withIn : ---------------------------------------")
+                #print_debug(resultWithIn)
 
                 resultRelation = minus(resultNormal,resultWithIn)
                 #print_debug("-------------------------------Le final : ---------------------------------------")
@@ -134,13 +122,13 @@ class Visitor(ParseTreeVisitor):
                 resultRelation = select(resultRelation, Or(condTree))
             print_debug(" Conditions : " + str(condTree))
 
-        # 8/ Sorting of output
+        # 9/ Sorting of output
         if ctx.orderby() is not None :
             orderkeys,desc = self.visit(ctx.orderby())
             print_debug("Order keys : ", orderkeys)
             resultRelation = orderBy(resultRelation, orderkeys, desc=desc)
 
-        # 9/ Group By or aggregate result
+        # 10/ Group By or aggregate result
         if ctx.GROUPBY() is not None:
             print_debug("Group By")
             grpAttr = self.visit(ctx.att())
@@ -148,11 +136,11 @@ class Visitor(ParseTreeVisitor):
         elif self.hasAggreg:
             resultRelation = aggregate(resultRelation, self.aggregate)
 
-        # 10/ Perform final projection if not a 'SELECT *'
+        # 11/ Perform final projection if not a 'SELECT *'
         if not self.allAttr:
             resultRelation = project(resultRelation, attributes)
 
-        # 11/ Delete duplicates
+        # 12/ Delete duplicates
         if ctx.DISTINCT() is not None :
             print_debug("Select Distinct")
             resultRelation = select_distinct(resultRelation)
@@ -371,5 +359,6 @@ class Visitor(ParseTreeVisitor):
     def visitCompNotIn(self, ctx:miniSQLParser.CompNotInContext):
         print_debug("visitCompNotIn")
         attr = self.visit(ctx.att())
+        self.attributeNeeded[attr.fullName] = attr
         cond,rel = self.visitSubSql(ctx.sql(), attr)
         return [NotInCond(cond)], rel, True
