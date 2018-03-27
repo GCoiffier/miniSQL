@@ -13,8 +13,8 @@ class Visitor(ParseTreeVisitor):
 
         self.relationNames = dict() # alias -> real name
         self.attributeNames = dict() # alias -> Attribute(table,name)
+        self.attributeNeeded = dict() # alias -> Attribute(table,name)
         self.aggregate = dict() # name -> operator
-        self.attributeNeeded = dict() # table -> attribute list
 
         self.allAttr = False
         self.hasAggreg = False
@@ -26,7 +26,6 @@ class Visitor(ParseTreeVisitor):
         self.relationNames = dict()
         self.attributeNames = dict()
         self.aggregate = dict()
-        self.attributeNeeded = dict()
         self.allAttr = False
         self.hasAggreg = False
         self.dataManager = DataManager()
@@ -50,7 +49,12 @@ class Visitor(ParseTreeVisitor):
             condTree,relList,_ = self.visit(ctx.cond())
             relations += relList
 
-        # 2.5/ Only one relation => using special operators
+        # 3/ Getting attributes
+        attributes = self.visit(ctx.atts())
+        print_debug(" Attributes :", attributes)
+        print_debug(" Aggregates :", self.aggregate)
+
+        # 4/ Only one relation => using special operators
         if len(relations)==1:
             attributes = self.visit(ctx.atts())
             if not self.aggregate:
@@ -69,7 +73,7 @@ class Visitor(ParseTreeVisitor):
                 grpAttr = self.visit(ctx.att())
                 return readSelectRenameGroupByProject(rel[0], rel[1], attributes, self.allAttr, Or(condTree), grpAttr, self.aggregate)
 
-        # 3/ Load all the tables
+        # 5/ Load all the tables
         for i,(fileName,tableName) in enumerate(relations) :
             self.dataManager.load(fileName)
             self.relationNames[tableName]=fileName
@@ -78,24 +82,27 @@ class Visitor(ParseTreeVisitor):
             relations[i]=tableName # get rid of fileName : not useful from now on
         print_debug(" Relations :" + str(self.relationNames))
 
-        # 4/ Perform a join on the tables]
-        resultRelation = reduce(lambda x,y : join(x, y), self.dataManager.get_tables(relations))
+        # 6/ Perform a join on the tables, only on usefull attributes
+        def simplif(x):
+            #print_debug("Asked for :")
+            #print_debug(x.name)
+            #print_debug([attr for attr in self.attributeNeeded.values() if attr.table == x.name ])
+            return project( x, [attr for attr in self.attributeNeeded.values() if attr.table == x.name ] )
+        tables = [simplif(x) for x in self.dataManager.get_tables(relations)]
+        resultRelation = reduce(lambda x,y : join(x,y), tables)
 
-        # 5/ Getting attributes
-        attributes = self.visit(ctx.atts())
-        print_debug(" Attributes :", attributes)
-        print_debug(" Aggregates :", self.aggregate)
-
-        # 6/ 2nd pass over conditions to get condition tree
+        # 7/ 2nd pass over conditions to get condition tree
         if ctx.cond() is not None:
             condTree,_,notIn = self.visit(ctx.cond())
             if notIn:
-                resultWithIn = select(select_distinct(resultRelation), Or(condTree), False)
-                print_debug("-------------------------------Le withIn : ---------------------------------------")
-                print_debug(resultWithIn)
                 resultNormal = select(select_distinct(resultRelation), Or(condTree), True)
                 print_debug("-------------------------------Le normal : ---------------------------------------")
                 print_debug(resultNormal)
+
+                resultWithIn = select(select_distinct(resultRelation), Or(condTree), False)
+                print_debug("-------------------------------Le withIn : ---------------------------------------")
+                print_debug(resultWithIn)
+
                 print_debug("-------------------------------Le final : ---------------------------------------")
                 resultRelation = minus(resultNormal,resultWithIn)
             else:
@@ -212,6 +219,7 @@ class Visitor(ParseTreeVisitor):
         print_debug("visitAttributeSimple")
         attr = self.visit(ctx.att())
         self.attributeNames[attr.fullName] = attr
+        self.attributeNeeded[attr.fullName] = attr
         return attr, Aggregation.NONE
 
     def visitAttributeAs(self, ctx:miniSQLParser.AttributeAsContext):
@@ -219,12 +227,14 @@ class Visitor(ParseTreeVisitor):
         attr = self.visit(ctx.att())
         alias = ctx.ID().getText()
         self.attributeNames[alias] = attr
+        self.attributeNeeded[alias] = attr
         return attr, Aggregation.NONE
 
     def visitAttributeAggr(self, ctx:miniSQLParser.AttributeAggrContext):
         print_debug("visitAttributeAggr")
         attr = self.visit(ctx.att())
         self.attributeNames[attr.fullName] = attr
+        self.attributeNeeded[attr.fullName] = attr
         self.hasAggreg = True
         aggr = ctx.aggr().getText()
         if aggr == "MAX":
@@ -314,14 +324,18 @@ class Visitor(ParseTreeVisitor):
         op = text_to_OP(ctx.op().getText())
         if ctx.CONST() is not None :
             attr,const = self.visit(ctx.att(0)), ctx.CONST().getText()
+            self.attributeNeeded[attr.fullName] = attr
             return [ConstCondition(attr,op,const)], [], False
         else:
             attr1,attr2 = self.visit(ctx.att(0)), self.visit(ctx.att(1))
+            self.attributeNeeded[attr1.fullName] = attr1
+            self.attributeNeeded[attr2.fullName] = attr2
             return [Condition(attr1,op,attr2)], [], False
 
     def visitCompIn(self, ctx:miniSQLParser.CompInContext):
         print_debug("visitCompIn")
         attr = self.visit(ctx.att())
+        self.attributeNeeded[attr.fullName] = attr
         cond, rel = self.visitSubSql(ctx.sql(), attr)
         return cond, rel, False
 
