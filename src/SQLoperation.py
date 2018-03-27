@@ -13,7 +13,7 @@ def project(rel, attributes):
         except KeyError:
             raise UnknownAttribute("key "+str(a) + " is not an attribute of relation "+ str(rel.get_keys()) )
     projection = lambda x : tuple(x[i] for i in indices)
-    entries = map(projection, rel.get_data())
+    entries = map(projection, rel.data)
     new = Table("projectRequest", attributes, entries)
     return new
 
@@ -46,7 +46,7 @@ def select(rel, condTree, ignoreNotIn=True):
     Filters a table and keep only entries satisfying conditions in condTree
     """
     selection = lambda x : verify_conditions(x, condTree, rel.keys, ignoreNotIn)
-    filtered = filter(selection , rel.get_data())
+    filtered = filter(selection , rel.data)
     new = Table("selectRequest", rel.get_keys(), filtered)
     return new
 
@@ -60,7 +60,7 @@ def select_distinct(rel):
             if tuple(item) not in seen:
                 seen.add(tuple(item))
                 yield item
-    return Table("distinctProject", rel.get_keys(), unique_values(rel.get_data()))
+    return Table("distinctProject", rel.get_keys(), unique_values(rel.data))
 
 ## ______________________ Join _________________________________________________
 def join(relA, relB):
@@ -83,7 +83,7 @@ def union(relA,relB):
 
 ## ___________________________ Minus ___________________________________________
 def minus(relA,relB):
-    entries = filterfalse(lambda x : x in relB.get_data() , relA.get_data())
+    entries = filterfalse(lambda x : x in relB.get_data() , relA.data)
     new = Table("minusRequest", relA.get_keys(), entries)
     return new
 

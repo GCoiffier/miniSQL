@@ -1,5 +1,5 @@
 from enum import Enum
-from database import Attribute
+from database.attribute import Attribute
 
 from functools import reduce
 

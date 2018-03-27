@@ -5,6 +5,7 @@ from condition import *
 from antlr4 import *
 from .miniSQLParser import miniSQLParser
 from functools import reduce
+from copy import copy
 
 class Visitor(ParseTreeVisitor):
 
@@ -99,14 +100,12 @@ class Visitor(ParseTreeVisitor):
         if ctx.cond() is not None:
             condTree,_,notIn = self.visit(ctx.cond())
             if notIn:
-                print_debug("-------------------------------L'initial : ---------------------------------------")
-                print_debug(resultRelation)
-
-                resultNormal = select(resultRelation, Or(condTree), True)
+                r1,r2 = resultRelation, copy(resultRelation)
+                resultNormal = select(r1, Or(condTree), True)
                 print_debug("-------------------------------Le normal : ---------------------------------------")
                 print_debug(resultNormal)
 
-                resultWithIn = select(resultRelation, Or(condTree), False)
+                resultWithIn = select(r2, Or(condTree), False)
                 print_debug("-------------------------------Le withIn : ---------------------------------------")
                 print_debug(resultWithIn)
 
