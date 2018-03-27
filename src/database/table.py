@@ -60,6 +60,10 @@ class Table:
         return output
 
     @staticmethod
+    def duplicate(table):
+        return table, Table(table.name, table.get_keys(), table.get_data())
+
+    @staticmethod
     def from_file(filename):
         """
         Builds a Relation object from a csv file.
