@@ -6,4 +6,4 @@ WHERE e.dpt IN ( (SELECT s.dpt
                  UNION
                  (SELECT s.dpt
                   FROM "employes.csv" s, "departements.csv" ds
-                  WHEREe.dpt = ds.idd));
+                  WHERE e.dpt = ds.idd));
