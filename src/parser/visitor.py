@@ -48,7 +48,8 @@ class Visitor(ParseTreeVisitor):
         # 2/ Get eventual tables from subqueries
         if ctx.cond() is not None:
             condTree,relList,_ = self.visit(ctx.cond())
-            relations += relList
+            print_debug("Relations from cond:", relList)
+            relations.update(relList)
 
         # 3/ Getting attributes
         attributes = self.visit(ctx.atts())
@@ -62,16 +63,18 @@ class Visitor(ParseTreeVisitor):
         # 4/ Only one relation => using special operators
         if len(relations)==1:
             attributes = self.visit(ctx.atts())
+
             if not self.aggregate:
                 print_debug("Calling readSelectProjectRename")
-                rel = relations[0]
+                rel = relations.pop()
                 condTree = None
                 if ctx.cond() is not None:
                     condTree,_,_ = self.visit(ctx.cond())
                 return readSelectProjectRename(rel[0], rel[1], attributes, self.allAttr, Or(condTree))
+
             elif ctx.GROUPBY() is not None:
                 print_debug("Calling readSelectRenameGroupByProject")
-                rel = relations[0]
+                rel = relations.pop()
                 condTree = None
                 if ctx.cond() is not None:
                     condTree,_,_ = self.visit(ctx.cond())
@@ -79,13 +82,17 @@ class Visitor(ParseTreeVisitor):
                 return readSelectRenameGroupByProject(rel[0], rel[1], attributes, self.allAttr, Or(condTree), grpAttr, self.aggregate)
 
         # 5/ Load all the tables
-        for i,(fileName,tableName) in enumerate(relations) :
+        print_debug(" Relations 0:" + str(self.relationNames))
+        temp = set()
+        for (fileName,tableName) in relations :
             self.dataManager.load(fileName)
             self.relationNames[tableName]=fileName
             if fileName!=tableName :
                 self.dataManager.rename_table(fileName,tableName)
-            relations[i]=tableName # get rid of fileName : not useful from now on
+            temp.add(tableName) # get rid of fileName : not useful from now on
+        relations = temp
         print_debug(" Relations :" + str(self.relationNames))
+
 
         # 6/ Perform a join on the tables, only on usefull attributes
         def simplif(x):
@@ -190,19 +197,19 @@ class Visitor(ParseTreeVisitor):
         subAttr = attributes[0]
         relations = self.visit(ctx.rels())
         condTree, rels, _ = self.visit(ctx.cond()) # condTree a list of list : CDF form
-        return [Or(condTree),Condition(attr,Op.EQ,subAttr)], relations+rels
+        return [Or(condTree),Condition(attr,Op.EQ,subAttr)], (relations | rels)
 
     def visitSubSqlMinus(self, ctx, attr): # TODO : false version
         print_debug("visitSubSqlUnion")
         condTree1, rels1 = self.visitSubSql(ctx.sql(0), attr)
         condTree2, rels2 = self.visitSubSql(ctx.sql(1), attr)
-        return [Or([And(condTree1),And(condTree2)])], rels1+rels2
+        return [Or([And(condTree1),And(condTree2)])], (rels1 | rels2)
 
     def visitSubSqlUnion(self, ctx, attr):
         print_debug("visitSubSqlUnion")
         condTree1, rels1 = self.visitSubSql(ctx.sql(0), attr)
         condTree2, rels2 = self.visitSubSql(ctx.sql(1), attr)
-        return [Or([And(condTree1),And(condTree2)])], rels1+rels2
+        return [Or([And(condTree1),And(condTree2)])], (rels1 | rels2)
 
     # _________________________ Order By rules _____________________________________
 
@@ -277,11 +284,15 @@ class Visitor(ParseTreeVisitor):
         print_debug("visitRelationDeclList")
         queueRel = self.visit(ctx.rels())
         firstRel = self.visit(ctx.rel())
-        return [firstRel]+queueRel
+        queueRel.add(firstRel)
+        return queueRel
 
     def visitRelationDeclSimple(self, ctx:miniSQLParser.RelationDeclSimpleContext):
         print_debug("visitRelationDeclSimple")
-        return [self.visit(ctx.rel())]
+        x = self.visit(ctx.rel())
+        out = set()
+        out.add(x) #Not juste set of x because it unpacks tuples...
+        return out
 
     # __________________ rel rules _____________________________________________
     def visitRelationID(self, ctx:miniSQLParser.RelationIDContext):
@@ -309,27 +320,27 @@ class Visitor(ParseTreeVisitor):
     # _____________________ cond rules _________________________________________
     def visitCondOrList(self, ctx:miniSQLParser.CondOrListContext):
         print_debug("visitCondOrList")
-        queueCond, listRel1, notIn1 = self.visit(ctx.cond())
-        firstCond, listRel2, notIn2 = self.visit(ctx.and_cond())
-        return [And(firstCond)]+queueCond, listRel1+listRel2, (notIn1 or notIn2)
+        queueCond, setRel1, notIn1 = self.visit(ctx.cond())
+        firstCond, setRel2, notIn2 = self.visit(ctx.and_cond())
+        return [And(firstCond)]+queueCond, (setRel1 | setRel2), (notIn1 or notIn2)
 
     def visitCondOrSimple(self, ctx:miniSQLParser.CondOrSimpleContext):
         print_debug("visitCondOrSimple")
-        cond , listRel, notIn = self.visit(ctx.and_cond())
-        return [And(cond)], listRel, notIn
+        cond , setRel, notIn = self.visit(ctx.and_cond())
+        return [And(cond)], setRel, notIn
 
     # ____________________ and_cond rules ______________________________________
     def visitCondAndOr(self, ctx:miniSQLParser.CondAndOrContext):
         print_debug("visitCondAndOr")
-        queueCond, listRel1, notIn1 = self.visit(ctx.and_cond())
-        firstCond, listRel2, notIn2 = self.visit(ctx.cond())
-        return [Or(firstCond)]+queueCond, listRel1+listRel2, (notIn1 or notIn2)
+        queueCond, setRel1, notIn1 = self.visit(ctx.and_cond())
+        firstCond, setRel2, notIn2 = self.visit(ctx.cond())
+        return [Or(firstCond)]+queueCond, (setRel1 | setRel2), (notIn1 or notIn2)
 
     def visitCondAndList(self, ctx:miniSQLParser.CondAndListContext):
         print_debug("visitCondAndList")
-        queueCond, listRel1, notIn1 = self.visit(ctx.and_cond())
-        firstCond, listRel2, notIn2 = self.visit(ctx.at_cond())
-        return firstCond+queueCond, listRel1+listRel2, notIn1 or notIn2
+        queueCond, setRel1, notIn1 = self.visit(ctx.and_cond())
+        firstCond, setRel2, notIn2 = self.visit(ctx.at_cond())
+        return firstCond+queueCond, (setRel1 | setRel2), (notIn1 or notIn2)
 
     def visitCondAndSimple(self, ctx:miniSQLParser.CondAndSimpleContext):
         print_debug("visitCondAndSimple")
@@ -343,12 +354,12 @@ class Visitor(ParseTreeVisitor):
         if ctx.CONST() is not None :
             attr,const = self.visit(ctx.att(0)), ctx.CONST().getText()
             self.attributeNeeded[attr.fullName] = attr
-            return [ConstCondition(attr,op,const)], [], False
+            return [ConstCondition(attr,op,const)], set(), False
         else:
             attr1,attr2 = self.visit(ctx.att(0)), self.visit(ctx.att(1))
             self.attributeNeeded[attr1.fullName] = attr1
             self.attributeNeeded[attr2.fullName] = attr2
-            return [Condition(attr1,op,attr2)], [], False
+            return [Condition(attr1,op,attr2)], set(), False
 
     def visitCompIn(self, ctx:miniSQLParser.CompInContext):
         print_debug("visitCompIn")
